@@ -396,9 +396,6 @@
             .score-boards { grid-template-columns: 1fr; gap: 15px;} .week-table { font-size: 0.75em;}
             .week-table th, .week-table td { padding: 3px 2px; font-size: 0.75em;}
             .small-input {width: 30px; font-size: 0.7em; padding: 1px;}
-            .points-grid { grid-template-columns: 1fr; gap: 20px;} .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px;}
-            .stat-item { padding: 15px;} .stat-number { font-size: 1.5em;} .bank-section { grid-template-columns: 1fr; gap: 20px;}
-            .week-card { padding: 15px;} .total-score-input { font-size: 2em; padding: 8px;} .player-name { font-size: 1.3em;}
             .week-table-container, #history .table-container  { overflow-x: auto; -webkit-overflow-scrolling: touch;}
             .clickable-cell { min-width: 30px;} .connection-status { top: 10px; right: 10px; padding: 8px 12px; font-size: 0.8em;}
             #score-history-table { font-size: 0.8em;} #score-history-table th, #score-history-table td { padding: 6px 4px;}
@@ -570,6 +567,17 @@
         </div>
     </div>
 
+    <div id="confirm-add-total-modal-overlay" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h3 id="confirm-add-total-title">确认操作</h3>
+            <p id="confirm-add-total-desc" style="margin-bottom: 20px;"></p>
+            <div class="modal-buttons">
+                <button id="confirm-add-total-btn" class="confirm-btn">确定</button>
+                <button onclick="closeConfirmAddTotalModal()" class="cancel-btn">取消</button>
+            </div>
+        </div>
+    </div>
+
 
     <div id="connection-status" class="connection-status connecting">🔄 连接中...</div>
 
@@ -651,7 +659,7 @@
                 <h3 style="text-align:center; margin-top:40px; margin-bottom:20px; color: #2c3e50;">🛒 可购买卡片</h3>
                 <div id="main-cards-grid" class="points-grid">
                     <div class="points-section points-1">
-                        <h3>💚 1积分卡片 <button class="add-card-to-section-btn" onclick="openDefinePermanentCardModal(1)">⊕ 添加</button></h3>
+                        <h3>💚 1积分 <button class="add-card-to-section-btn" onclick="openDefinePermanentCardModal(1)">⊕ 添加</button></h3>
                         <div class="card-item" data-points="1" data-type="E" data-name="E/快递外卖卡" id="predef_card_kuaidi" onclick="openBuyerModal(1, 'E', 'E/快递外卖卡')"><div class="card-title">E/快递外卖卡</div><div class="card-desc">负责全天的快递和外卖取货</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_kuaidi', 'predefined')">❌</button></div>
                         <div class="card-item" data-points="1" data-type="E" data-name="E/零食投喂卡" id="predef_card_lingshi" onclick="openBuyerModal(1, 'E', 'E/零食投喂卡')"><div class="card-title">E/零食投喂卡</div><div class="card-desc">兑换指定零食/奶茶一份，亲手喂食</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_lingshi', 'predefined')">❌</button></div>
                         <div class="card-item" data-points="1" data-type="E" data-name="E/简单购物卡" id="predef_card_gouwu" onclick="openBuyerModal(1, 'E', 'E/简单购物卡')"><div class="card-title">E/简单购物卡</div><div class="card-desc">一天的简单代买</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_gouwu', 'predefined')">❌</button></div>
@@ -659,14 +667,14 @@
                         <div class="card-item" data-points="1" data-type="T" data-name="T/简单按摩卡" id="predef_card_anmo" onclick="openBuyerModal(1, 'T', 'T/简单按摩卡')"><div class="card-title">T/简单按摩卡</div><div class="card-desc">享受3分钟肩颈按摩</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_anmo', 'predefined')">❌</button></div>
                     </div>
                     <div class="points-section points-2">
-                        <h3>🧡 2积分卡片 <button class="add-card-to-section-btn" onclick="openDefinePermanentCardModal(2)">⊕ 添加</button></h3>
+                        <h3>🧡 2积分 <button class="add-card-to-section-btn" onclick="openDefinePermanentCardModal(2)">⊕ 添加</button></h3>
                         <div class="card-item" data-points="2" data-type="E" data-name="E/食物选择卡" id="predef_card_shiwu" onclick="openBuyerModal(2, 'E', 'E/食物选择卡')"><div class="card-title">E/食物选择卡</div><div class="card-desc">给对方提供三种以上的外卖或者菜品的选择</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_shiwu', 'predefined')">❌</button></div>
                         <div class="card-item" data-points="2" data-type="E" data-name="E/影视选择卡" id="predef_card_yingshi" onclick="openBuyerModal(2, 'E', 'E/影视选择卡')"><div class="card-title">E/影视选择卡</div><div class="card-desc">本天看剧时间完全由你决定</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_yingshi', 'predefined')">❌</button></div>
                         <div class="card-item" data-points="2" data-type="E" data-name="E/造型选择卡" id="predef_card_zaoxing" onclick="openBuyerModal(2, 'E', 'E/造型选择卡')"><div class="card-title">E/造型选择卡</div><div class="card-desc">对方帮你挑选今天的穿搭</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_zaoxing', 'predefined')">❌</button></div>
                         <div class="card-item" data-points="2" data-type="T" data-name="T/专属表演卡" id="predef_card_biaoyan" onclick="openBuyerModal(2, 'T', 'T/专属表演卡')"><div class="card-title">T/专属表演卡</div><div class="card-desc">对方为你表演指定的歌曲/讲故事</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_biaoyan', 'predefined')">❌</button></div>
                     </div>
                     <div class="points-section points-3">
-                        <h3>❤️ 3积分卡片 <button class="add-card-to-section-btn" onclick="openDefinePermanentCardModal(3)">⊕ 添加</button></h3>
+                        <h3>❤️ 3积分 <button class="add-card-to-section-btn" onclick="openDefinePermanentCardModal(3)">⊕ 添加</button></h3>
                         <div class="card-item" data-points="3" data-type="E" data-name="E/睡觉延迟卡" id="predef_card_shuijiao" onclick="openBuyerModal(3, 'E', 'E/睡觉延迟卡')"><div class="card-title">E/睡觉延迟卡</div><div class="card-desc">可以延长睡眠时间10分钟（可叠加使用，但不能超过半小时）</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_shuijiao', 'predefined')">❌</button></div>
                         <div class="card-item" data-points="3" data-type="E" data-name="E/拥抱充电卡" id="predef_card_yongbao" onclick="openBuyerModal(3, 'E', 'E/拥抱充电卡')"><div class="card-title">E/拥抱充电卡</div><div class="card-desc">兑换3分钟超级大拥抱</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_yongbao', 'predefined')">❌</button></div>
                         <div class="card-item" data-points="3" data-type="T" data-name="T/视频录制卡" id="predef_card_shipin" onclick="openBuyerModal(3, 'T', 'T/视频录制卡')"><div class="card-title">T/视频录制卡</div><div class="card-desc">经过对方允许可录制7-10分钟的视频</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_shipin', 'predefined')">❌</button></div>
@@ -675,23 +683,31 @@
                         <div class="card-item" data-points="3" data-type="T" data-name="T/学习陪伴卡" id="predef_card_xuexi" onclick="openBuyerModal(3, 'T', 'T/学习陪伴卡')"><div class="card-title">T/学习陪伴卡</div><div class="card-desc">对方安静陪伴你学习工作1小时</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_xuexi', 'predefined')">❌</button></div>
                     </div>
                     <div class="points-section points-5">
-                        <h3>💜 5积分卡片 <button class="add-card-to-section-btn" onclick="openDefinePermanentCardModal(5)">⊕ 添加</button></h3>
+                        <h3>💜 5积分 <button class="add-card-to-section-btn" onclick="openDefinePermanentCardModal(5)">⊕ 添加</button></h3>
                         <div class="card-item" data-points="5" data-type="E" data-name="E/手机时长卡" id="predef_card_shouji" onclick="openBuyerModal(5, 'E', 'E/手机时长卡')"><div class="card-title">E/手机时长卡</div><div class="card-desc">兑换30分钟无打扰玩手机时间</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_shouji', 'predefined')">❌</button></div>
                         <div class="card-item" data-points="5" data-type="E" data-name="E/游戏陪玩卡" id="predef_card_youxi" onclick="openBuyerModal(5, 'E', 'E/游戏陪玩卡')"><div class="card-title">E/游戏陪玩卡</div><div class="card-desc">对方陪你玩喜欢的游戏2小时</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_youxi', 'predefined')">❌</button></div>
                         <div class="card-item" data-points="5" data-type="T" data-name="T/食物料理卡" id="predef_card_liaoli" onclick="openBuyerModal(5, 'T', 'T/食物料理卡')"><div class="card-title">T/食物料理卡</div><div class="card-desc">对方为你完成一道指定菜，对方陪你吃掉一碗菜</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_liaoli', 'predefined')">❌</button></div>
                     </div>
                     <div class="points-section points-10">
-                        <h3>🖤 10积分卡片 <button class="add-card-to-section-btn" onclick="openDefinePermanentCardModal(10)">⊕ 添加</button></h3>
+                        <h3>🖤 10积分 <button class="add-card-to-section-btn" onclick="openDefinePermanentCardModal(10)">⊕ 添加</button></h3>
                         <div class="card-item" data-points="10" data-type="T" data-name="T/家务豁免卡" id="predef_card_huomian" onclick="openBuyerModal(10, 'T', 'T/家务豁免卡')"><div class="card-title">T/家务豁免卡</div><div class="card-desc">免除当日指定家务劳动</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_huomian', 'predefined')">❌</button></div>
                         <div class="card-item" data-points="10" data-type="T" data-name="T/庆祝选择卡" id="predef_card_qingzhu" onclick="openBuyerModal(10, 'T', 'T/庆祝选择卡')"><div class="card-title">T/庆祝选择卡</div><div class="card-desc">纪念日当天持卡人拥有活动决定权</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_qingzhu', 'predefined')">❌</button></div>
                         <div class="card-item" data-points="10" data-type="T" data-name="T/万能半日卡" id="predef_card_bannri" onclick="openBuyerModal(10, 'T', 'T/万能半日卡')"><div class="card-title">T/万能半日卡</div><div class="card-desc">可在周末或节假日空闲时陪伴（全心全意）</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_bannri', 'predefined')">❌</button></div>
                     </div>
                     <div class="points-section points-20">
-                        <h3>🔥 20积分卡片 <button class="add-card-to-section-btn" onclick="openDefinePermanentCardModal(20)">⊕ 添加</button></h3>
+                        <h3>🔥 20积分 <button class="add-card-to-section-btn" onclick="openDefinePermanentCardModal(20)">⊕ 添加</button></h3>
                         <div class="card-item" data-points="20" data-type="E" data-name="E/万能和好卡" id="predef_card_hehao" onclick="openBuyerModal(20, 'E', 'E/万能和好卡')"><div class="card-title">E/万能和好卡</div><div class="card-desc">双方需要在15分钟内停止争论，倾诉以及沟通</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_hehao', 'predefined')">❌</button></div>
                         <div class="card-item" data-points="20" data-type="T" data-name="T/万能包日卡" id="predef_card_baori" onclick="openBuyerModal(20, 'T', 'T/万能包日卡')"><div class="card-title">T/万能包日卡</div><div class="card-desc">可在周末或节假日空闲时陪伴（满足对方一切要求）叠加时每天加10分，对方获得三分之一</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_baori', 'predefined')">❌</button></div>
                         <div class="card-item" data-points="20" data-type="H" data-name="H/周末掌控卡" id="predef_card_zhangkong" onclick="openBuyerModal(20, 'H', 'H/周末掌控卡')"><div class="card-title">H/周末掌控卡</div><div class="card-desc">一人十分解除当天的所有限制（此外当天所有日常不在加分）</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_zhangkong', 'predefined')">❌</button></div>
                     </div>
+
+                    <div class="points-section points-20">
+                        <h3>🌟 999积分 <button class="add-card-to-section-btn" onclick="openDefinePermanentCardModal(20)">⊕ 添加</button></h3>
+                         <div class="card-item" data-points="20" data-type="T" data-name="T/原地结婚卡" id="predef_card_baori" onclick="openBuyerModal(20, 'T', 'T/原地结婚卡')"><div class="card-title">T/原地结婚卡</div><div class="card-desc">当天带上身份证去民政局领结婚证</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_baori', 'predefined')">❌</button></div>
+                    </div>
+
+
+
 
                     <div style="margin-top: 30px; padding: 25px; background: linear-gradient(45deg, #74b9ff, #0984e3); color: white; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
                         <h3 style="margin-bottom: 15px;">💡 使用说明</h3>
@@ -737,8 +753,8 @@
                 <div class="total-scores">
                     <h3 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">🏆 积分排行榜</h3>
                     <div class="score-boards">
-                        <div class="score-board"><div class="player-name">七七</div><input type="number" class="total-score-input" id="qiqi-total" value="0" placeholder="输入积分"><button onclick="addWeekTotalToTotal('qiqi')" style="margin-top: 12px; padding: 8px 20px; font-size: 0.95em; background: linear-gradient(45deg, #9b59b6, #8e44ad); color: white; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.1); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">📥 加入本周总分</button></div>
-                        <div class="score-board"><div class="player-name">一一</div><input type="number" class="total-score-input" id="yiyi-total" value="0" placeholder="输入积分"><button onclick="addWeekTotalToTotal('yiyi')" style="margin-top: 12px; padding: 8px 20px; font-size: 0.95em; background: linear-gradient(45deg, #3498db, #2980b9); color: white; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.1); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">📥 加入本周总分</button></div>
+                        <div class="score-board"><div class="player-name">七七</div><input type="number" class="total-score-input" id="qiqi-total" value="0" placeholder="输入积分"><button onclick="openConfirmAddTotalModal('qiqi')" style="margin-top: 12px; padding: 8px 20px; font-size: 0.95em; background: linear-gradient(45deg, #9b59b6, #8e44ad); color: white; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.1); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">📥 加入本周总分</button></div>
+                        <div class="score-board"><div class="player-name">一一</div><input type="number" class="total-score-input" id="yiyi-total" value="0" placeholder="输入积分"><button onclick="openConfirmAddTotalModal('yiyi')" style="margin-top: 12px; padding: 8px 20px; font-size: 0.95em; background: linear-gradient(45deg, #3498db, #2980b9); color: white; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.1); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">📥 加入本周总分</button></div>
                     </div>
                     <div class="control-buttons"> <button class="btn btn-danger" onclick="resetAllData()">重置所有数据</button> </div>
                 </div>
@@ -1032,6 +1048,8 @@
             if (cardType === 'T') {
                 const otherPlayer = player === 'qiqi' ? 'yiyi' : 'qiqi'; const today = new Date(); const dayNames = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']; const currentDayKey = dayNames[today.getDay()];
                 weekData[otherPlayer][currentDayKey].trade = (parseInt(weekData[otherPlayer][currentDayKey].trade) || 0) + cardPoints;
+                if (!weekData[otherPlayer][currentDayKey].tradeLog) weekData[otherPlayer][currentDayKey].tradeLog = [];
+                weekData[otherPlayer][currentDayKey].tradeLog.push({ desc: `来自${player === 'qiqi' ? '七七' : '一一'}使用的交易卡 "${cardName}"`, pointsAdded: cardPoints, type: 'T_card_income' });
                 updateWeekSummary(otherPlayer); message += ` ${otherPlayer === 'qiqi' ? '七七' : '一一'} 因此获得了 ${cardPoints} 交易积分！`;
             } else if (cardType === 'E') { message += ` 卡片已消耗。`; }
             alert(message);
@@ -1274,6 +1292,27 @@
             });
         }
 
+        // NEW: Function to open the confirmation modal for adding week total
+        let playerToAddToTotal = null; // Store which player's data is being processed
+        function openConfirmAddTotalModal(player) {
+            playerToAddToTotal = player;
+            const scores = calculateWeekScore(player);
+            const playerName = player === 'qiqi' ? '七七' : '一一';
+            document.getElementById('confirm-add-total-title').textContent = `确认操作`;
+            document.getElementById('confirm-add-total-desc').innerHTML = `确定要将 ${playerName} 本周的积分总计 **${scores.total}分** 加入总分并清空本周数据吗？`;
+            document.getElementById('confirm-add-total-btn').onclick = () => {
+                addWeekTotalToTotal(playerToAddToTotal);
+                closeConfirmAddTotalModal();
+            };
+            document.getElementById('confirm-add-total-modal-overlay').style.display = 'flex';
+        }
+
+        // NEW: Function to close the confirmation modal
+        function closeConfirmAddTotalModal() {
+            document.getElementById('confirm-add-total-modal-overlay').style.display = 'none';
+            playerToAddToTotal = null;
+        }
+
         function addWeekTotalToTotal(player) { requestEditPermission(() => _addWeekTotalToTotalInternal(player)); }
         function _addWeekTotalToTotalInternal(player) {
             const scores = calculateWeekScore(player); const sum = scores.total;
@@ -1290,8 +1329,13 @@
             });
             // NEW: Add tradeDetails to history entry
             const historyEntry = { timestamp: Date.now(), player: player, scores: scores, consumedItemsDetail: consumedItemsDetail, penaltyDetails: penaltyDetails, basicScoreDetails: basicScoreDetailsLog, rewardDetails: rewardDetailsLog, tradeDetails: tradeDetailsLog };
-            scoreHistoryLog.unshift(historyEntry); renderScoreHistoryTable(); _saveScoreHistoryToFirebaseInternal(); _saveToFirebaseInternal(); 
-            alert(`已将本周总分（${sum}）加入 ${player === 'qiqi' ? '七七' : '一一'} 总积分！历史记录已更新。`);
+            scoreHistoryLog.unshift(historyEntry); renderScoreHistoryTable(); _saveScoreHistoryToFirebaseInternal(); 
+            
+            // Clear the current week's data after adding to total
+            resetWeekData(player); 
+            _saveToFirebaseInternal(); 
+
+            alert(`已将本周总分（${sum}）加入 ${player === 'qiqi' ? '七七' : '一一'} 总积分！本周数据已清零，历史记录已更新。`);
         }
         
         function clearScoreHistory() { requestEditPermission(() => { if (confirm('确定要清空所有积分历史记录吗？此操作无法撤销！')) { scoreHistoryLog = []; renderScoreHistoryTable(); database.ref('/scoreHistory').remove().then(() => alert('积分历史记录已清空！')).catch(error => alert('清空积分历史记录失败: ' + error.message)); }});}
@@ -1313,7 +1357,7 @@
             _saveToFirebaseInternal(); alert('所有数据已重置！');
         }});}
 
-        function resetWeekData(player) { requestEditPermission(() => { if (confirm(`确定要清零 ${player === 'qiqi' ? '七七' : '一一'} 本周的所有数据吗？`)) {
+        function resetWeekData(player) { requestEditPermission(() => { // Removed confirmation here as it's now handled by addWeekTotalToTotal
             Object.keys(weekData[player]).forEach(day => { weekData[player][day] = initialDayData(); });
             const playerTable = document.querySelector(`#${player}-summary`).closest('.week-card').querySelector('.week-table');
             if (playerTable) {
@@ -1321,8 +1365,9 @@
                 playerTable.querySelectorAll('.reward-cell').forEach(cell => { cell.textContent = '0'; cell.className = 'reward-cell reward-0'; });
                 playerTable.querySelectorAll('td input[readonly]').forEach(input => input.value = 0);
             }
-            updateWeekSummary(player); _saveToFirebaseInternal(); alert(`${player === 'qiqi' ? '七七' : '一一'} 的本周数据已清零！`);
-        }});}
+            updateWeekSummary(player); _saveToFirebaseInternal(); 
+            // alert(`${player === 'qiqi' ? '七七' : '一一'} 的本周数据已清零！`); // This alert is now triggered by addWeekTotalToTotal
+        });}
 
         function loadDataFromFirebase() {
             statusElement.textContent = '📥 加载数据...'; statusElement.className = 'connection-status connecting';
@@ -1523,7 +1568,11 @@
             // 2. Clear existing dynamically added permanent cards from main grid before re-rendering
             document.querySelectorAll('#main-cards-grid .card-item[data-permanent="true"]').forEach(el => el.remove());
             // NEW: Clear existing dynamically added IOU cards from main grid
-            document.querySelectorAll('#main-cards-grid .points-section.points-iou').forEach(el => el.remove());
+            document.querySelectorAll('#main-cards-grid .points-section.points-iou').forEach(el => {
+                // Only remove if it's not the initial predefined IOU section if you had one.
+                // Assuming points-iou is only for dynamically added ones.
+                el.remove();
+            });
 
 
             // 3. Render Permanent Cards into main point sections
@@ -1556,7 +1605,7 @@
             const noTempItemsText = document.getElementById('no-temp-cards-text');
             tempGrid.innerHTML = ''; 
             if (noTempItemsText) tempGrid.appendChild(noTempItemsText); 
-
+            
             if (tempDefinedCards.length > 0) {
                 tempSection.style.display = 'block';
                 if(noTempItemsText) noTempItemsText.style.display = 'none';
@@ -1634,7 +1683,7 @@
 
                 if (cardTypeString === 'predefined') {
                     if (!hiddenPredefinedCardIds.includes(identifier)) {
-                        hiddenPredefinedCardIds.push(identifier);
+                        hiddenPreefinedCardIds.push(identifier);
                     }
                 } else if (cardTypeString === 'permanent') {
                     delete permanentCardsData[identifier];
