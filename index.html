@@ -242,6 +242,7 @@
         .points-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin: 30px 0; }
         .points-section, .weekly-rewards-section, .warehouse-section { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-top: 5px solid; margin-bottom: 30px; }
         .points-1 { border-top-color: #2ecc71; } .points-2 { border-top-color: #f39c12; } .points-3 { border-top-color: #e74c3c; } .points-5 { border-top-color: #9b59b6; } .points-10 { border-top-color: #34495e; } .points-20 { border-top-color: #e67e22; }
+        .points-iou { border-top-color: #f39c12; } /* Added for IOU cards */
         .weekly-rewards-section { border-top-color: #1abc9c; }
         .warehouse-section { border-top-color: #3498db; }
         .points-section h3, .weekly-rewards-section h3, .warehouse-section h3 { text-align: center; margin-bottom: 20px; font-size: 1.8em; color: #2c3e50; }
@@ -524,6 +525,17 @@
         </div>
     </div>
 
+    <div id="define-IOU-card-modal-overlay" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h3>定义欠条卡片</h3>
+            <input type="number" id="iou-card-points" placeholder="欠条面值 (即购买积分，如: 10)" class="modal-input" min="1">
+            <input type="number" id="iou-card-interest" placeholder="利息百分比 (如: 10 表示10%)" class="modal-input" min="0" max="100" value="10">
+            <div class="modal-buttons">
+                <button onclick="defineAndListIOUCard()" class="confirm-btn" style="background: linear-gradient(45deg, #f39c12, #e67e22);">创建欠条</button>
+                <button onclick="closeDefineIOUCardModal()" class="cancel-btn">取消</button>
+            </div>
+        </div>
+    </div>
 
     <div id="special-reward-modal-overlay" class="modal-overlay" style="display: none;">
         <div class="modal-content">
@@ -543,6 +555,17 @@
             <div class="modal-buttons">
                 <button id="confirm-consume-btn" class="confirm-btn">确认</button>
                 <button onclick="closeConsumeCardConfirmModal()" class="cancel-btn">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="iou-return-modal-overlay" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h3 id="iou-return-modal-title">归还欠条</h3>
+            <p id="iou-return-modal-desc" style="margin-bottom: 20px;"></p>
+            <div class="modal-buttons">
+                <button id="confirm-iou-return-btn" class="confirm-btn" style="background: linear-gradient(45deg, #e74c3c, #c0392b);">确认归还并扣除对方</button>
+                <button onclick="closeIOUReturnModal()" class="cancel-btn">取消</button>
             </div>
         </div>
     </div>
@@ -595,6 +618,7 @@
                  <div style="text-align: center; margin-bottom: 20px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
                     <button class="btn" onclick="openDefineTempCardModal()" style="background: linear-gradient(45deg, #5dade2, #2e86c1); font-size: 1.1em; padding: 12px 25px;">🛠️ 定义临时卡片</button>
                     <button class="btn" onclick="openDefinePermanentCardModal()" style="background: linear-gradient(45deg, #27ae60, #229954); font-size: 1.1em; padding: 12px 25px;">⭐ 定义常用卡片</button>
+                    <button class="btn" onclick="openDefineIOUCardModal()" style="background: linear-gradient(45deg, #f39c12, #e67e22); font-size: 1.1em; padding: 12px 25px;">📝 定义欠条卡片</button>
                 </div>
 
                 <div class="weekly-rewards-section">
@@ -633,7 +657,6 @@
                         <div class="card-item" data-points="1" data-type="E" data-name="E/简单购物卡" id="predef_card_gouwu" onclick="openBuyerModal(1, 'E', 'E/简单购物卡')"><div class="card-title">E/简单购物卡</div><div class="card-desc">一天的简单代买</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_gouwu', 'predefined')">❌</button></div>
                         <div class="card-item" data-points="1" data-type="T" data-name="T/家务执行卡" id="predef_card_jiawu" onclick="openBuyerModal(1, 'T', 'T/家务执行卡')"><div class="card-title">T/家务执行卡</div><div class="card-desc">指定任意家务（整理衣柜/打扫房间/洗晒衣服/收拾桌子/洗碗）</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_jiawu', 'predefined')">❌</button></div>
                         <div class="card-item" data-points="1" data-type="T" data-name="T/简单按摩卡" id="predef_card_anmo" onclick="openBuyerModal(1, 'T', 'T/简单按摩卡')"><div class="card-title">T/简单按摩卡</div><div class="card-desc">享受3分钟肩颈按摩</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_anmo', 'predefined')">❌</button></div>
-                        <div class="card-item" data-points="1" data-type="E" data-name="超级借分卡" id="predef_card_jiefen" onclick="openBuyerModal(1, 'E', '超级借分卡')"><div class="card-title">🏆 超级借分卡</div><div class="card-desc">价值1积分。购买后，可与对方约定借分事宜。具体条款双方协商。</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_jiefen', 'predefined')">❌</button></div>
                     </div>
                     <div class="points-section points-2">
                         <h3>🧡 2积分卡片 <button class="add-card-to-section-btn" onclick="openDefinePermanentCardModal(2)">⊕ 添加</button></h3>
@@ -677,6 +700,7 @@
                                 <li><strong>E = 消费类卡片：</strong>购买后进入仓库，使用后从仓库移除。积分由购买方承担。</li>
                                 <li><strong>T = 交易类卡片：</strong>购买后进入仓库。使用后卡片从仓库移除，卡片原积分值将加入对方的“交易”积分中。购买方承担购买成本。</li>
                                 <li><strong>H = 开心类卡片：</strong>直接消耗，双方共同承担积分，不进入仓库。</li>
+                                <li><strong>IOU = 欠条卡片：</strong>购买后进入仓库，购买者扣除积分，另一方玩家立即获得相同积分。使用时，使用者获得（面值+利息）积分，另一方玩家扣除（面值+利息）积分。</li>
                                  <li><strong>特殊奖励卡：</strong>直接授予对应玩家奖励积分，不进入仓库。</li>
                             </ul>
                         </div>
@@ -795,12 +819,13 @@
         let warehousesData = { qiqi: [], yiyi: [] }; 
         let tempDefinedCards = []; 
         let permanentCardsData = {}; // Stores user-defined permanent cards { cardId: {details} }
+        let iouCardsData = {}; // Stores user-defined IOU cards { cardId: {details} } // NEW
         let hiddenPredefinedCardIds = []; // Stores IDs of predefined cards to hide
 
         const initialDayData = () => ({
             book: 0, sleep: 0, exercise: 0,
             reward: 0, penalty: 0, consume: 0, trade: 0,
-            purchaseLog: [], penaltyLog: [], rewardLog: []
+            purchaseLog: [], penaltyLog: [], rewardLog: [], tradeLog: [] // NEW: Added tradeLog
         });
 
         let weekData = {
@@ -895,10 +920,11 @@
                 '/totalScores': { qiqi: document.getElementById('qiqi-total').value, yiyi: document.getElementById('yiyi-total').value },
                 '/warehousesData': warehousesData,
                 '/permanentCardsData': permanentCardsData,
-                '/hiddenPredefinedCardIds': hiddenPredefinedCardIds
+                '/hiddenPredefinedCardIds': hiddenPredefinedCardIds,
+                '/iouCardsData': iouCardsData // NEW: Added IOU cards data
             };
             database.ref().update(updates).then(() => {
-                console.log('✅ 主数据、仓库、常用卡片及隐藏状态保存成功');
+                console.log('✅ 主数据、仓库、常用卡片、隐藏状态及欠条卡片保存成功'); // Updated log
                 if (showStatus) { setTimeout(() => { statusElement.textContent = '✅ 已连接'; statusElement.className = 'connection-status connected'; }, 1000); }
             }).catch((error) => {
                 console.error('❌ 保存失败:', error);
@@ -968,7 +994,12 @@
                 if (warehousesData[player] && warehousesData[player].length > 0) {
                     warehousesData[player].forEach(card => {
                         const cardEl = document.createElement('div'); cardEl.className = 'warehouse-card-item';
-                        cardEl.innerHTML = `<div class="warehouse-card-info"><span class="name">${card.name} (原${card.pointsValue}分)</span><span class="qty">数量: ${card.quantity}</span></div><button class="use-card-btn" onclick="openConsumeCardConfirmModal('${player}', '${card.name}')">使用</button>`;
+                        // 根据卡片类型选择不同的使用函数 // Modified for IOU card
+                        if (card.type === 'IOU') {
+                            cardEl.innerHTML = `<div class="warehouse-card-info"><span class="name">${card.name} (面值:${card.pointsValue}分, 利息:${card.interestRate}%)</span><span class="qty">数量: ${card.quantity}</span></div><button class="use-card-btn" onclick="openIOUReturnModal('${player}', '${card.name}')">使用</button>`;
+                        } else {
+                            cardEl.innerHTML = `<div class="warehouse-card-info"><span class="name">${card.name} (原${card.pointsValue}分)</span><span class="qty">数量: ${card.quantity}</span></div><button class="use-card-btn" onclick="openConsumeCardConfirmModal('${player}', '${card.name}')">使用</button>`;
+                        }
                         warehouseDiv.appendChild(cardEl);
                     });
                 } else { warehouseDiv.innerHTML = '<p class="no-cards-text">仓库空空如也~</p>'; }
@@ -993,6 +1024,10 @@
             const { player, cardName, cardType, cardPoints } = cardToConsumeDetails;
             const playerWarehouse = warehousesData[player]; const cardIndex = playerWarehouse.findIndex(c => c.name === cardName);
             if (cardIndex === -1) { closeConsumeCardConfirmModal(); return; }
+
+            // IOU 卡片现在通过 openIOUReturnModal 和 processIOUReturn 处理，这里不再处理 // Modified
+            if (cardType === 'IOU') { return; }
+
             let message = `${player === 'qiqi' ? '七七' : '一一'} 使用了 "${cardName}".`;
             if (cardType === 'T') {
                 const otherPlayer = player === 'qiqi' ? 'yiyi' : 'qiqi'; const today = new Date(); const dayNames = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']; const currentDayKey = dayNames[today.getDay()];
@@ -1009,19 +1044,42 @@
             if (!currentCardToBuy.name) { alert('操作无效！'); return; }
             const quantityInput = document.getElementById('buy-card-quantity'); const quantity = parseInt(quantityInput.value);
             if (isNaN(quantity) || quantity < 1) { alert("请输入有效的购买数量 (至少为1)。"); quantityInput.focus(); return; }
-            const { points: singleCardCost, type: cardType, name: cardName } = currentCardToBuy;
+            const { points: singleCardCost, type: cardType, name: cardName, isTemporary, isPermanent, id: cardId } = currentCardToBuy; // NEW: Added cardId
             const totalCardCost = singleCardCost * quantity;
             const today = new Date(); const dayNames = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']; const currentDayKey = dayNames[today.getDay()];
             weekData[buyerPlayer][currentDayKey].consume = (parseInt(weekData[buyerPlayer][currentDayKey].consume) || 0) + totalCardCost;
             if (!weekData[buyerPlayer][currentDayKey].purchaseLog) weekData[buyerPlayer][currentDayKey].purchaseLog = [];
             weekData[buyerPlayer][currentDayKey].purchaseLog.push({ name: cardName, cost: totalCardCost, quantity: quantity, type: cardType });
-            if (cardType === 'E' || cardType === 'T') {
+
+            // Special handling for IOU card purchase logic // NEW
+            if (cardType === 'IOU') {
+                const otherPlayer = buyerPlayer === 'qiqi' ? 'yiyi' : 'qiqi';
+                const iouCardInfo = iouCardsData[cardId]; // Get IOU card details
+                if (!iouCardInfo) { alert("欠条信息丢失，无法完成购买。"); return; }
+                const interestRate = iouCardInfo.interestRate;
+
+                // Other player receives points immediately
+                weekData[otherPlayer][currentDayKey].reward = (parseInt(weekData[otherPlayer][currentDayKey].reward) || 0) + totalCardCost;
+                if (!weekData[otherPlayer][currentDayKey].rewardLog) weekData[otherPlayer][currentDayKey].rewardLog = [];
+                weekData[otherPlayer][currentDayKey].rewardLog.push({ desc: `来自${buyerPlayer === 'qiqi' ? '七七' : '一一'}购买的欠条 "${cardName}"`, pointsAdded: totalCardCost, type: 'iou_purchase_income' });
+
+                const warehouse = warehousesData[buyerPlayer];
+                // Ensure to save interestRate for IOU cards in warehouse
+                const existingCard = warehouse.find(c => c.name === cardName && c.type === 'IOU' && c.pointsValue === singleCardCost && c.interestRate === interestRate);
+                if (existingCard) { existingCard.quantity += quantity; } else { warehouse.push({ name: cardName, pointsValue: singleCardCost, type: cardType, quantity: quantity, interestRate: interestRate }); }
+
+                updateWeekSummary(otherPlayer); // Update other player's summary
+                alert(`${buyerPlayer === 'qiqi' ? '七七' : '一一'} 购买了 ${quantity} 个 "${cardName}"，总共花费 ${totalCardCost} 积分！${otherPlayer === 'qiqi' ? '七七' : '一一'} 立即获得了 ${totalCardCost} 积分。`);
+
+            } else if (cardType === 'E' || cardType === 'T') {
                 const warehouse = warehousesData[buyerPlayer]; const existingCard = warehouse.find(c => c.name === cardName);
                 if (existingCard) { existingCard.quantity += quantity; } else { warehouse.push({ name: cardName, pointsValue: singleCardCost, type: cardType, quantity: quantity }); }
-                renderWarehouses();
+                alert(`${buyerPlayer === 'qiqi' ? '七七' : '一一'} 购买了 ${quantity} 个 "${cardName}"，总共花费 ${totalCardCost} 积分！`);
             }
-            updateWeekSummary(buyerPlayer); _saveToFirebaseInternal();
-            alert(`${buyerPlayer === 'qiqi' ? '七七' : '一一'} 购买了 ${quantity} 个 "${cardName}"，总共花费 ${totalCardCost} 积分！`);
+
+            updateWeekSummary(buyerPlayer); // Update buyer's summary
+            renderWarehouses(); // Refresh warehouse display
+            _saveToFirebaseInternal();
             closeBuyerModal();
         }
 
@@ -1152,11 +1210,66 @@
                 const rewardCellTotal = row.insertCell(); rewardCellTotal.textContent = entry.scores.reward; rewardCellTotal.classList.add('num-center');
                 const rewardDetailCell = row.insertCell(); rewardDetailCell.classList.add('basic-score-details');
                 if (entry.rewardDetails && entry.rewardDetails.length > 0) { const ul = document.createElement('ul'); entry.rewardDetails.forEach(detail => { const li = document.createElement('li'); li.textContent = `${detail.day ? (dayChineseMap[detail.day] || detail.day) + ' - ' : ''}${detail.desc}: +${detail.pointsAdded}分`; ul.appendChild(li); }); rewardDetailCell.appendChild(ul); } else if (entry.scores.reward > 0) { rewardDetailCell.textContent = `${entry.scores.reward}分 (无详情)`; } else { rewardDetailCell.textContent = '无'; rewardDetailCell.classList.add('no-details');}
+                
+                // Penalty Details // Modified for IOU
                 const penaltyCell = row.insertCell();
-                if (entry.penaltyDetails && entry.penaltyDetails.length > 0) { const ul = document.createElement('ul'); entry.penaltyDetails.forEach(p => { const li = document.createElement('li'); li.textContent = `${p.desc}: ${p.pointsDeducted}分`; ul.appendChild(li); }); penaltyCell.appendChild(ul); } else { penaltyCell.textContent = entry.scores.penalty !== 0 ? `${entry.scores.penalty}分 (无详情)` : '无'; if(entry.scores.penalty === 0) penaltyCell.classList.add('no-details');}
+                if (entry.penaltyDetails && entry.penaltyDetails.length > 0) {
+                    const ul = document.createElement('ul');
+                    entry.penaltyDetails.forEach(p => {
+                        const li = document.createElement('li');
+                        let descText = p.desc;
+                        if (p.type === 'iou_return_deduction') {
+                            descText = `归还欠条 "${p.desc}" (含利息)`;
+                        }
+                        li.textContent = `${descText}: ${p.pointsDeducted}分`;
+                        ul.appendChild(li);
+                    });
+                    penaltyCell.appendChild(ul);
+                } else {
+                    penaltyCell.textContent = entry.scores.penalty !== 0 ? `${entry.scores.penalty}分 (无详情)` : '无';
+                    if(entry.scores.penalty === 0) penaltyCell.classList.add('no-details');
+                }
+
+                // Consume Details // Modified for IOU
                 const consumeCell = row.insertCell();
-                if (entry.consumedItemsDetail && entry.consumedItemsDetail.length > 0) { const ul = document.createElement('ul'); entry.consumedItemsDetail.forEach(item => { const li = document.createElement('li'); li.textContent = `${item.name}${item.quantity > 1 ? ' x'+item.quantity : ''}: ${item.cost}分`; ul.appendChild(li); }); consumeCell.appendChild(ul); } else { consumeCell.textContent = entry.scores.consume !== 0 ? `${entry.scores.consume}分 (无详情)` : '无'; if(entry.scores.consume === 0) consumeCell.classList.add('no-details');}
-                const tradeCell = row.insertCell(); tradeCell.textContent = entry.scores.trade !== undefined ? entry.scores.trade : 'N/A'; tradeCell.classList.add('num-center');
+                if (entry.consumedItemsDetail && entry.consumedItemsDetail.length > 0) {
+                    const ul = document.createElement('ul');
+                    entry.consumedItemsDetail.forEach(item => {
+                        const li = document.createElement('li');
+                        let descText = `${item.name}${item.quantity > 1 ? ' x'+item.quantity : ''}`;
+                        if (item.type === 'IOU') {
+                            descText = `购买欠条 "${item.name}"`;
+                        }
+                        li.textContent = `${descText}: ${item.cost}分`;
+                        ul.appendChild(li);
+                    });
+                    consumeCell.appendChild(ul);
+                } else {
+                    consumeCell.textContent = entry.scores.consume !== 0 ? `${entry.scores.consume}分 (无详情)` : '无';
+                    if(entry.scores.consume === 0) consumeCell.classList.add('no-details');
+                }
+
+                // Trade Details // Modified for IOU
+                const tradeCell = row.insertCell();
+                if (entry.tradeDetails && entry.tradeDetails.length > 0) {
+                    const ul = document.createElement('ul');
+                    entry.tradeDetails.forEach(t => {
+                        const li = document.createElement('li');
+                        let descText = t.desc;
+                        if (t.type === 'iou_purchase_income') {
+                            descText = `收到欠条购买收入 "${t.desc}"`;
+                        } else if (t.type === 'iou_return_gain') {
+                            descText = `使用欠条归还收入 "${t.desc}"`;
+                        }
+                        li.textContent = `${descText}: +${t.pointsAdded}分`;
+                        ul.appendChild(li);
+                    });
+                    tradeCell.appendChild(ul);
+                } else {
+                    tradeCell.textContent = entry.scores.trade !== undefined ? entry.scores.trade : 'N/A';
+                    if(entry.scores.trade === 0) tradeCell.classList.add('no-details');
+                }
+                tradeCell.classList.add('num-center'); // Ensure center alignment
                 const totalCell = row.insertCell(); totalCell.textContent = entry.scores.total; totalCell.classList.add('total-highlight', 'num-center');
             });
         }
@@ -1166,15 +1279,17 @@
             const scores = calculateWeekScore(player); const sum = scores.total;
             const totalInput = document.getElementById(player + '-total'); let currentTotal = parseInt(totalInput.value) || 0;
             totalInput.value = currentTotal + sum;
-            const consumedItemsDetail = []; const penaltyDetails = []; const basicScoreDetailsLog = []; const rewardDetailsLog = [];
+            const consumedItemsDetail = []; const penaltyDetails = []; const basicScoreDetailsLog = []; const rewardDetailsLog = []; const tradeDetailsLog = []; // NEW: Added tradeDetailsLog
             const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
             days.forEach(day => {
                 if (weekData[player][day].purchaseLog) { weekData[player][day].purchaseLog.forEach(log => consumedItemsDetail.push(log));}
                 if (weekData[player][day].penaltyLog) { weekData[player][day].penaltyLog.forEach(log => penaltyDetails.push(log));}
                 if (weekData[player][day].rewardLog) { weekData[player][day].rewardLog.forEach(log => rewardDetailsLog.push({...log, day: day }));}
+                if (weekData[player][day].tradeLog) { weekData[player][day].tradeLog.forEach(log => tradeDetailsLog.push({...log, day: day }));} // NEW: Collect tradeLog
                 ['book', 'sleep', 'exercise'].forEach(task => { const taskScore = parseInt(weekData[player][day][task]) || 0; if (taskScore !== 0) { basicScoreDetailsLog.push({ day: day, task: task, score: taskScore }); }});
             });
-            const historyEntry = { timestamp: Date.now(), player: player, scores: scores, consumedItemsDetail: consumedItemsDetail, penaltyDetails: penaltyDetails, basicScoreDetails: basicScoreDetailsLog, rewardDetails: rewardDetailsLog };
+            // NEW: Add tradeDetails to history entry
+            const historyEntry = { timestamp: Date.now(), player: player, scores: scores, consumedItemsDetail: consumedItemsDetail, penaltyDetails: penaltyDetails, basicScoreDetails: basicScoreDetailsLog, rewardDetails: rewardDetailsLog, tradeDetails: tradeDetailsLog };
             scoreHistoryLog.unshift(historyEntry); renderScoreHistoryTable(); _saveScoreHistoryToFirebaseInternal(); _saveToFirebaseInternal(); 
             alert(`已将本周总分（${sum}）加入 ${player === 'qiqi' ? '七七' : '一一'} 总积分！历史记录已更新。`);
         }
@@ -1190,9 +1305,10 @@
             updateWeekSummary('qiqi'); updateWeekSummary('yiyi');
             warehousesData = { qiqi: [], yiyi: [] }; renderWarehouses();
             tempDefinedCards = []; 
-            permanentCardsData = {}; hiddenPredefinedCardIds = []; 
+            permanentCardsData = {}; iouCardsData = {}; // NEW: Reset IOU cards
+            hiddenPredefinedCardIds = []; 
             renderAllCards();
-            database.ref('/permanentCardsData').remove(); database.ref('/hiddenPredefinedCardIds').remove();
+            database.ref('/permanentCardsData').remove(); database.ref('/hiddenPredefinedCardIds').remove(); database.ref('/iouCardsData').remove(); // NEW: Remove IOU cards from Firebase
             scoreHistoryLog = []; renderScoreHistoryTable(); database.ref('/scoreHistory').remove(); 
             _saveToFirebaseInternal(); alert('所有数据已重置！');
         }});}
@@ -1210,8 +1326,8 @@
 
         function loadDataFromFirebase() {
             statusElement.textContent = '📥 加载数据...'; statusElement.className = 'connection-status connecting';
-            let loadedCount = 0; const totalToLoad = 5; 
-
+            let loadedCount = 0; const totalToLoad = 6; // Changed from 5 to 6 for iouCardsData // Modified
+            
             const allLoaded = () => {
                 loadedCount++;
                 if (loadedCount >= totalToLoad) {
@@ -1223,21 +1339,23 @@
                 }
             };
 
-            database.ref('weekData').once('value').then((snapshot) => { if (snapshot.exists()) { const ld = snapshot.val(); Object.keys(ld).forEach(p=>{Object.keys(ld[p]).forEach(d=>{weekData[p][d]={...initialDayData(),...ld[p][d]}; weekData[p][d].purchaseLog = ld[p][d].purchaseLog || []; weekData[p][d].penaltyLog = ld[p][d].penaltyLog || []; weekData[p][d].rewardLog = ld[p][d].rewardLog || [];});}); Object.entries(weekData).forEach(([p,days])=>{ const ptb=document.querySelector(`#${p}-summary`)?.closest('.week-card')?.querySelector('tbody'); if(!ptb)return; Object.entries(days).forEach(([day,sc])=>{ const di=['mon','tue','wed','thu','fri','sat','sun'].indexOf(day); if(di===-1)return; const tr=ptb.querySelector(`tr:nth-child(${di+1})`); if(!tr)return; Object.entries(sc).forEach(([k,v])=>{ if(['book','sleep','exercise'].includes(k)){const ci=['book','sleep','exercise'].indexOf(k)+2;const c=tr.querySelector(`td:nth-child(${ci})`);if(c){c.textContent=v; c.className=c.className.replace(/cell-(n|z|p).*/g,'').trim(); if(v===-2)c.classList.add('cell-negative'); else if(v===0)c.classList.add('cell-zero'); else if(v===1)c.classList.add('cell-positive');}} else if(k==='reward'){const c=tr.querySelector('td:nth-child(5)');if(c){c.textContent=v; c.className='reward-cell'; const rv=parseInt(v)||0; c.classList.add(`reward-${Math.min(3,Math.max(0,rv))}`);}} else if(k==='penalty'){const i=tr.querySelector('td:nth-child(6) input');if(i)i.value=v;} else if(k==='consume'){const i=tr.querySelector('td:nth-child(7) input');if(i)i.value=v;} else if(k==='trade'){const i=tr.querySelector('td:nth-child(8) input');if(i)i.value=v;}});});}); } allLoaded(); }).catch(err => { console.error("Error loading weekData: ", err); allLoaded(); });
+            database.ref('weekData').once('value').then((snapshot) => { if (snapshot.exists()) { const ld = snapshot.val(); Object.keys(ld).forEach(p=>{Object.keys(ld[p]).forEach(d=>{weekData[p][d]={...initialDayData(),...ld[p][d]}; weekData[p][d].purchaseLog = ld[p][d].purchaseLog || []; weekData[p][d].penaltyLog = ld[p][d].penaltyLog || []; weekData[p][d].rewardLog = ld[p][d].rewardLog || []; weekData[p][d].tradeLog = ld[p][d].tradeLog || []; });}); Object.entries(weekData).forEach(([p,days])=>{ const ptb=document.querySelector(`#${p}-summary`)?.closest('.week-card')?.querySelector('tbody'); if(!ptb)return; Object.entries(days).forEach(([day,sc])=>{ const di=['mon','tue','wed','thu','fri','sat','sun'].indexOf(day); if(di===-1)return; const tr=ptb.querySelector(`tr:nth-child(${di+1})`); if(!tr)return; Object.entries(sc).forEach(([k,v])=>{ if(['book','sleep','exercise'].includes(k)){const ci=['book','sleep','exercise'].indexOf(k)+2;const c=tr.querySelector(`td:nth-child(${ci})`);if(c){c.textContent=v; c.className=c.className.replace(/cell-(n|z|p).*/g,'').trim(); if(v===-2)c.classList.add('cell-negative'); else if(v===0)c.classList.add('cell-zero'); else if(v===1)c.classList.add('cell-positive');}} else if(k==='reward'){const c=tr.querySelector('td:nth-child(5)');if(c){c.textContent=v; c.className='reward-cell'; const rv=parseInt(v)||0; c.classList.add(`reward-${Math.min(3,Math.max(0,rv))}`);}} else if(k==='penalty'){const i=tr.querySelector('td:nth-child(6) input');if(i)i.value=v;} else if(k==='consume'){const i=tr.querySelector('td:nth-child(7) input');if(i)i.value=v;} else if(k==='trade'){const i=tr.querySelector('td:nth-child(8) input');if(i)i.value=v;}});});}); } allLoaded(); }).catch(err => { console.error("Error loading weekData: ", err); allLoaded(); });
             database.ref('totalScores').once('value').then((snapshot) => { if (snapshot.exists()) { const s = snapshot.val(); if (s.qiqi !== undefined) document.getElementById('qiqi-total').value = s.qiqi; if (s.yiyi !== undefined) document.getElementById('yiyi-total').value = s.yiyi;} allLoaded(); }).catch(err => { console.error("Error loading totalScores: ", err); allLoaded(); });
-            database.ref('scoreHistory').once('value').then((snapshot) => { let lh = (snapshot.exists() && Array.isArray(snapshot.val())) ? snapshot.val() : []; lh.forEach(e => { if (e.basicScoreDetails && !Array.isArray(e.basicScoreDetails)) e.basicScoreDetails = []; if (e.rewardDetails && !Array.isArray(e.rewardDetails)) e.rewardDetails = []; if (e.scores && e.scores.trade === undefined) e.scores.trade = 0; }); scoreHistoryLog = lh; allLoaded(); }).catch(err => { console.error("Error loading scoreHistory: ", err); allLoaded(); });
+            database.ref('scoreHistory').once('value').then((snapshot) => { let lh = (snapshot.exists() && Array.isArray(snapshot.val())) ? snapshot.val() : []; lh.forEach(e => { if (e.basicScoreDetails && !Array.isArray(e.basicScoreDetails)) e.basicScoreDetails = []; if (e.rewardDetails && !Array.isArray(e.rewardDetails)) e.rewardDetails = []; if (e.scores && e.scores.trade === undefined) e.scores.trade = 0; if (e.tradeDetails && !Array.isArray(e.tradeDetails)) e.tradeDetails = []; }); scoreHistoryLog = lh; allLoaded(); }).catch(err => { console.error("Error loading scoreHistory: ", err); allLoaded(); });
             database.ref('warehousesData').once('value').then((snapshot) => { if (snapshot.exists()) { warehousesData = snapshot.val(); if (!Array.isArray(warehousesData.qiqi)) warehousesData.qiqi = []; if (!Array.isArray(warehousesData.yiyi)) warehousesData.yiyi = []; } else { warehousesData = { qiqi: [], yiyi: [] }; } allLoaded(); }).catch(err => { console.error("Error loading warehousesData: ", err); allLoaded(); });
             database.ref('permanentCardsData').once('value').then((snapshot) => { permanentCardsData = snapshot.exists() ? snapshot.val() : {}; allLoaded(); }).catch(err => { console.error("Error loading permanentCardsData: ", err); allLoaded(); });
             database.ref('hiddenPredefinedCardIds').once('value').then((snapshot) => { hiddenPredefinedCardIds = (snapshot.exists() && Array.isArray(snapshot.val())) ? snapshot.val() : []; allLoaded(); }).catch(err => { console.error("Error loading hiddenPredefinedCardIds: ", err); allLoaded(); });
+            database.ref('iouCardsData').once('value').then((snapshot) => { iouCardsData = snapshot.exists() ? snapshot.val() : {}; allLoaded(); }).catch(err => { console.error("Error loading iouCardsData: ", err); allLoaded(); }); // NEW: Load IOU Cards
         }
 
         function setupRealTimeSync() {
-            database.ref('weekData').on('value', (snapshot) => { if(!snapshot.exists()) return; const nd = snapshot.val(); if(JSON.stringify(nd)!==JSON.stringify(weekData)){ Object.keys(nd).forEach(p=>{Object.keys(nd[p]).forEach(d=>{weekData[p][d]={...initialDayData(),...nd[p][d]};weekData[p][d].purchaseLog=nd[p][d].purchaseLog||[];weekData[p][d].penaltyLog=nd[p][d].penaltyLog||[];weekData[p][d].rewardLog=nd[p][d].rewardLog||[];});}); Object.entries(weekData).forEach(([p,days])=>{const ptb=document.querySelector(`#${p}-summary`)?.closest('.week-card')?.querySelector('tbody');if(!ptb)return;Object.entries(days).forEach(([day,sc])=>{const di=['mon','tue','wed','thu','fri','sat','sun'].indexOf(day);if(di===-1)return;const tr=ptb.querySelector(`tr:nth-child(${di+1})`);if(!tr)return;Object.entries(sc).forEach(([k,v])=>{if(['book','sleep','exercise'].includes(k)){const ci=['book','sleep','exercise'].indexOf(k)+2;const c=tr.querySelector(`td:nth-child(${ci})`);if(c&&c.textContent!=v){c.textContent=v;c.className=c.className.replace(/cell-(n|z|p).*/g,'').trim();if(v===-2)c.classList.add('cell-negative');else if(v===0)c.classList.add('cell-zero');else if(v===1)c.classList.add('cell-positive');}}else if(k==='reward'){const c=tr.querySelector('td:nth-child(5)');if(c&&c.textContent!=v){c.textContent=v;c.className='reward-cell';const rv=parseInt(v)||0;c.classList.add(`reward-${Math.min(3,Math.max(0,rv))}`);}}else if(k==='penalty'){const i=tr.querySelector('td:nth-child(6) input');if(i&&i.value!=v)i.value=v;}else if(k==='consume'){const i=tr.querySelector('td:nth-child(7) input');if(i&&i.value!=v)i.value=v;}else if(k==='trade'){const i=tr.querySelector('td:nth-child(8) input');if(i&&i.value!=v)i.value=v;}});});updateWeekSummary(p);});}});
+            database.ref('weekData').on('value', (snapshot) => { if(!snapshot.exists()) return; const nd = snapshot.val(); if(JSON.stringify(nd)!==JSON.stringify(weekData)){ Object.keys(nd).forEach(p=>{Object.keys(nd[p]).forEach(d=>{weekData[p][d]={...initialDayData(),...nd[p][d]};weekData[p][d].purchaseLog=nd[p][d].purchaseLog||[];weekData[p][d].penaltyLog=nd[p][d].penaltyLog||[];weekData[p][d].rewardLog=nd[p][d].rewardLog||[]; weekData[p][d].tradeLog=nd[p][d].tradeLog||[]; });}); Object.entries(weekData).forEach(([p,days])=>{const ptb=document.querySelector(`#${p}-summary`)?.closest('.week-card')?.querySelector('tbody');if(!ptb)return;Object.entries(days).forEach(([day,sc])=>{const di=['mon','tue','wed','thu','fri','sat','sun'].indexOf(day);if(di===-1)return;const tr=ptb.querySelector(`tr:nth-child(${di+1})`);if(!tr)return;Object.entries(sc).forEach(([k,v])=>{if(['book','sleep','exercise'].includes(k)){const ci=['book','sleep','exercise'].indexOf(k)+2;const c=tr.querySelector(`td:nth-child(${ci})`);if(c&&c.textContent!=v){c.textContent=v;c.className=c.className.replace(/cell-(n|z|p).*/g,'').trim();if(v===-2)c.classList.add('cell-negative');else if(v===0)c.classList.add('cell-zero');else if(v===1)c.classList.add('cell-positive');}}else if(k==='reward'){const c=tr.querySelector('td:nth-child(5)');if(c&&c.textContent!=v){c.textContent=v;c.className='reward-cell';const rv=parseInt(v)||0;c.classList.add(`reward-${Math.min(3,Math.max(0,rv))}`);}}else if(k==='penalty'){const i=tr.querySelector('td:nth-child(6) input');if(i&&i.value!=v)i.value=v;}else if(k==='consume'){const i=tr.querySelector('td:nth-child(7) input');if(i&&i.value!=v)i.value=v;}else if(k==='trade'){const i=tr.querySelector('td:nth-child(8) input');if(i&&i.value!=v)i.value=v;}});});updateWeekSummary(p);});}});
             database.ref('totalScores').on('value', (snapshot) => { if(!snapshot.exists()) return; const s = snapshot.val(); const qi = document.getElementById('qiqi-total'); const yi = document.getElementById('yiyi-total'); if (s.qiqi !== undefined && qi.value != s.qiqi) qi.value = s.qiqi; if (s.yiyi !== undefined && yi.value != s.yiyi) yi.value = s.yiyi; });
-            database.ref('scoreHistory').on('value', (snapshot) => { let nh = (snapshot.exists() && Array.isArray(snapshot.val())) ? snapshot.val() : []; nh.forEach(e => { if (e.basicScoreDetails && !Array.isArray(e.basicScoreDetails)) e.basicScoreDetails = []; if (e.rewardDetails && !Array.isArray(e.rewardDetails)) e.rewardDetails = []; if (e.scores && e.scores.trade === undefined) e.scores.trade = 0; }); if (JSON.stringify(nh) !== JSON.stringify(scoreHistoryLog)) { scoreHistoryLog = nh; renderScoreHistoryTable(); }});
+            database.ref('scoreHistory').on('value', (snapshot) => { let nh = (snapshot.exists() && Array.isArray(snapshot.val())) ? snapshot.val() : []; nh.forEach(e => { if (e.basicScoreDetails && !Array.isArray(e.basicScoreDetails)) e.basicScoreDetails = []; if (e.rewardDetails && !Array.isArray(e.rewardDetails)) e.rewardDetails = []; if (e.scores && e.scores.trade === undefined) e.scores.trade = 0; if (e.tradeDetails && !Array.isArray(e.tradeDetails)) e.tradeDetails = []; }); if (JSON.stringify(nh) !== JSON.stringify(scoreHistoryLog)) { scoreHistoryLog = nh; renderScoreHistoryTable(); }});
             database.ref('warehousesData').on('value', (snapshot) => { let nw = {qiqi: [], yiyi: []}; if (snapshot.exists()) { nw = snapshot.val(); if (!Array.isArray(nw.qiqi)) nw.qiqi = []; if (!Array.isArray(nw.yiyi)) nw.yiyi = [];} if (JSON.stringify(nw) !== JSON.stringify(warehousesData)) { warehousesData = nw; renderWarehouses(); }});
             database.ref('permanentCardsData').on('value', (snapshot) => { let npc = snapshot.exists() ? snapshot.val() : {}; if (JSON.stringify(npc) !== JSON.stringify(permanentCardsData)) { permanentCardsData = npc; renderAllCards(); }});
             database.ref('hiddenPredefinedCardIds').on('value', (snapshot) => { let nhp = (snapshot.exists() && Array.isArray(snapshot.val())) ? snapshot.val() : []; if (JSON.stringify(nhp) !== JSON.stringify(hiddenPredefinedCardIds)) { hiddenPredefinedCardIds = nhp; renderAllCards(); }});
+            database.ref('iouCardsData').on('value', (snapshot) => { let niou = snapshot.exists() ? snapshot.val() : {}; if (JSON.stringify(niou) !== JSON.stringify(iouCardsData)) { iouCardsData = niou; renderAllCards(); }}); // NEW: Realtime sync for IOU Cards
         }
 
         function openDefineTempCardModal() { document.getElementById('temp-card-name').value = ''; document.getElementById('temp-card-points').value = ''; document.getElementById('temp-card-type').value = 'E'; document.getElementById('define-temp-card-modal-overlay').style.display = 'flex'; document.getElementById('temp-card-name').focus(); }
@@ -1248,8 +1366,9 @@
             if (!name) { alert('请输入卡片名称。'); return; } if (isNaN(points) || points <= 0) { alert('请输入有效的积分消耗。'); return; } if (!type) { alert('请选择卡片类型。'); return; }
             const nameConflict = tempDefinedCards.some(card => card.name === name) || 
                                 Object.values(permanentCardsData).some(card => card.name === name) ||
+                                Object.values(iouCardsData).some(card => card.name === name) || // NEW: Check IOU cards
                                 Array.from(document.querySelectorAll('#main-cards-grid .card-item[data-name]')).some(el => el.dataset.name === name && !hiddenPredefinedCardIds.includes(el.id));
-            if (nameConflict) { alert('已存在同名卡片 (包括预设、常用或已定义的临时卡片)，请使用其他名称。'); return; }
+            if (nameConflict) { alert('已存在同名卡片 (包括预设、常用、临时或欠条卡片)，请使用其他名称。'); return; } // Updated alert
             const newTempCard = { id: 'temp_' + Date.now(), name: name, points: points, type: type, desc: `临时卡: ${type === 'E' ? '消费类' : '交易类'}，价值${points}分。`, isTemporary: true };
             tempDefinedCards.push(newTempCard); renderAllCards(); closeDefineTempCardModal(); alert(`临时卡片 "${name}" 已创建并上架！`);
         }
@@ -1274,11 +1393,115 @@
             if (!type) { alert('请选择卡片类型。'); return; } if (!desc) { alert('请输入卡片描述。'); return; }
             const nameConflict = tempDefinedCards.some(card => card.name === name) || 
                                 Object.values(permanentCardsData).some(card => card.name === name) ||
+                                Object.values(iouCardsData).some(card => card.name === name) || // NEW: Check IOU cards
                                 Array.from(document.querySelectorAll('#main-cards-grid .card-item[data-name]:not([style*="display: none"])')).some(el => el.dataset.name === name); // Check only visible predefined
-            if (nameConflict) { alert('已存在同名卡片 (包括预设、常用或已定义的临时卡片)，请使用其他名称。'); return; }
+            if (nameConflict) { alert('已存在同名卡片 (包括预设、常用、临时或欠条卡片)，请使用其他名称。'); return; } // Updated alert
             const cardId = 'perm_' + Date.now();
             permanentCardsData[cardId] = { id: cardId, name: name, points: points, type: type, desc: desc, isPermanent: true };
             renderAllCards(); _saveToFirebaseInternal(); closeDefinePermanentCardModal(); alert(`常用卡片 "${name}" 已创建并上架！`);
+        }
+
+        // NEW: IOU Card Definition Functions
+        function openDefineIOUCardModal() {
+            document.getElementById('iou-card-points').value = '';
+            document.getElementById('iou-card-interest').value = '10'; // Default 10% interest
+            document.getElementById('define-IOU-card-modal-overlay').style.display = 'flex';
+            document.getElementById('iou-card-points').focus();
+        }
+
+        function closeDefineIOUCardModal() {
+            document.getElementById('define-IOU-card-modal-overlay').style.display = 'none';
+        }
+
+        function defineAndListIOUCard() { requestEditPermission(_defineAndListIOUCardInternal); }
+        function _defineAndListIOUCardInternal() {
+            const points = parseInt(document.getElementById('iou-card-points').value);
+            const interest = parseInt(document.getElementById('iou-card-interest').value);
+            const cardName = `欠条 (面值${points}, 利息${interest}%)`;
+
+            if (isNaN(points) || points <= 0) { alert('请输入有效的欠条面值 (大于0)。'); return; }
+            if (isNaN(interest) || interest < 0 || interest > 100) { alert('请输入有效的利息百分比 (0-100)。'); return; }
+            
+            // Check for name conflict (though name includes points and interest, it's good practice)
+            const nameConflict = tempDefinedCards.some(card => card.name === cardName) ||
+                                Object.values(permanentCardsData).some(card => card.name === cardName) ||
+                                Object.values(iouCardsData).some(card => card.name === cardName) ||
+                                Array.from(document.querySelectorAll('#main-cards-grid .card-item[data-name]')).some(el => el.dataset.name === cardName && !hiddenPredefinedCardIds.includes(el.id));
+            if (nameConflict) { alert('已存在相同面值和利息的欠条，请调整后重新定义。'); return; }
+
+            const cardId = 'iou_' + Date.now();
+            iouCardsData[cardId] = {
+                id: cardId,
+                name: cardName,
+                points: points, // Purchase price
+                type: 'IOU',
+                desc: `此欠条面值${points}积分，使用时需归还${interest}%利息。`,
+                interestRate: interest // Interest percentage
+            };
+            renderAllCards();
+            _saveToFirebaseInternal();
+            closeDefineIOUCardModal();
+            alert(`欠条卡片 "${cardName}" 已创建并上架！`);
+        }
+
+        // NEW: IOU Card Return Functions
+        let currentIOUCardToReturn = null;
+        function openIOUReturnModal(player, cardName) {
+            const card = warehousesData[player].find(c => c.name === cardName && c.type === 'IOU');
+            if (!card) return;
+
+            const returnAmount = card.pointsValue + Math.round(card.pointsValue * (card.interestRate / 100));
+            document.getElementById('iou-return-modal-title').textContent = `归还欠条 "${cardName}"`;
+            document.getElementById('iou-return-modal-desc').textContent = `确认后，${player === 'qiqi' ? '七七' : '一一'} 将获得 ${returnAmount} 积分，${player === 'qiqi' ? '一一' : '七七'} 将扣除 ${returnAmount} 积分。`;
+            document.getElementById('confirm-iou-return-btn').onclick = () => processIOUReturn(player, card);
+            document.getElementById('iou-return-modal-overlay').style.display = 'flex';
+        }
+
+        function closeIOUReturnModal() {
+            document.getElementById('iou-return-modal-overlay').style.display = 'none';
+            currentIOUCardToReturn = null;
+        }
+
+        function processIOUReturn(player, card) { requestEditPermission(() => _processIOUReturnInternal(player, card)); }
+        function _processIOUReturnInternal(player, card) {
+            if (!card || card.type !== 'IOU') { alert('无效的欠条卡片信息。'); closeIOUReturnModal(); return; }
+
+            const returnAmount = card.pointsValue + Math.round(card.pointsValue * (card.interestRate / 100));
+            const otherPlayer = player === 'qiqi' ? 'yiyi' : 'qiqi';
+            const today = new Date();
+            const dayNames = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+            const currentDayKey = dayNames[today.getDay()];
+
+            // User gets points
+            weekData[player][currentDayKey].trade = (parseInt(weekData[player][currentDayKey].trade) || 0) + returnAmount;
+            // Other player loses points (as penalty)
+            weekData[otherPlayer][currentDayKey].penalty = (parseInt(weekData[otherPlayer][currentDayKey].penalty) || 0) - returnAmount;
+
+            // Record to history logs
+            if (!weekData[player][currentDayKey].tradeLog) weekData[player][currentDayKey].tradeLog = [];
+            weekData[player][currentDayKey].tradeLog.push({ desc: `使用欠条 "${card.name}" 归还`, pointsAdded: returnAmount, type: 'iou_return_gain' });
+
+            if (!weekData[otherPlayer][currentDayKey].penaltyLog) weekData[otherPlayer][currentDayKey].penaltyLog = [];
+            weekData[otherPlayer][currentDayKey].penaltyLog.push({ desc: `因对方使用欠条 "${card.name}" 被扣除 (含利息)`, pointsDeducted: -returnAmount, type: 'iou_return_deduction' });
+
+
+            // Remove card from warehouse
+            const playerWarehouse = warehousesData[player];
+            const cardIndex = playerWarehouse.findIndex(c => c.name === card.name && c.type === 'IOU');
+            if (cardIndex !== -1) {
+                if (playerWarehouse[cardIndex].quantity > 1) {
+                    playerWarehouse[cardIndex].quantity--;
+                } else {
+                    playerWarehouse.splice(cardIndex, 1);
+                }
+            }
+
+            updateWeekSummary(player);
+            updateWeekSummary(otherPlayer);
+            renderWarehouses();
+            _saveToFirebaseInternal();
+            alert(`${player === 'qiqi' ? '七七' : '一一'} 已归还欠条 "${card.name}"，获得 ${returnAmount} 积分！${otherPlayer === 'qiqi' ? '七七' : '一一'} 扣除 ${returnAmount} 积分。`);
+            closeIOUReturnModal();
         }
 
         function getCardColorClass(points) {
@@ -1299,6 +1522,9 @@
             
             // 2. Clear existing dynamically added permanent cards from main grid before re-rendering
             document.querySelectorAll('#main-cards-grid .card-item[data-permanent="true"]').forEach(el => el.remove());
+            // NEW: Clear existing dynamically added IOU cards from main grid
+            document.querySelectorAll('#main-cards-grid .points-section.points-iou').forEach(el => el.remove());
+
 
             // 3. Render Permanent Cards into main point sections
             Object.values(permanentCardsData).forEach(card => {
@@ -1377,6 +1603,28 @@
             } else {
                 if(noPermItemsText) noPermItemsText.style.display = 'block';
             }
+
+            // NEW: Render IOU Cards into a new section in main-cards-grid
+            const mainCardsGrid = document.getElementById('main-cards-grid');
+            if (Object.keys(iouCardsData).length > 0) {
+                const iouSection = document.createElement('div');
+                iouSection.className = 'points-section points-iou'; // Use the new IOU color class
+                iouSection.innerHTML = `<h3>📝 欠条卡片 <button class="add-card-to-section-btn" onclick="openDefineIOUCardModal()">⊕ 添加</button></h3>`;
+                
+                Object.values(iouCardsData).forEach(card => {
+                    const cardEl = document.createElement('div');
+                    cardEl.className = 'card-item';
+                    cardEl.dataset.points = card.points;
+                    cardEl.dataset.type = card.type;
+                    cardEl.dataset.name = card.name;
+                    cardEl.dataset.id = card.id;
+                    cardEl.dataset.iou = "true"; // Mark as IOU card
+                    cardEl.onclick = () => openBuyerModal(card.points, card.type, card.name, false, false, card.id);
+                    cardEl.innerHTML = `<div class="card-title">${card.name}</div><div class="card-desc">${card.desc}</div><button class="delete-card-btn" onclick="handleDeleteCard('${card.id}', 'iou')">❌</button>`;
+                    iouSection.appendChild(cardEl);
+                });
+                mainCardsGrid.appendChild(iouSection);
+            }
         }
 
 
@@ -1392,6 +1640,8 @@
                     delete permanentCardsData[identifier];
                 } else if (cardTypeString === 'temporary') {
                     tempDefinedCards = tempDefinedCards.filter(card => card.id !== identifier);
+                } else if (cardTypeString === 'iou') { // NEW: Handle IOU card deletion
+                    delete iouCardsData[identifier];
                 }
                 renderAllCards(); 
                 _saveToFirebaseInternal(); 
