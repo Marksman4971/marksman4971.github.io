@@ -419,14 +419,16 @@
             <h2>🔐 积分系统登录</h2>
             <p style="margin-bottom: 20px; color: #666;">请输入密码访问系统</p>
             <input type="password" id="password-input" placeholder="输入访问密码" class="login-input">
-            <button onclick="checkPassword()" class="login-btn">登录</button> <div id="login-error" class="login-error" style="display: none;">密码错误，请重新输入</div>
+            <button onclick="checkPassword()" class="login-btn">登录</button>
+            <div id="login-error" class="login-error" style="display: none;">密码错误，请重新输入</div>
         </div>
     </div>
 
     <div id="edit-password-modal-overlay" class="modal-overlay" style="display: none;">
-        <div class="login-box"> <h2>🔒 编辑权限验证</h2>
+        <div class="login-box">
+            <h2>🔒 编辑权限验证</h2>
             <p style="margin-bottom: 20px; color: #666;">请输入编辑密码以修改数据</p>
-            <input type="password" id="edit-password-input" placeholder="输入编辑密码 (240310)" class="login-input">
+            <input type="password" id="edit-password-input" placeholder="输入编辑密码" class="login-input">
             <div id="edit-login-error" class="login-error" style="display: none;">密码错误，请重新输入</div>
             <div class="modal-buttons" style="margin-top: 20px;">
                 <button onclick="handleEditPasswordSubmit()" class="login-btn" style="width:auto; padding: 12px 25px; margin: 5px;">确认</button>
@@ -701,11 +703,11 @@
                         <div class="card-item" data-points="20" data-type="H" data-name="H/周末掌控卡" id="predef_card_zhangkong" onclick="openBuyerModal(20, 'H', 'H/周末掌控卡')"><div class="card-title">H/周末掌控卡</div><div class="card-desc">一人十分解除当天的所有限制（此外当天所有日常不在加分）</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_zhangkong', 'predefined')">❌</button></div>
                     </div>
 
+
                     <div class="points-section points-20">
                         <h3>🌟 999积分 <button class="add-card-to-section-btn" onclick="openDefinePermanentCardModal(20)">⊕ 添加</button></h3>
                          <div class="card-item" data-points="20" data-type="T" data-name="T/原地结婚卡" id="predef_card_baori" onclick="openBuyerModal(20, 'T', 'T/原地结婚卡')"><div class="card-title">T/原地结婚卡</div><div class="card-desc">当天带上身份证去民政局领结婚证</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_baori', 'predefined')">❌</button></div>
                     </div>
-
 
 
 
@@ -826,9 +828,9 @@
         const connectedRef = database.ref('.info/connected');
         const statusElement = document.getElementById('connection-status');
 
-        const EDIT_PASSWORD = "240310";
+        const EDIT_PASSWORD = "240310"; // Your desired edit password
         let editPasswordVerifiedTimestamp = null;
-        const EDIT_AUTH_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+        const EDIT_AUTH_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
         const EDIT_AUTH_STORAGE_KEY = 'scorebank_edit_auth_time';
 
         let scoreHistoryLog = [];
@@ -860,6 +862,7 @@
             }
         });
 
+        // Function to check if edit permission is currently valid
         function hasValidEditPermission() {
             const storedAuthTime = localStorage.getItem(EDIT_AUTH_STORAGE_KEY);
             if (storedAuthTime) {
@@ -867,6 +870,7 @@
                 if ((Date.now() - editPasswordVerifiedTimestamp) < EDIT_AUTH_DURATION) {
                     return true;
                 } else {
+                    // Stored permission has expired
                     localStorage.removeItem(EDIT_AUTH_STORAGE_KEY);
                     editPasswordVerifiedTimestamp = null;
                     return false;
@@ -875,6 +879,7 @@
             return false;
         }
 
+        // Function to request edit permission via modal
         function requestEditPermission(onSuccessCallback, onCancelCallback) {
             if (hasValidEditPermission()) {
                 if (onSuccessCallback) onSuccessCallback();
@@ -883,41 +888,53 @@
             const editPasswordModal = document.getElementById('edit-password-modal-overlay');
             editPasswordModal.style.display = 'flex';
             const passInput = document.getElementById('edit-password-input');
-            passInput.value = ''; passInput.focus();
+            passInput.value = ''; // Clear previous input
+            passInput.focus();
             const editErrorDiv = document.getElementById('edit-login-error');
-            if (editErrorDiv) editErrorDiv.style.display = 'none';
+            if (editErrorDiv) editErrorDiv.style.display = 'none'; // Hide error initially
+
+            // Store callbacks to be executed after successful authentication or cancellation
             window.currentEditSuccessCallback = onSuccessCallback;
             window.currentEditCancelCallback = onCancelCallback;
         }
 
+        // Handles submission of the edit password modal
         function handleEditPasswordSubmit() {
             const inputPassword = document.getElementById('edit-password-input').value;
             const errorDiv = document.getElementById('edit-login-error');
+
             if (inputPassword === EDIT_PASSWORD) {
                 editPasswordVerifiedTimestamp = Date.now();
-                localStorage.setItem(EDIT_AUTH_STORAGE_KEY, editPasswordVerifiedTimestamp.toString());
+                localStorage.setItem(EDIT_AUTH_STORAGE_KEY, editPasswordVerifiedTimestamp.toString()); // Store timestamp
                 document.getElementById('edit-password-modal-overlay').style.display = 'none';
                 if (errorDiv) errorDiv.style.display = 'none';
+
+                // Execute the stored success callback
                 if (window.currentEditSuccessCallback) {
                     window.currentEditSuccessCallback();
-                    window.currentEditSuccessCallback = null; 
+                    window.currentEditSuccessCallback = null; // Clear the callback
                 }
             } else {
                 if (errorDiv) errorDiv.style.display = 'block';
-                document.getElementById('edit-password-input').value = '';
+                document.getElementById('edit-password-input').value = ''; // Clear input on error
                 document.getElementById('edit-password-input').focus();
-                setTimeout(() => { if (errorDiv) errorDiv.style.display = 'none'; }, 3000);
+                setTimeout(() => { // Hide error after 3 seconds
+                    if (errorDiv) errorDiv.style.display = 'none';
+                }, 3000);
             }
         }
 
+        // Handles cancellation of the edit password modal
         function cancelEditPassword() {
             document.getElementById('edit-password-modal-overlay').style.display = 'none';
+            // Execute the stored cancel callback if it exists
             if (window.currentEditCancelCallback) {
                 window.currentEditCancelCallback();
-                window.currentEditCancelCallback = null;
+                window.currentEditCancelCallback = null; // Clear the callback
             }
         }
         
+        // Original checkPassword function is no longer used for initial access
         function checkPassword() { console.log("Initial password check is deprecated."); }
 
 
@@ -928,6 +945,7 @@
             }
         });
         
+        // All functions that modify data should call requestEditPermission
         function saveToFirebase(showStatus = true) { requestEditPermission(() => _saveToFirebaseInternal(showStatus)); }
         function _saveToFirebaseInternal(showStatus = true) {
             if (showStatus) { statusElement.textContent = '💾 保存中...'; statusElement.className = 'connection-status connecting'; }
@@ -968,10 +986,12 @@
         let currentSpecialReward = { name: '', points: 0 };
 
         function openSpecialRewardModal(cardName, points) {
-            currentSpecialReward = { name: cardName, points: points };
-            document.getElementById('special-reward-modal-title').textContent = `授予 "${cardName}"`;
-            document.getElementById('special-reward-modal-desc').textContent = `选择玩家以授予 ${points} 点特殊奖励积分。`;
-            document.getElementById('special-reward-modal-overlay').style.display = 'flex';
+            requestEditPermission(() => {
+                currentSpecialReward = { name: cardName, points: points };
+                document.getElementById('special-reward-modal-title').textContent = `授予 "${cardName}"`;
+                document.getElementById('special-reward-modal-desc').textContent = `选择玩家以授予 ${points} 点特殊奖励积分。`;
+                document.getElementById('special-reward-modal-overlay').style.display = 'flex';
+            });
         }
         function closeSpecialRewardModal() { document.getElementById('special-reward-modal-overlay').style.display = 'none'; currentSpecialReward = { name: '', points: 0 };}
         function applySpecialReward(player) { requestEditPermission(() => _applySpecialRewardInternal(player)); }
@@ -988,19 +1008,21 @@
         }
 
         function openBuyerModal(points, type, cardNameFromArg, isTemporary = false, isPermanent = false, cardId = null) {
-            const cardName = cardNameFromArg || (event && event.target.closest('.card-item') ? event.target.closest('.card-item').dataset.name : null);
-            const cardPoints = points !== undefined ? points : (event && event.target.closest('.card-item') ? parseInt(event.target.closest('.card-item').dataset.points) : 0);
-            const cardType = type || (event && event.target.closest('.card-item') ? event.target.closest('.card-item').dataset.type : null);
-            if (!cardName || cardType === null || isNaN(cardPoints)) {
-                const cardElement = event ? event.target.closest('.card-item') : null;
-                if (cardElement && cardElement.dataset.type === 'special-reward') { openSpecialRewardModal(cardElement.dataset.name, parseInt(cardElement.dataset.points)); return; }
-                console.error("Could not determine card details for buyer modal."); return;
-            }
-            currentCardToBuy = { points: cardPoints, type: cardType, name: cardName, isTemporary: isTemporary, isPermanent: isPermanent, id: cardId };
-            if (currentCardToBuy.type === 'H') { requestEditPermission(() => _handleHCardPurchaseInternal(currentCardToBuy.points, currentCardToBuy.name)); return; }
-            document.getElementById('buyer-modal-card-name').textContent = ` "${currentCardToBuy.name}" (${currentCardToBuy.points}分/个)`;
-            document.getElementById('buy-card-quantity').value = 1;
-            document.getElementById('buyer-modal-overlay').style.display = 'flex';
+            requestEditPermission(() => {
+                const cardName = cardNameFromArg || (event && event.target.closest('.card-item') ? event.target.closest('.card-item').dataset.name : null);
+                const cardPoints = points !== undefined ? points : (event && event.target.closest('.card-item') ? parseInt(event.target.closest('.card-item').dataset.points) : 0);
+                const cardType = type || (event && event.target.closest('.card-item') ? event.target.closest('.card-item').dataset.type : null);
+                if (!cardName || cardType === null || isNaN(cardPoints)) {
+                    const cardElement = event ? event.target.closest('.card-item') : null;
+                    if (cardElement && cardElement.dataset.type === 'special-reward') { openSpecialRewardModal(cardElement.dataset.name, parseInt(cardElement.dataset.points)); return; }
+                    console.error("Could not determine card details for buyer modal."); return;
+                }
+                currentCardToBuy = { points: cardPoints, type: cardType, name: cardName, isTemporary: isTemporary, isPermanent: isPermanent, id: cardId };
+                if (currentCardToBuy.type === 'H') { _handleHCardPurchaseInternal(currentCardToBuy.points, currentCardToBuy.name); return; } // Directly call internal for H cards after permission
+                document.getElementById('buyer-modal-card-name').textContent = ` "${currentCardToBuy.name}" (${currentCardToBuy.points}分/个)`;
+                document.getElementById('buy-card-quantity').value = 1;
+                document.getElementById('buyer-modal-overlay').style.display = 'flex';
+            });
         }
         function closeBuyerModal() { document.getElementById('buyer-modal-overlay').style.display = 'none'; currentCardToBuy = { points: 0, type: '', name: '', isTemporary: false, isPermanent: false, id: null };}
         
@@ -1024,14 +1046,16 @@
 
         let cardToConsumeDetails = null;
         function openConsumeCardConfirmModal(player, cardName) {
-            const card = warehousesData[player].find(c => c.name === cardName); if (!card) return;
-            cardToConsumeDetails = { player, cardName, cardType: card.type, cardPoints: card.pointsValue };
-            document.getElementById('consume-card-confirm-title').textContent = `确认使用 "${cardName}"?`;
-            let desc = `类型: ${card.type}. 原价值: ${card.pointsValue}分.`;
-            if (card.type === 'T') { desc += ` ${player === 'qiqi' ? '一一' : '七七'} 将获得 ${card.pointsValue} 交易积分。`; }
-            document.getElementById('consume-card-confirm-desc').textContent = desc;
-            document.getElementById('confirm-consume-btn').onclick = () => processCardConsumption();
-            document.getElementById('consume-card-confirm-modal').style.display = 'flex';
+            requestEditPermission(() => {
+                const card = warehousesData[player].find(c => c.name === cardName); if (!card) return;
+                cardToConsumeDetails = { player, cardName, cardType: card.type, cardPoints: card.pointsValue };
+                document.getElementById('consume-card-confirm-title').textContent = `确认使用 "${cardName}"?`;
+                let desc = `类型: ${card.type}. 原价值: ${card.pointsValue}分.`;
+                if (card.type === 'T') { desc += ` ${player === 'qiqi' ? '一一' : '七七'} 将获得 ${card.pointsValue} 交易积分。`; }
+                document.getElementById('consume-card-confirm-desc').textContent = desc;
+                document.getElementById('confirm-consume-btn').onclick = () => processCardConsumption();
+                document.getElementById('consume-card-confirm-modal').style.display = 'flex';
+            });
         }
         function closeConsumeCardConfirmModal() { document.getElementById('consume-card-confirm-modal').style.display = 'none'; cardToConsumeDetails = null; }
         function processCardConsumption() { requestEditPermission(_processCardConsumptionInternal); }
@@ -1115,15 +1139,19 @@
 
         let currentPenaltyValue = 0; let currentPenaltyDesc = '';
         function openPenaltyModal(value, desc) {
-            currentPenaltyValue = value; currentPenaltyDesc = desc;
-            document.getElementById('penalty-modal-title').textContent = `对谁扣 ${Math.abs(value)} 分 (${desc})?`;
-            document.getElementById('penalty-modal-overlay').style.display = 'flex';
+            requestEditPermission(() => {
+                currentPenaltyValue = value; currentPenaltyDesc = desc;
+                document.getElementById('penalty-modal-title').textContent = `对谁扣 ${Math.abs(value)} 分 (${desc})?`;
+                document.getElementById('penalty-modal-overlay').style.display = 'flex';
+            });
         }
         function closePenaltyModal() { document.getElementById('penalty-modal-overlay').style.display = 'none'; currentPenaltyValue = 0; currentPenaltyDesc = ''; }
         
         function openCustomPenaltyModal() {
-            document.getElementById('custom-penalty-points').value = ''; document.getElementById('custom-penalty-desc').value = '';
-            document.getElementById('custom-penalty-modal-overlay').style.display = 'flex'; document.getElementById('custom-penalty-points').focus();
+            requestEditPermission(() => {
+                document.getElementById('custom-penalty-points').value = ''; document.getElementById('custom-penalty-desc').value = '';
+                document.getElementById('custom-penalty-modal-overlay').style.display = 'flex'; document.getElementById('custom-penalty-points').focus();
+            });
         }
         function closeCustomPenaltyModal() { document.getElementById('custom-penalty-modal-overlay').style.display = 'none'; }
         function applyCustomPenaltyToPlayer(player) { requestEditPermission(() => _applyCustomPenaltyToPlayerInternal(player));}
@@ -1144,8 +1172,10 @@
 
         let currentCustomReward = { points: 0, desc: '' };
         function openCustomRewardModal() {
-            document.getElementById('custom-reward-points').value = ''; document.getElementById('custom-reward-desc').value = '';
-            document.getElementById('custom-reward-modal-overlay').style.display = 'flex'; document.getElementById('custom-reward-points').focus();
+            requestEditPermission(() => {
+                document.getElementById('custom-reward-points').value = ''; document.getElementById('custom-reward-desc').value = '';
+                document.getElementById('custom-reward-modal-overlay').style.display = 'flex'; document.getElementById('custom-reward-points').focus();
+            });
         }
         function closeCustomRewardModal() { document.getElementById('custom-reward-modal-overlay').style.display = 'none'; currentCustomReward = { points: 0, desc: '' };}
         function applyCustomRewardToPlayer(player) { requestEditPermission(() => _applyCustomRewardToPlayerInternal(player)); }
@@ -1295,16 +1325,18 @@
         // NEW: Function to open the confirmation modal for adding week total
         let playerToAddToTotal = null; // Store which player's data is being processed
         function openConfirmAddTotalModal(player) {
-            playerToAddToTotal = player;
-            const scores = calculateWeekScore(player);
-            const playerName = player === 'qiqi' ? '七七' : '一一';
-            document.getElementById('confirm-add-total-title').textContent = `确认操作`;
-            document.getElementById('confirm-add-total-desc').innerHTML = `确定要将 ${playerName} 本周的积分总计 **${scores.total}分** 加入总分并清空本周数据吗？`;
-            document.getElementById('confirm-add-total-btn').onclick = () => {
-                addWeekTotalToTotal(playerToAddToTotal);
-                closeConfirmAddTotalModal();
-            };
-            document.getElementById('confirm-add-total-modal-overlay').style.display = 'flex';
+            requestEditPermission(() => {
+                playerToAddToTotal = player;
+                const scores = calculateWeekScore(player);
+                const playerName = player === 'qiqi' ? '七七' : '一一';
+                document.getElementById('confirm-add-total-title').textContent = `确认操作`;
+                document.getElementById('confirm-add-total-desc').innerHTML = `确定要将 ${playerName} 本周的积分总计 **${scores.total}分** 加入总分并清空本周数据吗？`;
+                document.getElementById('confirm-add-total-btn').onclick = () => {
+                    addWeekTotalToTotal(playerToAddToTotal);
+                    closeConfirmAddTotalModal();
+                };
+                document.getElementById('confirm-add-total-modal-overlay').style.display = 'flex';
+            });
         }
 
         // NEW: Function to close the confirmation modal
@@ -1403,7 +1435,11 @@
             database.ref('iouCardsData').on('value', (snapshot) => { let niou = snapshot.exists() ? snapshot.val() : {}; if (JSON.stringify(niou) !== JSON.stringify(iouCardsData)) { iouCardsData = niou; renderAllCards(); }}); // NEW: Realtime sync for IOU Cards
         }
 
-        function openDefineTempCardModal() { document.getElementById('temp-card-name').value = ''; document.getElementById('temp-card-points').value = ''; document.getElementById('temp-card-type').value = 'E'; document.getElementById('define-temp-card-modal-overlay').style.display = 'flex'; document.getElementById('temp-card-name').focus(); }
+        function openDefineTempCardModal() {
+            requestEditPermission(() => {
+                document.getElementById('temp-card-name').value = ''; document.getElementById('temp-card-points').value = ''; document.getElementById('temp-card-type').value = 'E'; document.getElementById('define-temp-card-modal-overlay').style.display = 'flex'; document.getElementById('temp-card-name').focus();
+            });
+        }
         function closeDefineTempCardModal() { document.getElementById('define-temp-card-modal-overlay').style.display = 'none'; }
         function defineAndListTempCard() { requestEditPermission(_defineAndListTempCardInternal); }
         function _defineAndListTempCardInternal() {
@@ -1419,13 +1455,15 @@
         }
 
         function openDefinePermanentCardModal(defaultPoints = null) {
-            document.getElementById('permanent-card-name').value = ''; 
-            const pointsInput = document.getElementById('permanent-card-points');
-            pointsInput.value = defaultPoints !== null ? defaultPoints : '';
-            document.getElementById('permanent-card-type').value = 'E'; 
-            document.getElementById('permanent-card-desc').value = '';
-            document.getElementById('define-permanent-card-modal-overlay').style.display = 'flex'; 
-            document.getElementById('permanent-card-name').focus();
+            requestEditPermission(() => {
+                document.getElementById('permanent-card-name').value = ''; 
+                const pointsInput = document.getElementById('permanent-card-points');
+                pointsInput.value = defaultPoints !== null ? defaultPoints : '';
+                document.getElementById('permanent-card-type').value = 'E'; 
+                document.getElementById('permanent-card-desc').value = '';
+                document.getElementById('define-permanent-card-modal-overlay').style.display = 'flex'; 
+                document.getElementById('permanent-card-name').focus();
+            });
         }
         function closeDefinePermanentCardModal() { document.getElementById('define-permanent-card-modal-overlay').style.display = 'none'; }
         function defineAndListPermanentCard() { requestEditPermission(_defineAndListPermanentCardInternal); }
@@ -1448,10 +1486,12 @@
 
         // NEW: IOU Card Definition Functions
         function openDefineIOUCardModal() {
-            document.getElementById('iou-card-points').value = '';
-            document.getElementById('iou-card-interest').value = '10'; // Default 10% interest
-            document.getElementById('define-IOU-card-modal-overlay').style.display = 'flex';
-            document.getElementById('iou-card-points').focus();
+            requestEditPermission(() => {
+                document.getElementById('iou-card-points').value = '';
+                document.getElementById('iou-card-interest').value = '10'; // Default 10% interest
+                document.getElementById('define-IOU-card-modal-overlay').style.display = 'flex';
+                document.getElementById('iou-card-points').focus();
+            });
         }
 
         function closeDefineIOUCardModal() {
@@ -1492,14 +1532,16 @@
         // NEW: IOU Card Return Functions
         let currentIOUCardToReturn = null;
         function openIOUReturnModal(player, cardName) {
-            const card = warehousesData[player].find(c => c.name === cardName && c.type === 'IOU');
-            if (!card) return;
+            requestEditPermission(() => {
+                const card = warehousesData[player].find(c => c.name === cardName && c.type === 'IOU');
+                if (!card) return;
 
-            const returnAmount = card.pointsValue + Math.round(card.pointsValue * (card.interestRate / 100));
-            document.getElementById('iou-return-modal-title').textContent = `归还欠条 "${cardName}"`;
-            document.getElementById('iou-return-modal-desc').textContent = `确认后，${player === 'qiqi' ? '七七' : '一一'} 将获得 ${returnAmount} 积分，${player === 'qiqi' ? '一一' : '七七'} 将扣除 ${returnAmount} 积分。`;
-            document.getElementById('confirm-iou-return-btn').onclick = () => processIOUReturn(player, card);
-            document.getElementById('iou-return-modal-overlay').style.display = 'flex';
+                const returnAmount = card.pointsValue + Math.round(card.pointsValue * (card.interestRate / 100));
+                document.getElementById('iou-return-modal-title').textContent = `归还欠条 "${cardName}"`;
+                document.getElementById('iou-return-modal-desc').textContent = `确认后，${player === 'qiqi' ? '七七' : '一一'} 将获得 ${returnAmount} 积分，${player === 'qiqi' ? '一一' : '七七'} 将扣除 ${returnAmount} 积分。`;
+                document.getElementById('confirm-iou-return-btn').onclick = () => processIOUReturn(player, card);
+                document.getElementById('iou-return-modal-overlay').style.display = 'flex';
+            });
         }
 
         function closeIOUReturnModal() {
@@ -1683,7 +1725,7 @@
 
                 if (cardTypeString === 'predefined') {
                     if (!hiddenPredefinedCardIds.includes(identifier)) {
-                        hiddenPreefinedCardIds.push(identifier);
+                        hiddenPredefinedCardIds.push(identifier);
                     }
                 } else if (cardTypeString === 'permanent') {
                     delete permanentCardsData[identifier];
@@ -1700,10 +1742,16 @@
 
 
         document.addEventListener('DOMContentLoaded', function() {
+            // No initial login needed, so hide the login overlay
             document.getElementById('login-overlay').style.display = 'none'; 
-            document.querySelector('.content').classList.remove('locked');
+            document.querySelector('.content').classList.remove('locked'); // Ensure content is unlocked
 
-            ['qiqi-total', 'yiyi-total'].forEach(id => { document.getElementById(id).addEventListener('change', () => { saveToFirebase(); }); });
+            // Add event listeners that require edit permission
+            ['qiqi-total', 'yiyi-total'].forEach(id => {
+                document.getElementById(id).addEventListener('change', () => {
+                    saveToFirebase(); // This will trigger requestEditPermission
+                });
+            });
             
             loadDataFromFirebase(); 
             setupRealTimeSync();
