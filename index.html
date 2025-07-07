@@ -662,9 +662,9 @@
 
         <div class="content">
             <div id="daily" class="page active">
-                <h2>📅 每日基本任务</h2>
+                <h2>🔆 每日基本任务</h2>
                 <div class="stats-overview">
-                    <h3>📊 基本任务</h3>
+                    <h3>🌟 基本任务</h3>
                     <div class="stats-grid">
                         <div class="stat-item"> <div class="stat-number">30-60min</div> <div class="stat-label">日常锻炼</div> </div>
                         <div class="stat-item"> <div class="stat-number">30-60min</div> <div class="stat-label">日常学习</div> </div>
@@ -673,10 +673,21 @@
                 </div>
                 <div class="daily-schedule">
                     <div style="margin-top: 20px; padding: 15px; background: #e8f4fd; border-radius: 10px;">
-                        <h4>📝 任务说明：</h4>
+                        <h4>💫 每日任务：</h4>
                         <ul style="margin-top: 10px; padding-left: 20px;">
-                            <li><strong>工作日计划试行版：</strong>要求日常完成30分钟锻炼，30分钟学习，23点前睡觉。</li>
-                            <li><strong>休息日计划试行版：</strong>要求日常完成01小时锻炼，03小时学习，23点前睡觉。</li>
+                             <li><strong>工作日计划试行版</strong><br>
+                                1. 饭后散步20分钟（1积分，翻倍+0，上限1）<br>
+                                2. 学习提升30分钟（1积分，翻倍+1，上限2）<br>
+                                3. 正式锻炼30分钟（1积分，翻倍+2，上限3）<br>
+                                4. 禁止游戏</li>
+                                <br>
+                            <li><strong>休息日计划试行版</strong><br>
+                                1. 锻炼1小时<br>
+                                2. 学习3小时<br>
+                                3. 午休1小时<br>
+                                4. 娱乐禁止：12:30前和22:00后<br>
+                                5. 学习禁止：06:00前禁止学习<br>
+                                6. 完成任务后才可随意安排时间</li><br>
                         </ul>
                     </div>
                 </div>
@@ -848,7 +859,7 @@
                 <div class="bank-section">
                     <div class="week-card">
                         <div class="week-title">七七</div>
-                        <div class="week-table-container"><table class="week-table"><thead><tr><th>日期</th><th>书</th><th>睡</th><th>练</th><th>奖</th><th>罚</th><th>购卡</th><th>交易</th></tr></thead><tbody>
+                        <div class="week-table-container"><table class="week-table"><thead><tr><th>日期</th><th>学</th><th>睡</th><th>练</th><th>奖</th><th>罚</th><th>购卡</th><th>交易</th></tr></thead><tbody>
                             <tr><td><strong>周一</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'mon', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'mon', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'mon', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
                             <tr><td><strong>周二</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'tue', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'tue', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'tue', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
                             <tr><td><strong>周三</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'wed', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'wed', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'wed', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
@@ -862,7 +873,7 @@
                     </div>
                     <div class="week-card">
                         <div class="week-title">一一</div>
-                        <div class="week-table-container"><table class="week-table"><thead><tr><th>日期</th><th>书</th><th>睡</th><th>练</th><th>奖</th><th>罚</th><th>购卡</th><th>交易</th></tr></thead><tbody>
+                        <div class="week-table-container"><table class="week-table"><thead><tr><th>日期</th><th>学</th><th>睡</th><th>练</th><th>奖</th><th>罚</th><th>购卡</th><th>交易</th></tr></thead><tbody>
                             <tr><td><strong>周一</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'mon', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'mon', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'mon', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
                             <tr><td><strong>周二</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'tue', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'tue', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'tue', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
                             <tr><td><strong>周三</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'wed', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'wed', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'wed', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
@@ -878,7 +889,7 @@
                 <div style="margin-top: 30px; padding: 25px; background: white; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
                     <h3 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">📋 积分计算说明</h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                        <div style="background: #e8f4fd; padding: 20px; border-radius: 10px;"><h4 style="color: #1976d2; margin-bottom: 10px;">📊 积分计算规则</h4><ul style="color: #555; margin-left: 20px;"><li><strong>基础任务：</strong>书/睡/练 各-2, 0, 1分 (可点击切换)</li><li><strong>奖励积分：</strong>通过特殊奖励卡或自定义奖励获得</li><li><strong>罚分：</strong>通过扣分规则或自定义扣分产生 (自动记录)</li><li><strong>购卡：：</strong>卡片购买成本 (自动记录)</li><li><strong>交易：</strong>对方使用T卡时，己方获得的积分 (自动记录)</li><li><strong>总分 = 基础 + 奖励 + 罚分 - 购卡 + 交易</strong> (罚分为负值)</li></ul></div>
+                        <div style="background: #e8f4fd; padding: 20px; border-radius: 10px;"><h4 style="color: #1976d2; margin-bottom: 10px;">📊 积分计算规则</h4><ul style="color: #555; margin-left: 20px;"><li><strong>基础任务：</strong>各个项目可点击切换-2, 0, 1分</li><li><strong>奖励积分：</strong>通过特殊奖励卡或自定义奖励获得</li><li><strong>罚分：</strong>通过扣分规则或自定义扣分产生 (自动记录)</li><li><strong>购卡：：</strong>卡片购买成本 (自动记录)</li><li><strong>交易：</strong>对方使用T卡时，己方获得的积分 (自动记录)</li><li><strong>总分 = 基础 + 奖励 + 罚分 - 购卡 + 交易</strong> (罚分为负值)</li></ul></div>
                         <div style="background: #f3e5f5; padding: 20px; border-radius: 10px;"><h4 style="color: #7b1fa2; margin-bottom: 10px;">🎮 操作说明</h4><ul style="color: #555; margin-left: 20px;"><li>点击基础任务单元格切换数值</li><li>奖励通过"小卡片"页面的特殊卡或"小奖惩"页面的自定义奖励操作</li><li>罚分通过"小奖惩"页面操作自动更新</li><li>购卡积分根据卡片购买自动更新</li><li>交易积分根据对方使用T卡自动更新</li><li>系统自动计算本周各项积分及总分</li></ul></div>
                     </div>
                 </div>
