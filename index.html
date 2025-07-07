@@ -254,9 +254,32 @@
             border-top: 5px solid #9b59b6; /* Purple border for custom cards */
             margin-bottom: 30px;
         }
-        .points-section h3, .weekly-rewards-section h3, .warehouse-section h3, .custom-cards-section h3 { /* Added custom-cards-section h3 */
+        .points-section h3, .weekly-rewards-section h3, .warehouse-section h3 { /* Removed custom-cards-section h3 from here */
             text-align: center; margin-bottom: 20px; font-size: 1.8em; color: #2c3e50;
         }
+
+        /* NEW: Styles for centering and bolding the custom cards section heading */
+        .custom-cards-section h3 {
+            text-align: center; /* 确保文字内容居中 */
+            font-weight: bold; /* 加粗文字 */
+            /* 覆盖 flex 布局，让内容块级居中 */
+            display: block; 
+            width: 100%; /* 确保占据父元素全部宽度以便text-align生效 */
+            position: relative; /* 为内部的绝对定位按钮提供参考 */
+            margin-top: 0px; /* 确保不被之前的样式影响到 */
+            margin-bottom: 20px; /* 保持与其他H3的间距 */
+            font-size: 1.8em; /* 保持与其他H3的字体大小一致 */
+            color: #2c3e50; /* 保持与其他H3的颜色一致 */
+        }
+
+        /* 为了不影响旁边的“⊕ 添加”按钮，我们需要为按钮单独设置定位 */
+        .custom-cards-section h3 .add-card-to-section-btn {
+            position: absolute; /* 绝对定位 */
+            right: 0px; /* 根据需要调整距离右侧的距离，这里设置为0，让按钮贴着右侧 */
+            top: 50%; /* 垂直居中 */
+            transform: translateY(-50%); /* 精确垂直居中 */
+        }
+        /* End NEW styles */
         
         .card-item { background: #f8f9fa; margin: 10px 0; padding: 15px; border-radius: 10px; border-left: 4px solid #3498db; transition: all 0.3s ease; cursor: pointer; position: relative; /* For delete button */ }
         .card-item.info-card { border-left-color: #1abc9c; }
@@ -288,12 +311,7 @@
         .card-item .delete-card-btn:hover { opacity: 1; background: #c0392b; transform: scale(1.1); }
 
         /* Style for the "Add Card to Section" button */
-        .points-section h3, .custom-cards-section h3 { /* Added custom-cards-section h3 */
-            position: relative;
-            display: flex;
-            justify-content: space-between; /* This will push the button to the right if it's the last child */
-            align-items: center;
-        }
+        /* Removed flex properties from here as they are now handled by .custom-cards-section h3 */
         .add-card-to-section-btn {
             background-color: #5dade2; /* Light blue */
             border: none;
@@ -484,7 +502,7 @@
             .score-boards { grid-template-columns: 1fr; gap: 15px;} .week-table { font-size: 0.75em;}
             .week-table th, .week-table td { padding: 3px 2px; font-size: 0.75em;}
             .small-input {width: 30px; font-size: 0.7em; padding: 1px;}
-            .week-table-container, #history .table-container  { overflow-x: auto; -webkit-overflow-scrolling: touch;}
+            .week-table-container, #history .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch;}
             .clickable-cell { min-width: 30px;} .connection-status { top: 10px; right: 10px; padding: 8px 12px; font-size: 0.8em;}
             #score-history-table { font-size: 0.8em;} #score-history-table th, #score-history-table td { padding: 6px 4px;}
             .warehouse-grid { grid-template-columns: 1fr; }
@@ -759,7 +777,7 @@
                     </div>
                 </div>
 
-                <div id="temporary-cards-section" class="points-section custom-cards-section" style="display: block;"> 
+<div id="temporary-cards-section" class="points-section custom-cards-section" style="display: block;"> 
                     <h3 style="text-align:center; margin-top:0px; margin-bottom:20px; color: #2c3e50;">⭐ 自定义卡片</h3>
                     <div id="temp-cards-grid" class="points-grid">
                         <p id="no-temp-cards-text" class="no-cards-text" style="grid-column: 1 / -1;">尚未定义自定义卡片。</p>
@@ -814,7 +832,7 @@
 
                     <div class="points-section points-20">
                         <h3>🌟 999积分 <button class="add-card-to-section-btn" onclick="openDefineCustomCardModal(999)">⊕ 添加</button></h3>
-                         <div class="card-item" data-points="999" data-type="T" data-name="T/原地结婚卡" id="predef_card_jiehun" onclick="openBuyerModal(999, 'T', 'T/原地结婚卡')"><div class="card-title">T/原地结婚卡</div><div class="card-desc">当天带上身份证去民政局领结婚证</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_jiehun', 'predefined')">❌</button></div>
+                        <div class="card-item" data-points="999" data-type="T" data-name="T/原地结婚卡" id="predef_card_jiehun" onclick="openBuyerModal(999, 'T', 'T/原地结婚卡')"><div class="card-title">T/原地结婚卡</div><div class="card-desc">当天带上身份证去民政局领结婚证</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_jiehun', 'predefined')">❌</button></div>
                     </div>
 
 
@@ -1339,7 +1357,7 @@
                 tradeScore += (parseInt(dayData.trade) || 0); 
                 // Directly add/subtract from tradeScore based on tradeFromLog and tradeToLog
                 dayData.tradeFromLog.forEach(log => tradeScore -= log.amount); /* */ // Points flowing FROM this player
-                dayData.tradeToLog.forEach(log => tradeScore += log.amount); /* */  // Points flowing TO this player
+                dayData.tradeToLog.forEach(log => tradeScore += log.amount); /* */ // Points flowing TO this player
             });
             // Total score calculation now correctly reflects direct trade influences via tradeScore
             return { basic: basicScore, reward: rewardScore, penalty: penaltyScore, consume: consumeScore, trade: tradeScore, total: basicScore + rewardScore + penaltyScore - consumeScore + tradeScore }; /* */
@@ -1506,7 +1524,7 @@
                 const scores = calculateWeekScore(player);
                 const playerName = player === 'qiqi' ? '七七' : '一一';
                 document.getElementById('confirm-add-total-title').textContent = `确认操作`;
-                document.getElementById('confirm-add-total-desc').innerHTML = `确定要将 ${playerName} 本周的积分总计 <strong>${scores.total}分</strong> 加入总分并清空本周数据吗？`;
+                document.getElementById('confirm-add-total-desc').innerHTML = `确定要将 ${playerName} 本周的积分总计 **${scores.total}分** 加入总分并清空本周数据吗？`;
                 document.getElementById('confirm-add-total-btn').onclick = () => {
                     addWeekTotalToTotal(playerToAddToTotal);
                     closeConfirmAddTotalModal();
@@ -1533,7 +1551,7 @@
             const rewardDetailsLog = []; 
             const tradeDetailsLog = []; // T-card income / IOU purchase income / IOU return gain
             const tradeFromLog = []; // Collect tradeFromLog
-            const tradeToLog = [];   // Collect tradeToLog
+            const tradeToLog = [];    // Collect tradeToLog
 
             const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
             days.forEach(day => {
@@ -1542,7 +1560,7 @@
                 if (weekData[player][day].rewardLog) { weekData[player][day].rewardLog.forEach(log => rewardDetailsLog.push({...log, day: day }));}
                 if (weekData[player][day].tradeLog) { weekData[player][day].tradeLog.forEach(log => tradeDetailsLog.push({...log, day: day }));} 
                 if (weekData[player][day].tradeFromLog) { weekData[player][day].tradeFromLog.forEach(log => tradeFromLog.push({...log, day: day }));} 
-                if (weekData[player][day].tradeToLog) { weekData[player][day].tradeToLog.forEach(log => tradeToLog.push({...log, day: day }));}     
+                if (weekData[player][day].tradeToLog) { weekData[player][day].tradeToLog.forEach(log => tradeToLog.push({...log, day: day }));}       
 
                 ['book', 'sleep', 'exercise'].forEach(task => { const taskScore = parseInt(weekData[player][day][task]) || 0; if (taskScore !== 0) { basicScoreDetailsLog.push({ day: day, task: task, score: taskScore }); }});
             });
@@ -1557,7 +1575,7 @@
                 rewardDetails: rewardDetailsLog, 
                 tradeDetails: tradeDetailsLog,
                 tradeFromLog: tradeFromLog, 
-                tradeToLog: tradeToLog       
+                tradeToLog: tradeToLog         
             };
             scoreHistoryLog.unshift(historyEntry); renderScoreHistoryTable(); _saveScoreHistoryToFirebaseInternal(); 
             
@@ -1587,7 +1605,7 @@
             database.ref('/iouCardsData').remove(); 
             scoreHistoryLog = []; renderScoreHistoryTable(); database.ref('/scoreHistory').remove(); 
             _saveToFirebaseInternal(); alert('所有数据已重置！');
-        }});}
+        }}); }
 
         function resetWeekData(player) { requestEditPermission(() => { 
             Object.keys(weekData[player]).forEach(day => { weekData[player][day] = initialDayData(); });
@@ -1659,8 +1677,8 @@
             if (type !== 'H' && !desc) { alert('请输入卡片描述。'); return; } 
 
             const nameConflict = Object.values(customDefinedCards).some(card => card.name === name) ||
-                                Object.values(iouCardsData).some(card => card.name === name) ||
-                                Array.from(document.querySelectorAll('#main-cards-grid .card-item[data-name]')).some(el => el.dataset.name === name && !hiddenPredefinedCardIds.includes(el.id));
+                                 Object.values(iouCardsData).some(card => card.name === name) ||
+                                 Array.from(document.querySelectorAll('#main-cards-grid .card-item[data-name]')).some(el => el.dataset.name === name && !hiddenPredefinedCardIds.includes(el.id));
             if (nameConflict) { alert('已存在同名卡片 (包括预设、自定义或欠条卡片)，请使用其他名称。'); return; } 
             
             const cardId = 'custom_' + Date.now();
@@ -1693,8 +1711,8 @@
             
             // Check for name conflict (though name includes points and interest, it's good practice)
             const nameConflict = Object.values(customDefinedCards).some(card => card.name === cardName) ||
-                                Object.values(iouCardsData).some(card => card.name === cardName) ||
-                                Array.from(document.querySelectorAll('#main-cards-grid .card-item[data-name]')).some(el => el.dataset.name === cardName && !hiddenPredefinedCardIds.includes(el.id));
+                                 Object.values(iouCardsData).some(card => card.name === cardName) ||
+                                 Array.from(document.querySelectorAll('#main-cards-grid .card-item[data-name]')).some(el => el.dataset.name === cardName && !hiddenPredefinedCardIds.includes(el.id));
             if (nameConflict) { alert('已存在相同面值和利息的欠条，请调整后重新定义。'); return; }
 
             const cardId = 'iou_' + Date.now();
