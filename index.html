@@ -8,20 +8,24 @@
         * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            box-sizing: border-box; /* 确保内边距和边框包含在元素总宽度内，解决内边距累积问题 */
         }
 
         body {
             font-family: 'Microsoft YaHei', Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100%; /* Adjusted min-height */
+            min-height: 100vh; /* 使用100vh确保至少铺满视口高度 */
             line-height: 1.6;
+            display: flex; /* 让body成为flex容器，使其子元素居中或撑开 */
+            flex-direction: column; /* 垂直排列 */
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
+            width: 100%; /* 确保在小屏幕上也能占据100%宽度 */
+            flex-grow: 1; /* 让容器在flex布局中可以增长，填充剩余空间 */
         }
 
         .header {
@@ -55,7 +59,8 @@
             border-radius: 15px;
             padding: 10px;
             backdrop-filter: blur(10px);
-            flex-wrap: wrap;
+            flex-wrap: wrap; /* 允许导航项在小屏幕上换行 */
+            gap: 10px; /* 增加导航项之间的间距，保持一致性 */
         }
 
         .nav-tab {
@@ -63,7 +68,7 @@
             border: none;
             color: white;
             padding: 15px 25px;
-            margin: 5px;
+            /* margin: 5px; /* 移除单个 margin，改用 gap */
             border-radius: 10px;
             cursor: pointer;
             font-size: 1em;
@@ -88,15 +93,20 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             backdrop-filter: blur(10px);
             min-height: 600px;
+            display: flex; /* 让内容区成为flex容器 */
+            flex-direction: column; /* 垂直排列子元素 */
         }
 
         .page {
             display: none;
             animation: fadeIn 0.5s ease;
+            flex-grow: 1; /* 让每个page占据剩余空间 */
         }
 
         .page.active {
-            display: block;
+            display: block; /* 保持block以确保子元素正常流式布局 */
+            display: flex; /* 再次设置为flex，确保内部元素能正确使用flex */
+            flex-direction: column; /* 垂直堆叠内容 */
         }
 
         @keyframes fadeIn {
@@ -114,7 +124,7 @@
         }
 
         /* Login/Edit Password Modal Styles */
-        .login-overlay { /* Used for original login (now hidden by default) and edit password */
+        .login-overlay, .modal-overlay { /* Used for original login (now hidden by default) and edit password */
             position: fixed;
             top: 0;
             left: 0;
@@ -126,9 +136,11 @@
             align-items: center;
             z-index: 9999;
             backdrop-filter: blur(5px);
+            padding: 15px; /* 添加内边距防止内容贴边 */
+            overflow-y: auto; /* 允许在内容过多时滚动 */
         }
 
-        .login-box { /* Shared style for login/edit password containers */
+        .login-box, .modal-content { /* Shared style for login/edit password containers */
             background: white;
             border-radius: 20px;
             padding: 40px;
@@ -137,6 +149,7 @@
             max-width: 400px;
             width: 90%;
             animation: slideIn 0.5s ease;
+            margin: auto; /* 确保在modal-overlay中垂直居中 */
         }
 
         @keyframes slideIn {
@@ -144,13 +157,13 @@
             to { transform: translateY(0); opacity: 1; }
         }
 
-        .login-box h2 {
+        .login-box h2, .modal-content h3 {
             color: #2c3e50;
             margin-bottom: 10px;
             font-size: 2em;
         }
 
-        .login-input { /* Shared style for password inputs */
+        .login-input, .modal-input { /* Shared style for password inputs */
             width: 100%;
             padding: 15px;
             border: 2px solid #ddd;
@@ -161,13 +174,11 @@
             transition: border-color 0.3s ease;
         }
         .modal-input {
-            width: 100%;
             padding: 12px;
             border: 1px solid #ccc;
             border-radius: 8px;
             font-size: 1em;
             margin-bottom: 15px;
-            box-sizing: border-box;
         }
         .modal-input:focus {
             outline: none;
@@ -184,7 +195,7 @@
             box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
         }
 
-        .login-btn { /* Shared style for login/edit password confirm buttons */
+        .login-btn, .btn { /* Shared style for login/edit password confirm buttons */
             background: linear-gradient(45deg, #3498db, #2980b9);
             color: white;
             border: none;
@@ -196,7 +207,7 @@
             transition: all 0.3s ease;
         }
 
-        .login-btn:hover {
+        .login-btn:hover, .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
         }
@@ -239,76 +250,85 @@
         .daily-table tr:nth-child(even) { background-color: #f8f9fa; }
         .daily-table tr:hover { background-color: #e3f2fd; transform: scale(1.01); transition: all 0.3s ease; }
 
-        .points-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin: 30px 0; }
-        .points-section, .weekly-rewards-section, .warehouse-section { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-top: 5px solid; margin-bottom: 30px; }
+        .points-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* 调整最小宽度为300px，更适应小屏幕 */
+            gap: 30px; 
+            margin: 30px 0; 
+        }
+        .points-section, .weekly-rewards-section, .warehouse-section, .custom-cards-section { 
+            background: white; 
+            border-radius: 15px; 
+            padding: 25px; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1); 
+            border-top: 5px solid; 
+            margin-bottom: 30px; 
+            display: flex; /* 设置为flex容器 */
+            flex-direction: column; /* 内部元素垂直堆叠 */
+        }
         .points-1 { border-top-color: #2ecc71; } .points-2 { border-top-color: #f39c12; } .points-3 { border-top-color: #e74c3c; } .points-5 { border-top-color: #9b59b6; } .points-10 { border-top-color: #34495e; } .points-20 { border-top-color: #e67e22; }
         .points-iou { border-top-color: #f39c12; } /* Added for IOU cards */
         .weekly-rewards-section { border-top-color: #1abc9c; }
         .warehouse-section { border-top-color: #3498db; }
         /* Custom Card section style */
         .custom-cards-section {
-            background: white; /* Match other sections */
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            border-top: 5px solid #9b59b6; /* Purple border for custom cards */
-            margin-bottom: 30px;
+            border-top-color: #9b59b6; /* Purple border for custom cards */
         }
-        .points-section h3, .weekly-rewards-section h3, .warehouse-section h3 { 
-            text-align: center; margin-bottom: 20px; font-size: 1.8em; color: #2c3e50;
-        }
-
-        /* Styles for centering and bolding the custom cards section heading */
-        .custom-cards-section h3 {
-            text-align: center; /* 确保文字内容居中 */
-            font-weight: bold; /* 加粗文字 */
-            /* 覆盖 flex 布局，让内容块级居中 */
-            display: block; 
-            width: 100%; /* 确保占据父元素全部宽度以便text-align生效 */
+        .points-section h3, .weekly-rewards-section h3, .warehouse-section h3, .custom-cards-section h3 { 
+            text-align: center; 
+            margin-bottom: 20px; 
+            font-size: 1.8em; 
+            color: #2c3e50;
+            display: flex; /* 让h3成为flex容器，方便排列标题和按钮 */
+            justify-content: center; /* 水平居中 */
+            align-items: center; /* 垂直居中 */
             position: relative; /* 为内部的绝对定位按钮提供参考 */
-            margin-top: 0px; /* 确保不被之前的样式影响到 */
-            margin-bottom: 20px; /* 保持与其他H3的间距 */
-            font-size: 1.8em; /* 保持与其他H3的字体大小一致 */
-            color: #2c3e50; /* 保持与其他H3的颜色一致 */
+            min-height: 1.5em; /* 确保有足够的高度容纳按钮 */
         }
 
         /* 针对 Daily Tasks 区域的列表样式 */
         /* 移除无序列表的默认点和内边距 */
         #daily-tasks-display {
-            /* 确保 display 属性允许 text-align 工作 */
             display: block; 
-            text-align: left; /* 确保文本左对齐 */
+            text-align: left; 
         }
-        /* 如果 `daily-tasks-display` 内部有 `ul` 或 `li`，需要进一步控制 */
         #daily-tasks-display ul {
-            list-style: none; /* 移除无序列表的默认点 */
-            padding-left: 0; /* 移除默认的左内边距 */
-            margin-top: 10px; /* 保持与父元素h4的间距 */
+            list-style: none; 
+            padding-left: 0; 
+            margin-top: 10px; 
         }
         #daily-tasks-display ul li {
-            margin-bottom: 10px; /* 保持列表项之间的间距 */
+            margin-bottom: 10px; 
         }
-        /* 如果内容是直接放在 div 里的，只需要控制 div 的样式 */
         #daily-tasks-display div {
             text-align: left;
-            /* padding-left: 0; 这行被更具体的 editable-content 覆盖 */
         }
-
 
         /* 为了不影响旁边的“⊕ 添加”按钮，我们需要为按钮单独设置定位 */
-        .custom-cards-section h3 .add-card-to-section-btn {
-            position: absolute; /* 绝对定位 */
-            right: 0px; /* 根据需要调整距离右侧的距离，这里设置为0，让按钮贴着右侧 */
-            top: 50%; /* 垂直居中 */
-            transform: translateY(-50%); /* 精确垂直居中 */
+        .points-section h3 .add-card-to-section-btn {
+            position: absolute; 
+            right: 0px; 
+            top: 50%; 
+            transform: translateY(-50%); 
         }
         
-        .card-item { background: #f8f9fa; margin: 10px 0; padding: 15px; border-radius: 10px; border-left: 4px solid #3498db; transition: all 0.3s ease; cursor: pointer; position: relative; /* For delete button */ }
+        .card-item { 
+            background: #f8f9fa; 
+            margin: 10px 0; 
+            padding: 15px; 
+            border-radius: 10px; 
+            border-left: 4px solid #3498db; 
+            transition: all 0.3s ease; 
+            cursor: pointer; 
+            position: relative; 
+            display: flex; /* 让卡片内容垂直排列 */
+            flex-direction: column;
+        }
         .card-item.info-card { border-left-color: #1abc9c; }
         .card-item:hover:not(.info-card) { transform: translateX(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .card-item.info-card[data-type="special-reward"]:hover { transform: translateX(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .card-title { font-weight: bold; color: #2c3e50; margin-bottom: 8px; font-size: 1.1em; }
-        .card-desc { color: #7f8c8d; font-size: 0.95em; line-height: 1.5; }
+        .card-desc { color: #7f8c8d; font-size: 0.95em; line-height: 1.5; flex-grow: 1; } /* 描述撑开剩余空间 */
 
         /* Delete Button on Cards */
         .card-item .delete-card-btn {
@@ -334,7 +354,7 @@
 
         /* Style for the "Add Card to Section" button */
         .add-card-to-section-btn {
-            background-color: #5dade2; /* Light blue */
+            background-color: #5dade2; 
             border: none;
             color: white;
             padding: 5px 10px;
@@ -345,52 +365,127 @@
             cursor: pointer;
             border-radius: 5px;
             transition: background-color 0.3s;
+            margin-left: 10px; /* 确保按钮与标题有一定间距 */
         }
         .add-card-to-section-btn:hover {
-            background-color: #2e86c1; /* Darker blue */
+            background-color: #2e86c1; 
         }
 
 
-        .warehouse-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
-        .warehouse-owner-column h4 { text-align: center; font-size: 1.3em; color: #34495e; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #bdc3c7; }
-        .warehouse-card-item { background: #ecf0f1; padding: 10px 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #2980b9; }
+        .warehouse-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px; 
+            margin-top: 20px; 
+            flex-grow: 1; /* 让网格占据剩余空间 */
+        }
+        .warehouse-owner-column {
+            display: flex; /* 让列内成为flex容器 */
+            flex-direction: column; /* 垂直排列 */
+            flex-grow: 1; /* 让列可以增长 */
+        }
+        .warehouse-owner-column h4 { 
+            text-align: center; 
+            font-size: 1.3em; 
+            color: #34495e; 
+            margin-bottom: 15px; 
+            padding-bottom: 10px; 
+            border-bottom: 2px solid #bdc3c7; 
+        }
+        .warehouse-card-item { 
+            background: #ecf0f1; 
+            padding: 10px 15px; 
+            border-radius: 8px; 
+            margin-bottom: 10px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-left: 4px solid #2980b9; 
+        }
         .warehouse-card-info .name { font-weight: bold; font-size: 1em; }
         .warehouse-card-info .qty { font-size: 0.9em; color: #7f8c8d; }
         .warehouse-card-item .use-card-btn { background: #27ae60; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 0.9em; transition: background-color 0.2s; }
         .warehouse-card-item .use-card-btn:hover { background: #229954; }
         .no-cards-text { text-align: center; color: #95a5a6; padding: 20px; }
 
-        .penalty-section { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 30px 0; }
-        .penalty-card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .penalty-section { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 30px; 
+            margin: 30px 0; 
+            flex-grow: 1; /* 让网格占据剩余空间 */
+        }
+        .penalty-card { 
+            background: white; 
+            border-radius: 15px; 
+            padding: 25px; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1); 
+            display: flex; /* 内部元素垂直堆叠 */
+            flex-direction: column;
+        }
         .penalty-left { border-top: 5px solid #e74c3c; } .penalty-right { border-top: 5px solid #27ae60; }
         .penalty-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
         .penalty-table th, .penalty-table td { padding: 15px; text-align: left; border-bottom: 1px solid #ddd; }
         .penalty-table th { background: #f8f9fa; font-weight: bold; color: #2c3e50; }
         .penalty-score { background: #e74c3c; color: white; padding: 5px 10px; border-radius: 15px; font-weight: bold; text-align: center; min-width: 40px; display: inline-block; }
-        .penalty-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed #eee; }
+        .penalty-item { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 10px 0; 
+            border-bottom: 1px dashed #eee; 
+            flex-wrap: wrap; /* 允许项目内部换行 */
+            gap: 10px; /* 项目内的间距 */
+        }
         .penalty-item:last-child { border-bottom: none; }
         .penalty-item-info { display: flex; align-items: center; gap: 10px; }
-        .penalty-action-buttons button { background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.9em; margin-left: 5px; transition: background-color 0.3s; }
+        .penalty-action-buttons { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 5px; /* 按钮之间的小间距 */
+        }
+        .penalty-action-buttons button { background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.9em; margin-left: 0; transition: background-color 0.3s; }
         .penalty-action-buttons button:hover { background: #c0392b; }
         .penalty-action-buttons button.custom-penalty-btn { background: #f39c12; }
         .penalty-action-buttons button.custom-penalty-btn:hover { background: #e67e22; }
 
-        .bank-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px; margin: 30px 0; }
+        .bank-section { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* 调整minmax，确保在小屏幕上也能良好显示 */
+            gap: 30px; 
+            margin: 30px 0; 
+            flex-grow: 1; /* 让网格占据剩余空间 */
+        }
         .week-card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-top: 5px solid #3498db; }
         .week-title { text-align: center; font-size: 1.5em; color: #2c3e50; margin-bottom: 20px; background: linear-gradient(45deg, #3498db, #2980b9); color: white; padding: 15px; border-radius: 10px; }
-        .week-table { width: 100%; border-collapse: collapse; }
+        
+        /* 针对表格溢出问题，为表格添加包装器并设置横向滚动 */
+        .week-table-container {
+            width: 100%; /* 确保容器占据全部宽度 */
+            overflow-x: auto; /* 在x轴方向上溢出时显示滚动条 */
+            -webkit-overflow-scrolling: touch; /* 针对iOS的平滑滚动 */
+        }
+        .week-table { 
+            width: 100%; /* 表格宽度100% */
+            min-width: 500px; /* 保持一个最小宽度，防止在极端小屏幕上单元格挤压过小 */
+            border-collapse: collapse; 
+        }
         .week-table th, .week-table td { padding: 8px; border: 1px solid #ddd; text-align: center; }
         .week-table th { background: #f8f9fa; font-weight: bold; font-size: 0.9em; }
         .stats-overview { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); margin-bottom: 30px; text-align: center; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin: 20px 0; } /* 调整minmax */
         .stat-item { 
             background: linear-gradient(45deg, #9b59b6, #8e44ad); 
             color: white; 
             padding: 20px; 
             border-radius: 10px; 
             transition: transform 0.3s ease; 
-            max-width: 100%; /* Ensure images within these items are responsive */
-            height: auto; /* Ensure images within these items are responsive */
+            max-width: 100%; 
+            height: auto; 
+            display: flex; /* 让内容垂直居中 */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
         .stat-item:hover { transform: scale(1.05); }
         .stat-number { font-size: 2em; font-weight: bold; margin-bottom: 5px; }
@@ -417,9 +512,6 @@
         .btn-danger { background: #e74c3c; } .btn-danger:hover { background: #c0392b; }
         .btn-secondary { background: #7f8c8d; } .btn-secondary:hover { background: #6c7a7d; }
 
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(3px); }
-        .modal-content { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center; max-width: 450px; width: 90%; animation: slideIn 0.3s ease-out; }
-        .modal-content h3 { color: #2c3e50; margin-bottom: 25px; font-size: 1.8em; }
         .modal-buttons button { color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1.1em; cursor: pointer; margin: 8px 5px; transition: all 0.3s ease; min-width: 100px; }
         .modal-buttons button:hover { transform: translateY(-2px); }
         .modal-buttons button.confirm-btn { background: linear-gradient(45deg, #3498db, #2980b9); }
@@ -430,8 +522,22 @@
         .penalty-modal-buttons button.confirm-btn:hover { box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3); }
         .week-card .btn-secondary { display: block; margin: 15px auto 0; }
         
-        #history .table-container { max-height: 600px; overflow-y: auto; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 8px; }
-        #score-history-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9em; }
+        #history .table-container { 
+            max-height: 600px; 
+            overflow-y: auto; 
+            margin-bottom: 20px; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            overflow-x: auto; /* 历史记录表格也可能溢出 */
+            -webkit-overflow-scrolling: touch;
+        }
+        #score-history-table { 
+            width: 100%; 
+            min-width: 600px; /* 确保历史表格也有最小宽度 */
+            border-collapse: collapse; 
+            margin: 20px 0; 
+            font-size: 0.9em; 
+        }
         #score-history-table th, #score-history-table td { padding: 10px 12px; text-align: left; border: 1px solid #e0e0e0; vertical-align: top; }
         #score-history-table th { background: linear-gradient(45deg, #3498db, #2980b9); color: white; font-weight: bold; text-align: center; }
         #score-history-table tr:nth-child(even) { background-color: #f8f9fa; }
@@ -465,7 +571,7 @@
 
         .trade-form {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* 调整minmax，确保小屏幕下能两列甚至一列 */
             gap: 15px;
             align-items: end;
         }
@@ -522,126 +628,129 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
-
+        /* Responsive Adjustments */
         @media (max-width: 768px) {
-            .container { padding: 5px; } .header h1 { font-size: 1.8em; } .header p { font-size: 1em; }
-            .content { padding: 15px; margin: 10px 5px; } .penalty-section { grid-template-columns: 1fr; gap: 20px; }
-            .nav-tabs { flex-direction: row; flex-wrap: wrap; padding: 5px;} .nav-tab { padding: 10px 15px; font-size: 0.9em; margin: 2px;}
+            .container { padding: 10px; } /* 减少container的padding */
+            .header h1 { font-size: 2.2em; } 
+            .header p { font-size: 1.1em; }
+
+            .nav-tabs { 
+                flex-direction: row; 
+                flex-wrap: wrap; 
+                padding: 5px;
+                gap: 5px; /* 进一步减少导航项间距 */
+            }
+            .nav-tab { padding: 10px 15px; font-size: 0.9em; margin: 0; } /* 移除margin */
+
+            .content { padding: 20px; margin: 0 5px; } /* 减少content的padding和margin */
+            
+            .points-grid, .penalty-section, .bank-section { 
+                grid-template-columns: 1fr; /* 在小屏幕上单列布局 */
+                gap: 20px; /* 调整间距 */
+            }
             .score-boards { grid-template-columns: 1fr; gap: 15px;} 
+
+            .week-table { font-size: 0.8em;}
+            .week-table th, .week-table td { padding: 5px 3px; font-size: 0.8em;} /* 减小单元格内边距 */
+            .small-input {width: 40px; font-size: 0.75em; padding: 2px;} /* 调整输入框大小 */
             
-            /* Adjusted for week tables */
-            .week-table-container {
-                overflow-x: auto; /* Allow horizontal scrolling if table is too wide */
-                -webkit-overflow-scrolling: touch;
-                margin: 0 -15px; /* Adjust to align with card edges, offsetting padding */
-                padding: 0 15px; /* Add internal padding for table content */
-                box-sizing: border-box; /* Include padding in width calculation */
-            }
-            .week-table { 
-                width: 100%; /* Ensure table takes full width of its container */
-                min-width: 500px; /* Set a minimum width for the table to prevent squishing */
-                font-size: 0.75em;
-            }
-            .week-table th, .week-table td { padding: 3px 2px; font-size: 0.75em;}
-            .small-input {width: 30px; font-size: 0.7em; padding: 1px;}
-            .clickable-cell { min-width: 30px;} 
-            
+            .clickable-cell { min-width: auto; padding: 5px; } /* 移除最小宽度，让内容自适应 */
             .connection-status { top: 10px; right: 10px; padding: 8px 12px; font-size: 0.8em;}
-            #score-history-table { font-size: 0.8em;} #score-history-table th, #score-history-table td { padding: 6px 4px;}
+            
+            #score-history-table { font-size: 0.8em;} 
+            #score-history-table th, #score-history-table td { padding: 8px 6px;} /* 减小历史表格内边距 */
             .warehouse-grid { grid-template-columns: 1fr; }
             .trade-form { grid-template-columns: 1fr; gap: 10px; }
 
             /* Adjustments for the new sections in "小银行" */
             .bank-section .week-card {
-                padding: 15px; /* Reduce padding for smaller screens */
+                padding: 15px; 
             }
 
             .bank-section .week-title {
-                font-size: 1.3em; /* Smaller title font size */
-                padding: 10px; /* Adjust padding */
+                font-size: 1.3em; 
+                padding: 10px; 
             }
 
             /* Adjust .stats-grid for "积分排行榜" to be more responsive */
             .stats-grid {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Allow smaller min width */
-                gap: 10px; /* Reduce gap */
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
+                gap: 10px; 
             }
 
             .stat-item {
-                padding: 15px; /* Reduce padding */
+                padding: 15px; 
             }
 
             .stat-number {
-                font-size: 1.5em; /* Smaller font size for numbers */
+                font-size: 1.5em; 
             }
 
             .stat-label {
-                font-size: 0.8em; /* Smaller font size for labels */
+                font-size: 0.8em; 
             }
             
-            /* Ensure the info boxes for "积分计算说明" and "操作说明" are responsive and smaller */
-            .bank-section > div:last-child { /* Targets the div containing both info boxes */
-                padding: 15px; /* Reduce overall padding for this container */
-            }
-            .bank-section > div:last-child > div { /* Targets the individual info boxes */
-                grid-template-columns: 1fr; /* Stack columns on small screens */
-                gap: 15px; /* Adjust gap */
-                padding: 15px; /* Reduce padding for individual boxes */
+            /* Ensure the info boxes for "积分计算说明" and "操作说明" are responsive */
+            .bank-section > div:last-child > div {
+                grid-template-columns: 1fr; 
+                gap: 15px; 
+                padding: 15px; 
             }
 
             .bank-section > div:last-child h4 {
-                font-size: 1.0em; /* Smaller heading font size */
+                font-size: 1.1em; 
             }
 
             .bank-section > div:last-child ul {
-                font-size: 0.85em; /* Smaller list item font size */
+                font-size: 0.9em; 
+            }
+
+            /* Hides delete button text on smaller screens if too wide */
+            .card-item .delete-card-btn {
+                font-size: 11px; /* Even smaller font for "❌" */
+                width: 20px;
+                height: 20px;
+                line-height: 20px;
             }
         }
+
         @media (max-width: 480px) {
-            .header h1 { font-size: 1.5em;} .nav-tab { padding: 8px 10px; font-size: 0.75em;}
+            .header h1 { font-size: 1.8em;} 
+            .nav-tab { padding: 6px 8px; font-size: 0.7em;}
             .content { padding: 10px;} 
             
-            /* Further adjust week table for very small screens */
-            .week-table-container {
-                margin: 0 -10px; /* Further adjust margin for very small screens */
-                padding: 0 10px; /* Further adjust padding */
-            }
-            .week-table {
-                min-width: 400px; /* Even smaller min-width, adjust as needed */
-                font-size: 0.6em; /* Even smaller font size for table content */
-            }
-            .week-table th, .week-table td { padding: 1px; font-size: 0.6em;}
-            .small-input { width: 25px; font-size: 0.6em; padding: 1px;}
-            .total-score-input { font-size: 1.8em;} .stat-number { font-size: 1.3em;} .stat-label { font-size: 0.8em;}
-            #score-history-table { font-size: 0.7em;} #score-history-table th, #score-history-table td { padding: 4px 2px;}
-            #score-history-table ul { padding-left: 10px; font-size: 0.85em; }
-            #score-history-table .basic-score-details ul { font-size: 0.8em; }
-            .clickable-cell { min-width: 25px;}
+            .week-table th, .week-table td { padding: 3px 1px; font-size: 0.7em;}
+            .small-input { width: 30px; font-size: 0.65em; padding: 1px;}
+
+            .total-score-input { font-size: 2em;} 
+            .stat-number { font-size: 1.3em;} 
+            .stat-label { font-size: 0.8em;}
+            
+            #score-history-table { font-size: 0.75em;} 
+            #score-history-table th, #score-history-table td { padding: 6px 4px;}
+            #score-history-table ul { padding-left: 10px; font-size: 0.8em; }
+            #score-history-table .basic-score-details ul { font-size: 0.75em; }
+            .clickable-cell { min-width: auto; padding: 3px;} /* 进一步调整 */
 
             /* Further adjustments for "积分排行榜" on extra small screens */
             .stats-grid {
-                grid-template-columns: 1fr; /* Stack items vertically */
+                grid-template-columns: 1fr; 
             }
-            
-            /* Further adjust the info boxes for very small screens */
-            .bank-section > div:last-child {
-                padding: 10px; /* Even less padding */
+
+            /* Adjust .trade-form for very small screens */
+            .trade-form {
+                grid-template-columns: 1fr; /* 单列布局 */
             }
-            .bank-section > div:last-child > div {
-                padding: 10px; /* Even less padding for individual boxes */
-            }
-            .bank-section > div:last-child h4 {
-                font-size: 0.9em;
-            }
-            .bank-section > div:last-child ul {
-                font-size: 0.8em;
+
+            .login-box, .modal-content {
+                padding: 25px; /* 减小模态框内边距 */
             }
         }
 
         /* Styles for editable daily tasks content */
         .editable-content {
             border: 1px solid #ccc;
-            padding: 10px 20px; /* 上下10px，左右20px内边距，解决红框内容离边线太近的问题 */
+            padding: 10px 20px; 
             min-height: 80px;
             outline: none;
             border-radius: 8px;
@@ -650,8 +759,10 @@
             line-height: 1.6;
             font-size: 1.05em;
             transition: border-color 0.3s ease;
-            text-align: left !important; /* 确保文本左对齐 */
-            color: #333; /* 默认字体颜色 */
+            text-align: left !important; 
+            color: #333; 
+            white-space: pre-wrap; /* Preserve whitespace and allow wrapping */
+            word-wrap: break-word; /* Break long words */
         }
 
         .editable-content:focus {
@@ -681,7 +792,7 @@
 
         /* 可选：为保存模式的按钮添加样式 */
         .btn.save-mode {
-            background-color: #28a745; /* 绿色背景 */
+            background-color: #28a745; 
             color: white;
         }
         .btn.save-mode:hover {
@@ -1019,10 +1130,10 @@
                             <ul style="list-style: none; padding: 0; margin: 0;">
                                 <li><strong>积分交易：</strong>可直接在玩家间转移积分，支持备注说明，交易记录会计入总分体系。</li>
                                 <li><strong>E = 消费类卡片：</strong>购买后进入仓库，使用后从仓库移除。积分由购买方承担。</li>
-                                <li><strong>T = 交易类卡片：</strong>购买后进入仓库。使用后卡片从仓库移除，卡片原积分值将加入对方的“交易”积分中。购买方承担购买成本。</li>
+                                <li><strong>T = 交易类卡片：：</strong>购买后进入仓库。使用后卡片从仓库移除，卡片原积分值将加入对方的“交易”积分中。购买方承担购买成本。</li>
                                 <li><strong>H = 开心类卡片：：</strong>直接消耗，双方共同承担积分，不进入仓库。</li>
                                 <li><strong>IOU = 欠条卡片：：</strong>购买后进入仓库，购买者扣除积分，另一方玩家立即获得相同积分。使用时，使用者获得（面值+利息）积分，另一方玩家扣除（面值+利息）积分。</li>
-                                 <li><strong>特殊奖励卡：：</strong>直接授予对应玩家奖励积分，不进入仓库。</li>
+                                 <li><strong>特殊奖励卡：：：</strong>直接授予对应玩家奖励积分，不进入仓库。</li>
                             </ul>
                         </div>
                     </div>
@@ -1094,8 +1205,7 @@
                 </div>
                 <div style="margin-top: 30px; padding: 25px; background: white; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
                     <h3 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">📋 积分计算说明</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                        <div style="background: #e8f4fd; padding: 20px; border-radius: 10px;"><h4 style="color: #1976d2; margin-bottom: 10px;">📊 积分计算规则</h4><ul style="list-style: none; padding-left: 0; color: #555;"><li><strong>基础任务：</strong>各个项目可点击切换-2, 0, 1分</li><li><strong>奖励积分：</strong>通过特殊奖励卡或自定义奖励获得</li><li><strong>罚分：</strong>通过扣分规则或自定义扣分产生 (自动记录)</li><li><strong>购卡：：</strong>卡片购买成本 (自动记录)</li><li><strong>交易：：</strong>对方使用T卡时，己方获得的积分 (自动记录)</li><li><strong>总分 = 基础 + 奖励 + 罚分 - 购卡 + 交易</strong> (罚分为负值)</li></ul></div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;"> <div style="background: #e8f4fd; padding: 20px; border-radius: 10px;"><h4 style="color: #1976d2; margin-bottom: 10px;">📊 积分计算规则</h4><ul style="list-style: none; padding-left: 0; color: #555;"><li><strong>基础任务：</strong>各个项目可点击切换-2, 0, 1分</li><li><strong>奖励积分：：</strong>通过特殊奖励卡或自定义奖励获得</li><li><strong>罚分：：</strong>通过扣分规则或自定义扣分产生 (自动记录)</li><li><strong>购卡：：：</strong>卡片购买成本 (自动记录)</li><li><strong>交易：：：</strong>对方使用T卡时，己方获得的积分 (自动记录)</li><li><strong>总分 = 基础 + 奖励 + 罚分 - 购卡 + 交易</strong> (罚分为负值)</li></ul></div>
 <div style="background: #f3e5f5; padding: 20px; border-radius: 10px;"><h4 style="color: #7b1fa2; margin-bottom: 10px;">🎮 操作说明</h4><ul style="color: #555; padding-left: 20px;"><li>点击基础任务单元格切换数值</li><li>奖励通过"小卡片"页面的特殊卡或"小奖惩"页面的自定义奖励操作</li><li>罚分通过"小奖惩"页面操作自动更新</li><li>购卡积分根据卡片购买自动更新</li><li>交易积分根据对方使用T卡自动更新</li><li>系统自动计算本周各项积分及总分</li></ul></div>
                     </div>
                 </div>
@@ -2124,7 +2234,7 @@
 
                 if (cardTypeString === 'predefined') {
                     if (!hiddenPredefinedCardIds.includes(identifier)) {
-                        hiddenPredefinedCardIds.push(identifier);
+                        hiddenPreefinedCardIds.push(identifier);
                     }
                 } else if (cardTypeString === 'custom') { 
                     delete customDefinedCards[identifier];
