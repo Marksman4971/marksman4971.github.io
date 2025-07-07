@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -16,22 +17,12 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             line-height: 1.6;
-            display: flex; /* 使用 flexbox 确保内容垂直居中 */
-            flex-direction: column;
-            justify-content: center; /* 垂直居中内容 */
-            align-items: center; /* 水平居中内容 */
-            padding: 20px 10px; /* 添加一些全局内边距 */
         }
 
         .container {
             max-width: 1400px;
-            width: 100%; /* 确保在小屏幕上也能占据全部宽度 */
             margin: 0 auto;
             padding: 20px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.2); /* 增加一点整体阴影 */
-            border-radius: 25px; /* 稍微大一点的圆角 */
-            background: rgba(255,255,255,0.1); /* 让容器背景透明，透出渐变背景 */
-            backdrop-filter: blur(8px); /* 增加模糊效果 */
         }
 
         .header {
@@ -66,7 +57,6 @@
             padding: 10px;
             backdrop-filter: blur(10px);
             flex-wrap: wrap;
-            gap: 10px; /* 增加导航按钮之间的间距 */
         }
 
         .nav-tab {
@@ -74,7 +64,7 @@
             border: none;
             color: white;
             padding: 15px 25px;
-            margin: 0; /* 移除原来的 margin，使用 flex gap */
+            margin: 5px;
             border-radius: 10px;
             cursor: pointer;
             font-size: 1em;
@@ -250,27 +240,8 @@
         .daily-table tr:nth-child(even) { background-color: #f8f9fa; }
         .daily-table tr:hover { background-color: #e3f2fd; transform: scale(1.01); transition: all 0.3s ease; }
 
-        /* Modified: points-grid to allow flexible item sizes */
-        .points-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjusted minmax for better responsiveness */
-            gap: 20px; /* Reduced gap for tighter packing */
-            margin: 30px 0;
-        }
-
-        .points-section, .weekly-rewards-section, .warehouse-section {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            border-top: 5px solid;
-            margin-bottom: 30px;
-            /* Added: Flexbox for internal card items to wrap properly */
-            display: flex;
-            flex-direction: column;
-            gap: 10px; /* Spacing between card items within a section */
-        }
-
+        .points-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin: 30px 0; }
+        .points-section, .weekly-rewards-section, .warehouse-section { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-top: 5px solid; margin-bottom: 30px; }
         .points-1 { border-top-color: #2ecc71; } .points-2 { border-top-color: #f39c12; } .points-3 { border-top-color: #e74c3c; } .points-5 { border-top-color: #9b59b6; } .points-10 { border-top-color: #34495e; } .points-20 { border-top-color: #e67e22; }
         .points-iou { border-top-color: #f39c12; } /* Added for IOU cards */
         .weekly-rewards-section { border-top-color: #1abc9c; }
@@ -283,40 +254,30 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.1);
             border-top: 5px solid #9b59b6; /* Purple border for custom cards */
             margin-bottom: 30px;
-            display: flex; /* Make it a flex container */
-            flex-direction: column; /* Stack children vertically */
-            gap: 10px; /* Space between custom cards */
         }
-        .points-section h3, .weekly-rewards-section h3, .warehouse-section h3, .custom-cards-section h3 {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 1.8em;
-            color: #2c3e50;
-            position: relative; /* For positioning the add button */
-            display: flex; /* Use flexbox for heading and button */
-            justify-content: center; /* Center the text part */
-            align-items: center; /* Align items vertically */
-            padding-bottom: 10px; /* Add some padding below for separator */
-            border-bottom: 2px solid #eee; /* Add a subtle separator */
+        .points-section h3, .weekly-rewards-section h3, .warehouse-section h3 { 
+            text-align: center; margin-bottom: 20px; font-size: 1.8em; color: #2c3e50;
         }
-        /* Style for the add button within h3 */
-        .points-section h3 .add-card-to-section-btn,
-        .custom-cards-section h3 .add-card-to-section-btn,
-        .points-iou h3 .add-card-to-section-btn {
-            position: absolute; /* Absolute positioning relative to h3 */
-            right: 0;
-            top: 50%; /* Adjust vertical alignment */
-            transform: translateY(-50%); /* Fine-tune vertical centering */
-            margin-left: 10px; /* Space from title if title is long */
-            font-size: 0.7em; /* Make button text smaller */
-            padding: 3px 8px; /* Smaller padding */
+
+        /* Styles for centering and bolding the custom cards section heading */
+        .custom-cards-section h3 {
+            text-align: center; /* 确保文字内容居中 */
+            font-weight: bold; /* 加粗文字 */
+            /* 覆盖 flex 布局，让内容块级居中 */
+            display: block; 
+            width: 100%; /* 确保占据父元素全部宽度以便text-align生效 */
+            position: relative; /* 为内部的绝对定位按钮提供参考 */
+            margin-top: 0px; /* 确保不被之前的样式影响到 */
+            margin-bottom: 20px; /* 保持与其他H3的间距 */
+            font-size: 1.8em; /* 保持与其他H3的字体大小一致 */
+            color: #2c3e50; /* 保持与其他H3的颜色一致 */
         }
 
         /* 针对 Daily Tasks 区域的列表样式 */
         /* 移除无序列表的默认点和内边距 */
         #daily-tasks-display {
             /* 确保 display 属性允许 text-align 工作 */
-            display: block;
+            display: block; 
             text-align: left; /* 确保文本左对齐 */
         }
         /* 如果 `daily-tasks-display` 内部有 `ul` 或 `li`，需要进一步控制 */
@@ -334,20 +295,16 @@
             /* padding-left: 0; 这行被更具体的 editable-content 覆盖 */
         }
 
-        .card-item {
-            background: #f8f9fa;
-            margin: 0; /* Remove margin here, controlled by flex gap in parent */
-            padding: 15px;
-            border-radius: 10px;
-            border-left: 4px solid #3498db;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative; /* For delete button */
-            display: flex; /* Use flex to align title and desc */
-            flex-direction: column;
-            flex-grow: 1; /* Allow items to grow to fill space */
-            justify-content: space-between; /* Space out title and desc */
+
+        /* 为了不影响旁边的“⊕ 添加”按钮，我们需要为按钮单独设置定位 */
+        .custom-cards-section h3 .add-card-to-section-btn {
+            position: absolute; /* 绝对定位 */
+            right: 0px; /* 根据需要调整距离右侧的距离，这里设置为0，让按钮贴着右侧 */
+            top: 50%; /* 垂直居中 */
+            transform: translateY(-50%); /* 精确垂直居中 */
         }
+        
+        .card-item { background: #f8f9fa; margin: 10px 0; padding: 15px; border-radius: 10px; border-left: 4px solid #3498db; transition: all 0.3s ease; cursor: pointer; position: relative; /* For delete button */ }
         .card-item.info-card { border-left-color: #1abc9c; }
         .card-item:hover:not(.info-card) { transform: translateX(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .card-item.info-card[data-type="special-reward"]:hover { transform: translateX(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
@@ -394,19 +351,8 @@
             background-color: #2e86c1; /* Darker blue */
         }
 
-        /* Modified: warehouse-grid to use 1 column on small screens */
-        .warehouse-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Use auto-fit for better responsiveness */
-            gap: 20px;
-            margin-top: 20px;
-        }
-        .warehouse-owner-column {
-            background: #ecf0f1;
-            padding: 15px; /* Add padding to inner column */
-            border-radius: 10px;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.05); /* subtle inner shadow */
-        }
+
+        .warehouse-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
         .warehouse-owner-column h4 { text-align: center; font-size: 1.3em; color: #34495e; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #bdc3c7; }
         .warehouse-card-item { background: #ecf0f1; padding: 10px 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #2980b9; }
         .warehouse-card-info .name { font-weight: bold; font-size: 1em; }
@@ -430,15 +376,9 @@
         .penalty-action-buttons button.custom-penalty-btn { background: #f39c12; }
         .penalty-action-buttons button.custom-penalty-btn:hover { background: #e67e22; }
 
-        /* Modified: bank-section grid to use 1 column on smaller screens */
-        .bank-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Adjusted minmax for bank sections */
-            gap: 30px;
-            margin: 30px 0;
-        }
+        .bank-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px; margin: 30px 0; }
         .week-card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-top: 5px solid #3498db; }
-        .week-title { text-align: center; font-size: 1.5em; color: white; margin-bottom: 20px; background: linear-gradient(45deg, #3498db, #2980b9); padding: 15px; border-radius: 10px; }
+        .week-title { text-align: center; font-size: 1.5em; color: #2c3e50; margin-bottom: 20px; background: linear-gradient(45deg, #3498db, #2980b9); color: white; padding: 15px; border-radius: 10px; }
         .week-table { width: 100%; border-collapse: collapse; }
         .week-table th, .week-table td { padding: 8px; border: 1px solid #ddd; text-align: center; }
         .week-table th { background: #f8f9fa; font-weight: bold; font-size: 0.9em; }
@@ -462,19 +402,7 @@
         .score-boards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
         .score-board { background: linear-gradient(45deg, #667eea, #764ba2); color: white; padding: 20px; border-radius: 15px; text-align: center; }
         .player-name { font-size: 1.5em; font-weight: bold; margin-bottom: 10px; }
-        .total-score-input {
-            font-size: 2.5em;
-            font-weight: bold;
-            margin: 10px auto; /* Centered and auto-width */
-            background: transparent;
-            border: 2px solid rgba(255,255,255,0.3);
-            color: white;
-            text-align: center;
-            border-radius: 8px;
-            padding: 10px;
-            max-width: 90%; /* Max width to prevent overflow */
-            box-sizing: border-box; /* Include padding in width */
-        }
+        .total-score-input { font-size: 2.5em; font-weight: bold; margin: 10px 0; background: transparent; border: 2px solid rgba(255,255,255,0.3); color: white; text-align: center; border-radius: 8px; padding: 10px; width: 100%; }
         .total-score-input::placeholder { color: rgba(255,255,255,0.7); }
         .control-buttons { text-align: center; margin-top: 20px; }
         .btn { background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin: 5px; font-size: 1em; transition: all 0.3s ease; }
@@ -483,17 +411,7 @@
         .btn-secondary { background: #7f8c8d; } .btn-secondary:hover { background: #6c7a7d; }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(3px); }
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            text-align: center;
-            max-width: 90%; /* Changed to a percentage for better responsiveness */
-            width: 450px; /* Max width */
-            animation: slideIn 0.3s ease-out;
-            box-sizing: border-box; /* Include padding in width */
-        }
+        .modal-content { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center; max-width: 450px; width: 90%; animation: slideIn 0.3s ease-out; }
         .modal-content h3 { color: #2c3e50; margin-bottom: 25px; font-size: 1.8em; }
         .modal-buttons button { color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1.1em; cursor: pointer; margin: 8px 5px; transition: all 0.3s ease; min-width: 100px; }
         .modal-buttons button:hover { transform: translateY(-2px); }
@@ -540,7 +458,7 @@
 
         .trade-form {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Adjusted minmax for trade form */
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
             align-items: end;
         }
@@ -599,41 +517,27 @@
 
 
         @media (max-width: 768px) {
-            body { padding: 10px 5px; } /* Reduce body padding */
-            .container { padding: 15px; border-radius: 15px; }
-            .header h1 { font-size: 2.2em; } .header p { font-size: 1em; }
-            .content { padding: 20px; margin: 0; } /* Remove margin, controlled by container padding */
-            .penalty-section { grid-template-columns: 1fr; gap: 20px; }
-            .nav-tabs { flex-direction: row; flex-wrap: wrap; padding: 8px; gap: 5px;} .nav-tab { padding: 10px 15px; font-size: 0.9em; margin: 0;}
-            .score-boards { grid-template-columns: 1fr; gap: 15px;} .week-table { font-size: 0.8em;}
-            .week-table th, .week-table td { padding: 5px 3px; font-size: 0.8em;}
-            .small-input {width: 40px; font-size: 0.75em; padding: 2px;}
+            .container { padding: 5px; } .header h1 { font-size: 1.8em; } .header p { font-size: 1em; }
+            .content { padding: 15px; margin: 10px 5px; } .penalty-section { grid-template-columns: 1fr; gap: 20px; }
+            .nav-tabs { flex-direction: row; flex-wrap: wrap; padding: 5px;} .nav-tab { padding: 10px 15px; font-size: 0.9em; margin: 2px;}
+            .score-boards { grid-template-columns: 1fr; gap: 15px;} .week-table { font-size: 0.75em;}
+            .week-table th, .week-table td { padding: 3px 2px; font-size: 0.75em;}
+            .small-input {width: 30px; font-size: 0.7em; padding: 1px;}
             .week-table-container, #history .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch;}
-            .clickable-cell { min-width: 35px;} .connection-status { top: 10px; right: 10px; padding: 8px 12px; font-size: 0.8em;}
+            .clickable-cell { min-width: 30px;} .connection-status { top: 10px; right: 10px; padding: 8px 12px; font-size: 0.8em;}
             #score-history-table { font-size: 0.8em;} #score-history-table th, #score-history-table td { padding: 6px 4px;}
             .warehouse-grid { grid-template-columns: 1fr; }
             .trade-form { grid-template-columns: 1fr; gap: 10px; }
-            .points-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); } /* Further adjust minmax for smaller screens */
-            .bank-section { grid-template-columns: 1fr; }
         }
         @media (max-width: 480px) {
-            .header h1 { font-size: 1.8em;} .nav-tab { padding: 8px 10px; font-size: 0.75em;}
-            .content { padding: 15px;} .week-table th, .week-table td { padding: 3px 2px; font-size: 0.7em;}
-            .small-input { width: 30px; font-size: 0.65em; padding: 1px;}
-            .total-score-input { font-size: 2em;} .stat-number { font-size: 1.5em;} .stat-label { font-size: 0.8em;}
+            .header h1 { font-size: 1.5em;} .nav-tab { padding: 8px 10px; font-size: 0.75em;}
+            .content { padding: 10px;} .week-table th, .week-table td { padding: 2px 1px; font-size: 0.65em;}
+            .small-input { width: 25px; font-size: 0.6em; padding: 1px;}
+            .total-score-input { font-size: 1.8em;} .stat-number { font-size: 1.3em;} .stat-label { font-size: 0.8em;}
             #score-history-table { font-size: 0.7em;} #score-history-table th, #score-history-table td { padding: 4px 2px;}
             #score-history-table ul { padding-left: 10px; font-size: 0.85em; }
             #score-history-table .basic-score-details ul { font-size: 0.8em; }
-            .clickable-cell { min-width: 30px;}
-            .modal-content { padding: 20px; } /* Smaller padding for modal */
-            .modal-buttons button { padding: 10px 15px; min-width: 80px; font-size: 1em; }
-            .points-grid { grid-template-columns: 1fr; } /* On very small screens, stack cards */
-            .points-section h3 .add-card-to-section-btn {
-                position: static; /* Remove absolute positioning */
-                transform: none; /* Remove transform */
-                margin-left: 10px; /* Keep some margin */
-                display: inline-block; /* Make it inline */
-            }
+            .clickable-cell { min-width: 25px;}
         }
 
         /* Styles for editable daily tasks content */
@@ -885,7 +789,7 @@
                             <div id="daily-tasks-restday-editable" contenteditable="false" class="editable-content">
                                 <strong>休息日计划试行版</strong><br>
                                 1. 锻炼1小时<br>
-                                2. 学习3小时<电
+                                2. 学习3小时<br>
                                 3. 午休1小时<br>
                                 4. 娱乐禁止：12:30前和22:00后<br>
                                 5. 学习禁止：06:00前禁止学习<br>
@@ -1019,8 +923,8 @@
                                 <li><strong>E = 消费类卡片：</strong>购买后进入仓库，使用后从仓库移除。积分由购买方承担。</li>
                                 <li><strong>T = 交易类卡片：</strong>购买后进入仓库。使用后卡片从仓库移除，卡片原积分值将加入对方的“交易”积分中。购买方承担购买成本。</li>
                                 <li><strong>H = 开心类卡片：：</strong>直接消耗，双方共同承担积分，不进入仓库。</li>
-                                <li><strong>IOU = 欠条卡片：：</strong>购买后进入仓库，购买者扣除积分，另一方玩家立即获得相同积分。使用时，使用者获得（面值+利息）积分，另一方玩家扣除（面值+利息）积分。</li>
-                                <li><strong>特殊奖励卡：：</strong>直接授予对应玩家奖励积分，不进入仓库。</li>
+                                <li><strong>IOU = 欠条卡片：</strong>购买后进入仓库，购买者扣除积分，另一方玩家立即获得相同积分。使用时，使用者获得（面值+利息）积分，另一方玩家扣除（面值+利息）积分。</li>
+                                 <li><strong>特殊奖励卡：</strong>直接授予对应玩家奖励积分，不进入仓库。</li>
                             </ul>
                         </div>
                     </div>
@@ -1055,59 +959,37 @@
                 <div class="total-scores">
                     <h3 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">🏆 积分排行榜</h3>
                     <div class="score-boards">
-                        <div class="score-board">
-                            <div class="player-name">七七</div>
-                            <input type="number" class="total-score-input" id="qiqi-total" value="0" placeholder="输入积分">
-                            <button onclick="openConfirmAddTotalModal('qiqi')" style="margin-top: 12px; padding: 8px 20px; font-size: 0.95em; background: linear-gradient(45deg, #9b59b6, #8e44ad); color: white; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.1); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='1)'">📥 加入本周总分</button>
-                        </div>
-                        <div class="score-board">
-                            <div class="player-name">一一</div>
-                            <input type="number" class="total-score-input" id="yiyi-total" value="0" placeholder="输入积分">
-                            <button onclick="openConfirmAddTotalModal('yiyi')" style="margin-top: 12px; padding: 8px 20px; font-size: 0.95em; background: linear-gradient(45deg, #3498db, #2980b9); color: white; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.1); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='1)'">📥 加入本周总分</button>
-                        </div>
+                        <div class="score-board"><div class="player-name">七七</div><input type="number" class="total-score-input" id="qiqi-total" value="0" placeholder="输入积分"><button onclick="openConfirmAddTotalModal('qiqi')" style="margin-top: 12px; padding: 8px 20px; font-size: 0.95em; background: linear-gradient(45deg, #9b59b6, #8e44ad); color: white; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.1); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='1)'">📥 加入本周总分</button></div>
+                        <div class="score-board"><div class="player-name">一一</div><input type="number" class="total-score-input" id="yiyi-total" value="0" placeholder="输入积分"><button onclick="openConfirmAddTotalModal('yiyi')" style="margin-top: 12px; padding: 8px 20px; font-size: 0.95em; background: linear-gradient(45deg, #3498db, #2980b9); color: white; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.1); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='1)'">📥 加入本周总分</button></div>
                     </div>
                     <div class="control-buttons"> <button class="btn btn-danger" onclick="resetAllData()">重置所有数据</button> </div>
                 </div>
                 <div class="bank-section">
                     <div class="week-card">
                         <div class="week-title">七七</div>
-                        <div class="week-table-container">
-                            <table class="week-table">
-                                <thead>
-                                    <tr><th>日期</th><th>学</th><th>睡</th><th>练</th><th>奖</th><th>罚</th><th>购卡</th><th>交易</th></tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td><strong>周一</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'mon', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'mon', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'mon', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
-                                    <tr><td><strong>周二</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'tue', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'tue', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'tue', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
-                                    <tr><td><strong>周三</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'wed', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'wed', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'wed', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
-                                    <tr><td><strong>周四</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'thu', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'thu', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'thu', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
-                                    <tr><td><strong>周五</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'fri', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'fri', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'fri', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
-                                    <tr><td><strong>周六</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'sat', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'sat', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'sat', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
-                                    <tr><td><strong>周日</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'sun', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'sun', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'sun', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
-                                </tbody>
-                            </table>
-                        </div>
+                        <div class="week-table-container"><table class="week-table"><thead><tr><th>日期</th><th>学</th><th>睡</th><th>练</th><th>奖</th><th>罚</th><th>购卡</th><th>交易</th></tr></thead><tbody>
+                            <tr><td><strong>周一</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'mon', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'mon', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'mon', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
+                            <tr><td><strong>周二</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'tue', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'tue', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'tue', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
+                            <tr><td><strong>周三</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'wed', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'wed', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'wed', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
+                            <tr><td><strong>周四</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'thu', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'thu', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'thu', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
+                            <tr><td><strong>周五</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'fri', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'fri', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'fri', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
+                            <tr><td><strong>周六</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'sat', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'sat', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'sat', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
+                            <tr><td><strong>周日</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'sun', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'sun', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'qiqi', 'sun', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
+                        </tbody></table></div>
                         <div class="week-summary" id="qiqi-summary"><strong>本周积分：0分 ✨</strong> <br> (基础: 0 📚, 奖励: 0 🎁, 罚分: 0 💔, 购卡: 0 💳, 交易: 0 🔄)</div>
                         <button class="btn btn-secondary" onclick="resetWeekData('qiqi')">清零本周数据</button>
                     </div>
                     <div class="week-card">
                         <div class="week-title">一一</div>
-                        <div class="week-table-container">
-                            <table class="week-table">
-                                <thead>
-                                    <tr><th>日期</th><th>学</th><th>睡</th><th>练</th><th>奖</th><th>罚</th><th>购卡</th><th>交易</th></tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td><strong>周一</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'mon', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'mon', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'mon', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
-                                    <tr><td><strong>周二</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'tue', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'tue', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'tue', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
-                                    <tr><td><strong>周三</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'wed', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'wed', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'wed', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
-                                    <tr><td><strong>周四</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'thu', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'thu', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'thu', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
-                                    <tr><td><strong>周五</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'fri', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'fri', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'fri', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
-                                    <tr><td><strong>周六</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'sat', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'sat', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'sat', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
-                                    <tr><td><strong>周日</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'sun', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'sun', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'sun', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
-                                </tbody>
-                            </table>
-                        </div>
+                        <div class="week-table-container"><table class="week-table"><thead><tr><th>日期</th><th>学</th><th>睡</th><th>练</th><th>奖</th><th>罚</th><th>购卡</th><th>交易</th></tr></thead><tbody>
+                            <tr><td><strong>周一</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'mon', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'mon', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'mon', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
+                            <tr><td><strong>周二</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'tue', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'tue', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'tue', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
+                            <tr><td><strong>周三</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'wed', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'wed', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'wed', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
+                            <tr><td><strong>周四</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'thu', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'thu', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'thu', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
+                            <tr><td><strong>周五</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'fri', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'fri', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'fri', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
+                            <tr><td><strong>周六</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'sat', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'sat', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'sat', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
+                            <tr><td><strong>周日</strong></td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'sun', 'book')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'sun', 'sleep')">0</td><td class="clickable-cell cell-zero" onclick="toggleBasicTask(this, 'yiyi', 'sun', 'exercise')">0</td><td class="reward-0 reward-cell">0</td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td><td><input type="number" class="small-input" value="0" readonly></td></tr>
+                        </tbody></table></div>
                         <div class="week-summary" id="yiyi-summary"><strong>本周积分：0分 ✨</strong> <br> (基础: 0 📚, 奖励: 0 🎁, 罚分: 0 💔, 购卡: 0 💳, 交易: 0 🔄)</div>
                         <button class="btn btn-secondary" onclick="resetWeekData('yiyi')">清零本周数据</button>
                     </div>
@@ -1115,7 +997,7 @@
                 <div style="margin-top: 30px; padding: 25px; background: white; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
                     <h3 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">📋 积分计算说明</h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                        <div style="background: #e8f4fd; padding: 20px; border-radius: 10px;"><h4 style="color: #1976d2; margin-bottom: 10px;">📊 积分计算规则</h4><ul style="list-style: none; padding-left: 0; color: #555;"><li><strong>基础任务：</strong>各个项目可点击切换-2, 0, 1分</li><li><strong>奖励积分：</strong>通过特殊奖励卡或自定义奖励获得</li><li><strong>罚分：：</strong>通过扣分规则或自定义扣分产生 (自动记录)</li><li><strong>购卡：：</strong>卡片购买成本 (自动记录)</li><li><strong>交易：：</strong>对方使用T卡时，己方获得的积分 (自动记录)</li><li><strong>总分 = 基础 + 奖励 + 罚分 - 购卡 + 交易</strong> (罚分为负值)</li></ul></div>
+                        <div style="background: #e8f4fd; padding: 20px; border-radius: 10px;"><h4 style="color: #1976d2; margin-bottom: 10px;">📊 积分计算规则</h4><ul style="list-style: none; padding-left: 0; color: #555;"><li><strong>基础任务：</strong>各个项目可点击切换-2, 0, 1分</li><li><strong>奖励积分：</strong>通过特殊奖励卡或自定义奖励获得</li><li><strong>罚分：</strong>通过扣分规则或自定义扣分产生 (自动记录)</li><li><strong>购卡：</strong>卡片购买成本 (自动记录)</li><li><strong>交易：</strong>对方使用T卡时，己方获得的积分 (自动记录)</li><li><strong>总分 = 基础 + 奖励 + 罚分 - 购卡 + 交易</strong> (罚分为负值)</li></ul></div>
 <div style="background: #f3e5f5; padding: 20px; border-radius: 10px;"><h4 style="color: #7b1fa2; margin-bottom: 10px;">🎮 操作说明</h4><ul style="color: #555; padding-left: 20px;"><li>点击基础任务单元格切换数值</li><li>奖励通过"小卡片"页面的特殊卡或"小奖惩"页面的自定义奖励操作</li><li>罚分通过"小奖惩"页面操作自动更新</li><li>购卡积分根据卡片购买自动更新</li><li>交易积分根据对方使用T卡自动更新</li><li>系统自动计算本周各项积分及总分</li></ul></div>
                     </div>
                 </div>
@@ -1777,7 +1659,7 @@
                 rewardDetails: rewardDetailsLog, 
                 tradeDetails: tradeDetailsLog,
                 tradeFromLog: tradeFromLog, 
-                tradeToLog: tradeToLog           
+                tradeToLog: tradeToLog         
             };
             scoreHistoryLog.unshift(historyEntry); renderScoreHistoryTable(); _saveScoreHistoryToFirebaseInternal(); 
             
@@ -2088,7 +1970,7 @@
                             targetSection = document.createElement('div'); 
                             targetSection.className = `points-section ${colorClass}`; 
                             const h3 = document.createElement('h3'); 
-                            h3.innerHTML = `${cardPoints}积分 <button class="add-card-to-section-btn" onclick="openDefineCustomCardModal(${cardPoints})">⊕ 添加</button>`; 
+                            h3.innerHTML = `自定义 ${cardPoints}积分 <button class="add-card-to-section-btn" onclick="openDefineCustomCardModal(${cardPoints})">⊕ 添加</button>`; 
                             targetSection.appendChild(h3); 
                             document.getElementById('main-cards-grid').appendChild(targetSection); 
                         }
