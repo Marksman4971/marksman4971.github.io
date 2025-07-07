@@ -39,7 +39,7 @@
 
         @keyframes glow {
             from { text-shadow: 2px 2px 4px rgba(0,0,0,0.3), 0 0 10px rgba(255,255,255,0.2); }
-            to { text-shadow: 2px 2px 4px rgba(0,0,0,0.3), 0 0 20px rgba(255,255,255,0.4); }
+            to { text-shadow: 2px 2px 4px rgba(255,255,255,0.4), 0 0 20px rgba(0,0,0,0.3); }
         }
 
         .header p {
@@ -389,6 +389,83 @@
         #score-history-table .basic-score-details ul { padding-left: 10px; font-size: 0.85em; list-style-type: disc; }
         #score-history-table .basic-score-details li { margin-bottom: 2px; }
 
+        /* 积分交易系统样式 */
+        .trade-system {
+            background: linear-gradient(45deg, #a8e6cf 0%, #88d8a3 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            color: white;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .trade-system h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .trade-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            align-items: end;
+        }
+
+        .trade-input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .trade-input-group label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .trade-input, .trade-select, .trade-textarea {
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        .trade-input:focus, .trade-select:focus, .trade-textarea:focus {
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.5);
+        }
+
+        .trade-textarea {
+            resize: vertical;
+            min-height: 40px;
+        }
+
+        .trade-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            min-height: 46px;
+        }
+
+        .trade-btn:hover {
+            background: white;
+            color: #88d8a3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+
         @media (max-width: 768px) {
             .container { padding: 5px; } .header h1 { font-size: 1.8em; } .header p { font-size: 1em; }
             .content { padding: 15px; margin: 10px 5px; } .penalty-section { grid-template-columns: 1fr; gap: 20px; }
@@ -400,6 +477,7 @@
             .clickable-cell { min-width: 30px;} .connection-status { top: 10px; right: 10px; padding: 8px 12px; font-size: 0.8em;}
             #score-history-table { font-size: 0.8em;} #score-history-table th, #score-history-table td { padding: 6px 4px;}
             .warehouse-grid { grid-template-columns: 1fr; }
+            .trade-form { grid-template-columns: 1fr; gap: 10px; }
         }
         @media (max-width: 480px) {
             .header h1 { font-size: 1.5em;} .nav-tab { padding: 8px 10px; font-size: 0.75em;}
@@ -491,35 +569,20 @@
         </div>
     </div>
 
-    <div id="define-temp-card-modal-overlay" class="modal-overlay" style="display: none;">
+    <div id="define-custom-card-modal-overlay" class="modal-overlay" style="display: none;">
         <div class="modal-content">
-            <h3>定义临时卡片</h3>
-            <input type="text" id="temp-card-name" placeholder="卡片名称 (如: 特殊外卖卡)" class="modal-input" maxlength="50">
-            <input type="number" id="temp-card-points" placeholder="消耗积分 (如: 4)" class="modal-input">
-            <select id="temp-card-type" class="modal-input">
+            <h3>定义自定义卡片</h3>
+            <input type="text" id="custom-card-name" placeholder="卡片名称 (如: 特殊外卖卡)" class="modal-input" maxlength="50">
+            <input type="number" id="custom-card-points" placeholder="消耗积分 (如: 4)" class="modal-input">
+            <select id="custom-card-type" class="modal-input">
                 <option value="E">E - 消费类</option>
                 <option value="T">T - 交易类</option>
+                <option value="H">H - 开心类</option>
             </select>
+            <textarea id="custom-card-desc" placeholder="卡片描述 (e.g., 具体效果和使用条件)" class="modal-input" rows="3" maxlength="150"></textarea>
             <div class="modal-buttons">
-                <button onclick="defineAndListTempCard()" class="confirm-btn">创建并上架</button>
-                <button onclick="closeDefineTempCardModal()" class="cancel-btn">取消</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="define-permanent-card-modal-overlay" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <h3>定义常用卡片</h3>
-            <input type="text" id="permanent-card-name" placeholder="卡片名称" class="modal-input" maxlength="50">
-            <input type="number" id="permanent-card-points" placeholder="消耗积分" class="modal-input">
-            <select id="permanent-card-type" class="modal-input">
-                <option value="E">E - 消费类</option>
-                <option value="T">T - 交易类</option>
-            </select>
-            <textarea id="permanent-card-desc" placeholder="卡片描述 (e.g., 具体效果和使用条件)" class="modal-input" rows="3" maxlength="150"></textarea>
-            <div class="modal-buttons">
-                <button onclick="defineAndListPermanentCard()" class="confirm-btn">创建并上架</button>
-                <button onclick="closeDefinePermanentCardModal()" class="cancel-btn">取消</button>
+                <button onclick="defineAndListCustomCard()" class="confirm-btn">创建并上架</button>
+                <button onclick="closeDefineCustomCardModal()" class="cancel-btn">取消</button>
             </div>
         </div>
     </div>
@@ -603,7 +666,7 @@
                 <div class="stats-overview">
                     <h3>📊 基本任务</h3>
                     <div class="stats-grid">
-                        <div class="stat-item"> <div class="stat-number">30-60min min</div> <div class="stat-label">日常锻炼</div> </div>
+                        <div class="stat-item"> <div class="stat-number">30-60min</div> <div class="stat-label">日常锻炼</div> </div>
                         <div class="stat-item"> <div class="stat-number">30-60min</div> <div class="stat-label">日常学习</div> </div>
                         <div class="stat-item"> <div class="stat-number">23:00</div> <div class="stat-label">就寝时间</div> </div>
                     </div>
@@ -612,11 +675,8 @@
                     <div style="margin-top: 20px; padding: 15px; background: #e8f4fd; border-radius: 10px;">
                         <h4>📝 任务说明：</h4>
                         <ul style="margin-top: 10px; padding-left: 20px;">
-                            <li><strong>书：</strong>每日阅读30分钟</li>
-                            <li><strong>睡：</strong>在22:30-23:15之间入睡</li>
-                            <li><strong>练：</strong>练习30-60分钟（周末可120分钟）</li>
-                            <li><strong>奖：</strong>每日完成对应任务可获得相应奖励积分 (通过特殊卡片或自定义奖励获得)</li>
-                            <li><strong>游戏时间：</strong>工作日1.5小时，休息日3.5小时</li>
+                            <li><strong>工作日计划试行版：</strong>要求日常完成30分钟锻炼，30分钟学习，23点前睡觉。</li>
+                            <li><strong>休息日计划试行版：</strong>要求日常完成01小时锻炼，03小时学习，23点前睡觉。</li>
                         </ul>
                     </div>
                 </div>
@@ -624,16 +684,48 @@
 
             <div id="cards" class="page">
                 <h2>🎫 积分兑换与仓库</h2>
-                 <div style="text-align: center; margin-bottom: 20px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
-                    <button class="btn" onclick="openDefineTempCardModal()" style="background: linear-gradient(45deg, #5dade2, #2e86c1); font-size: 1.1em; padding: 12px 25px;">🛠️ 定义临时卡片</button>
-                    <button class="btn" onclick="openDefinePermanentCardModal()" style="background: linear-gradient(45deg, #27ae60, #229954); font-size: 1.1em; padding: 12px 25px;">⭐ 定义常用卡片</button>
+                
+                <div class="trade-system">
+                    <h3>💰 积分交易系统</h3>
+                    <div class="trade-form">
+                        <div class="trade-input-group">
+                            <label for="trade-from">转账方</label>
+                            <select id="trade-from" class="trade-select">
+                                <option value="">请选择</option>
+                                <option value="qiqi">七七</option>
+                                <option value="yiyi">一一</option>
+                            </select>
+                        </div>
+                        <div class="trade-input-group">
+                            <label for="trade-to">接收方</label>
+                            <select id="trade-to" class="trade-select">
+                                <option value="">请选择</option>
+                                <option value="qiqi">七七</option>
+                                <option value="yiyi">一一</option>
+                            </select>
+                        </div>
+                        <div class="trade-input-group">
+                            <label for="trade-amount">交易积分</label>
+                            <input type="number" id="trade-amount" class="trade-input" placeholder="输入积分数量" min="1" max="999">
+                        </div>
+                        <div class="trade-input-group">
+                            <label for="trade-memo">备注说明</label>
+                            <textarea id="trade-memo" class="trade-textarea" placeholder="交易原因或备注"></textarea>
+                        </div>
+                        <div class="trade-input-group">
+                            <button onclick="executePointsTrade()" class="trade-btn">💸 执行交易</button>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-bottom: 20px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                    <button class="btn" onclick="openDefineCustomCardModal()" style="background: linear-gradient(45deg, #27ae60, #229954); font-size: 1.1em; padding: 12px 25px;">⭐ 自定义卡片</button>
                     <button class="btn" onclick="openDefineIOUCardModal()" style="background: linear-gradient(45deg, #f39c12, #e67e22); font-size: 1.1em; padding: 12px 25px;">📝 定义欠条卡片</button>
                 </div>
 
                 <div class="weekly-rewards-section">
                     <h3>🌟 每周特殊奖励卡</h3>
-                    <div class="card-item info-card" data-points="3" data-type="special-reward" data-name="完美周奖励卡" id="predef_card_perfectweek" onclick="openSpecialRewardModal('完美周奖励卡', 3)"><div class="card-title">🏆 完美周奖励卡</div><div class="card-desc">当周表现优异，可获得3点额外奖励积分。</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_perfectweek', 'predefined')">❌</button></div>
-                    <div class="card-item info-card" data-points="3" data-type="special-reward" data-name="和平周奖励卡" id="predef_card_peaceweek" onclick="openSpecialRewardModal('和平周奖励卡', 3)"><div class="card-title">🤝 和平周奖励卡</div><div class="card-desc">当周相处和谐，可获得3点额外奖励积分。</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_peaceweek', 'predefined')">❌</button></div>
+                    <div class="card-item info-card" data-points="3" data-type="special-reward" data-name="完美周奖励卡" id="predef_card_perfectweek" onclick="openSpecialRewardModal('完美周奖励卡', 3)"><div class="card-title">🏆 完美周奖励卡</div><div class="card-desc">当周表现优异，可获得3点额外奖励积分。</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_perfectweek', 'predefined')">❌</button></div>
+                    <div class="card-item info-card" data-points="3" data-type="special-reward" data-name="和平周奖励卡" id="predef_card_peaceweek" onclick="openSpecialRewardModal('和平周奖励卡', 3)"><div class="card-title">🤝 和平周奖励卡</div><div class="card-desc">当周相处和谐，可获得3点额外奖励积分。</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_peaceweek', 'predefined')">❌</button></div>
                     <p style="text-align: center; font-size: 0.9em; color: #7f8c8d; margin-top: 15px;">(点击卡片选择授予对象)</p>
                 </div>
 
@@ -645,67 +737,61 @@
                     </div>
                 </div>
 
-                <div id="temporary-cards-section" style="display: block;"> <h3 style="text-align:center; margin-top:40px; margin-bottom:20px; color: #2c3e50;">⏳ 临时定义卡片</h3>
+                <div id="temporary-cards-section" style="display: block;"> <h3 style="text-align:center; margin-top:40px; margin-bottom:20px; color: #2c3e50;">⭐ 自定义卡片</h3>
                     <div id="temp-cards-grid" class="points-grid">
-                        <p id="no-temp-cards-text" class="no-cards-text" style="grid-column: 1 / -1;">尚未定义临时卡片。</p>
+                        <p id="no-temp-cards-text" class="no-cards-text" style="grid-column: 1 / -1;">尚未定义自定义卡片。</p>
                     </div>
                 </div>
 
-                <div id="all-permanent-cards-section" style="display: block;"> <h3 style="text-align:center; margin-top:40px; margin-bottom:20px; color: #2c3e50;">⭐ 常用卡片总览</h3>
-                    <div id="all-permanent-cards-grid" class="points-grid">
-                        <p id="no-permanent-cards-text" class="no-cards-text" style="grid-column: 1 / -1;">尚未定义常用卡片。</p>
-                    </div>
-                </div>
-                
                 <h3 style="text-align:center; margin-top:40px; margin-bottom:20px; color: #2c3e50;">🛒 可购买卡片</h3>
                 <div id="main-cards-grid" class="points-grid">
                     <div class="points-section points-1">
-                        <h3>💚 1积分 <button class="add-card-to-section-btn" onclick="openDefinePermanentCardModal(1)">⊕ 添加</button></h3>
-                        <div class="card-item" data-points="1" data-type="E" data-name="E/快递外卖卡" id="predef_card_kuaidi" onclick="openBuyerModal(1, 'E', 'E/快递外卖卡')"><div class="card-title">E/快递外卖卡</div><div class="card-desc">负责全天的快递和外卖取货</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_kuaidi', 'predefined')">❌</button></div>
-                        <div class="card-item" data-points="1" data-type="E" data-name="E/零食投喂卡" id="predef_card_lingshi" onclick="openBuyerModal(1, 'E', 'E/零食投喂卡')"><div class="card-title">E/零食投喂卡</div><div class="card-desc">兑换指定零食/奶茶一份，亲手喂食</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_lingshi', 'predefined')">❌</button></div>
-                        <div class="card-item" data-points="1" data-type="E" data-name="E/简单购物卡" id="predef_card_gouwu" onclick="openBuyerModal(1, 'E', 'E/简单购物卡')"><div class="card-title">E/简单购物卡</div><div class="card-desc">一天的简单代买</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_gouwu', 'predefined')">❌</button></div>
-                        <div class="card-item" data-points="1" data-type="T" data-name="T/家务执行卡" id="predef_card_jiawu" onclick="openBuyerModal(1, 'T', 'T/家务执行卡')"><div class="card-title">T/家务执行卡</div><div class="card-desc">指定任意家务（整理衣柜/打扫房间/洗晒衣服/收拾桌子/洗碗）</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_jiawu', 'predefined')">❌</button></div>
-                        <div class="card-item" data-points="1" data-type="T" data-name="T/简单按摩卡" id="predef_card_anmo" onclick="openBuyerModal(1, 'T', 'T/简单按摩卡')"><div class="card-title">T/简单按摩卡</div><div class="card-desc">享受3分钟肩颈按摩</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_anmo', 'predefined')">❌</button></div>
+                        <h3>💚 1积分 <button class="add-card-to-section-btn" onclick="openDefineCustomCardModal(1)">⊕ 添加</button></h3>
+                        <div class="card-item" data-points="1" data-type="E" data-name="E/快递外卖卡" id="predef_card_kuaidi" onclick="openBuyerModal(1, 'E', 'E/快递外卖卡')"><div class="card-title">E/快递外卖卡</div><div class="card-desc">负责全天的快递和外卖取货</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_kuaidi', 'predefined')">❌</button></div>
+                        <div class="card-item" data-points="1" data-type="E" data-name="E/零食投喂卡" id="predef_card_lingshi" onclick="openBuyerModal(1, 'E', 'E/零食投喂卡')"><div class="card-title">E/零食投喂卡</div><div class="card-desc">兑换指定零食/奶茶一份，亲手喂食</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_lingshi', 'predefined')">❌</button></div>
+                        <div class="card-item" data-points="1" data-type="E" data-name="E/简单购物卡" id="predef_card_gouwu" onclick="openBuyerModal(1, 'E', 'E/简单购物卡')"><div class="card-title">E/简单购物卡</div><div class="card-desc">一天的简单代买</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_gouwu', 'predefined')">❌</button></div>
+                        <div class="card-item" data-points="1" data-type="T" data-name="T/家务执行卡" id="predef_card_jiawu" onclick="openBuyerModal(1, 'T', 'T/家务执行卡')"><div class="card-title">T/家务执行卡</div><div class="card-desc">指定任意家务（整理衣柜/打扫房间/洗晒衣服/收拾桌子/洗碗）</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_jiawu', 'predefined')">❌</button></div>
+                        <div class="card-item" data-points="1" data-type="T" data-name="T/简单按摩卡" id="predef_card_anmo" onclick="openBuyerModal(1, 'T', 'T/简单按摩卡')"><div class="card-title">T/简单按摩卡</div><div class="card-desc">享受3分钟肩颈按摩</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_anmo', 'predefined')">❌</button></div>
                     </div>
                     <div class="points-section points-2">
-                        <h3>🧡 2积分 <button class="add-card-to-section-btn" onclick="openDefinePermanentCardModal(2)">⊕ 添加</button></h3>
-                        <div class="card-item" data-points="2" data-type="E" data-name="E/食物选择卡" id="predef_card_shiwu" onclick="openBuyerModal(2, 'E', 'E/食物选择卡')"><div class="card-title">E/食物选择卡</div><div class="card-desc">给对方提供三种以上的外卖或者菜品的选择</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_shiwu', 'predefined')">❌</button></div>
-                        <div class="card-item" data-points="2" data-type="E" data-name="E/影视选择卡" id="predef_card_yingshi" onclick="openBuyerModal(2, 'E', 'E/影视选择卡')"><div class="card-title">E/影视选择卡</div><div class="card-desc">本天看剧时间完全由你决定</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_yingshi', 'predefined')">❌</button></div>
-                        <div class="card-item" data-points="2" data-type="E" data-name="E/造型选择卡" id="predef_card_zaoxing" onclick="openBuyerModal(2, 'E', 'E/造型选择卡')"><div class="card-title">E/造型选择卡</div><div class="card-desc">对方帮你挑选今天的穿搭</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_zaoxing', 'predefined')">❌</button></div>
-                        <div class="card-item" data-points="2" data-type="T" data-name="T/专属表演卡" id="predef_card_biaoyan" onclick="openBuyerModal(2, 'T', 'T/专属表演卡')"><div class="card-title">T/专属表演卡</div><div class="card-desc">对方为你表演指定的歌曲/讲故事</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_biaoyan', 'predefined')">❌</button></div>
+                        <h3>🧡 2积分 <button class="add-card-to-section-btn" onclick="openDefineCustomCardModal(2)">⊕ 添加</button></h3>
+                        <div class="card-item" data-points="2" data-type="E" data-name="E/食物选择卡" id="predef_card_shiwu" onclick="openBuyerModal(2, 'E', 'E/食物选择卡')"><div class="card-title">E/食物选择卡</div><div class="card-desc">给对方提供三种以上的外卖或者菜品的选择</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_shiwu', 'predefined')">❌</button></div>
+                        <div class="card-item" data-points="2" data-type="E" data-name="E/影视选择卡" id="predef_card_yingshi" onclick="openBuyerModal(2, 'E', 'E/影视选择卡')"><div class="card-title">E/影视选择卡</div><div class="card-desc">本天看剧时间完全由你决定</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_yingshi', 'predefined')">❌</button></div>
+                        <div class="card-item" data-points="2" data-type="E" data-name="E/造型选择卡" id="predef_card_zaoxing" onclick="openBuyerModal(2, 'E', 'E/造型选择卡')"><div class="card-title">E/造型选择卡</div><div class="card-desc">对方帮你挑选今天的穿搭</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_zaoxing', 'predefined')">❌</button></div>
+                        <div class="card-item" data-points="2" data-type="T" data-name="T/专属表演卡" id="predef_card_biaoyan" onclick="openBuyerModal(2, 'T', 'T/专属表演卡')"><div class="card-title">T/专属表演卡</div><div class="card-desc">对方为你表演指定的歌曲/讲故事</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_biaoyan', 'predefined')">❌</button></div>
                     </div>
                     <div class="points-section points-3">
-                        <h3>❤️ 3积分 <button class="add-card-to-section-btn" onclick="openDefinePermanentCardModal(3)">⊕ 添加</button></h3>
-                        <div class="card-item" data-points="3" data-type="E" data-name="E/睡觉延迟卡" id="predef_card_shuijiao" onclick="openBuyerModal(3, 'E', 'E/睡觉延迟卡')"><div class="card-title">E/睡觉延迟卡</div><div class="card-desc">可以延长睡眠时间10分钟（可叠加使用，但不能超过半小时）</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_shuijiao', 'predefined')">❌</button></div>
-                        <div class="card-item" data-points="3" data-type="E" data-name="E/拥抱充电卡" id="predef_card_yongbao" onclick="openBuyerModal(3, 'E', 'E/拥抱充电卡')"><div class="card-title">E/拥抱充电卡</div><div class="card-desc">兑换3分钟超级大拥抱</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_yongbao', 'predefined')">❌</button></div>
-                        <div class="card-item" data-points="3" data-type="T" data-name="T/视频录制卡" id="predef_card_shipin" onclick="openBuyerModal(3, 'T', 'T/视频录制卡')"><div class="card-title">T/视频录制卡</div><div class="card-desc">经过对方允许可录制7-10分钟的视频</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_shipin', 'predefined')">❌</button></div>
-                        <div class="card-item" data-points="3" data-type="T" data-name="T/跑腿代购卡" id="predef_card_paotui" onclick="openBuyerModal(3, 'T', 'T/跑腿代购卡')"><div class="card-title">T/跑腿代购卡</div><div class="card-desc">兑换一次代买早餐/日用品服务（半径3公里内）</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_paotui', 'predefined')">❌</button></div>
-                        <div class="card-item" data-points="3" data-type="T" data-name="T/拍照选择卡" id="predef_card_paizhao" onclick="openBuyerModal(3, 'T', 'T/拍照选择卡')"><div class="card-title">T/拍照选择卡</div><div class="card-desc">专属摄影师10张</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_paizhao', 'predefined')">❌</button></div>
-                        <div class="card-item" data-points="3" data-type="T" data-name="T/学习陪伴卡" id="predef_card_xuexi" onclick="openBuyerModal(3, 'T', 'T/学习陪伴卡')"><div class="card-title">T/学习陪伴卡</div><div class="card-desc">对方安静陪伴你学习工作1小时</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_xuexi', 'predefined')">❌</button></div>
+                        <h3>❤️ 3积分 <button class="add-card-to-section-btn" onclick="openDefineCustomCardModal(3)">⊕ 添加</button></h3>
+                        <div class="card-item" data-points="3" data-type="E" data-name="E/睡觉延迟卡" id="predef_card_shuijiao" onclick="openBuyerModal(3, 'E', 'E/睡觉延迟卡')"><div class="card-title">E/睡觉延迟卡</div><div class="card-desc">可以延长睡眠时间10分钟（可叠加使用，但不能超过半小时）</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_shuijiao', 'predefined')">❌</button></div>
+                        <div class="card-item" data-points="3" data-type="E" data-name="E/拥抱充电卡" id="predef_card_yongbao" onclick="openBuyerModal(3, 'E', 'E/拥抱充电卡')"><div class="card-title">E/拥抱充电卡</div><div class="card-desc">兑换3分钟超级大拥抱</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_yongbao', 'predefined')">❌</button></div>
+                        <div class="card-item" data-points="3" data-type="T" data-name="T/视频录制卡" id="predef_card_shipin" onclick="openBuyerModal(3, 'T', 'T/视频录制卡')"><div class="card-title">T/视频录制卡</div><div class="card-desc">经过对方允许可录制7-10分钟的视频</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_shipin', 'predefined')">❌</button></div>
+                        <div class="card-item" data-points="3" data-type="T" data-name="T/跑腿代购卡" id="predef_card_paotui" onclick="openBuyerModal(3, 'T', 'T/跑腿代购卡')"><div class="card-title">T/跑腿代购卡</div><div class="card-desc">兑换一次代买早餐/日用品服务（半径3公里内）</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_paotui', 'predefined')">❌</button></div>
+                        <div class="card-item" data-points="3" data-type="T" data-name="T/拍照选择卡" id="predef_card_paizhao" onclick="openBuyerModal(3, 'T', 'T/拍照选择卡')"><div class="card-title">T/拍照选择卡</div><div class="card-desc">专属摄影师10张</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_paizhao', 'predefined')">❌</button></div>
+                        <div class="card-item" data-points="3" data-type="T" data-name="T/学习陪伴卡" id="predef_card_xuexi" onclick="openBuyerModal(3, 'T', 'T/学习陪伴卡')"><div class="card-title">T/学习陪伴卡</div><div class="card-desc">对方安静陪伴你学习工作1小时</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_xuexi', 'predefined')">❌</button></div>
                     </div>
                     <div class="points-section points-5">
-                        <h3>💜 5积分 <button class="add-card-to-section-btn" onclick="openDefinePermanentCardModal(5)">⊕ 添加</button></h3>
-                        <div class="card-item" data-points="5" data-type="E" data-name="E/手机时长卡" id="predef_card_shouji" onclick="openBuyerModal(5, 'E', 'E/手机时长卡')"><div class="card-title">E/手机时长卡</div><div class="card-desc">兑换30分钟无打扰玩手机时间</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_shouji', 'predefined')">❌</button></div>
-                        <div class="card-item" data-points="5" data-type="E" data-name="E/游戏陪玩卡" id="predef_card_youxi" onclick="openBuyerModal(5, 'E', 'E/游戏陪玩卡')"><div class="card-title">E/游戏陪玩卡</div><div class="card-desc">对方陪你玩喜欢的游戏2小时</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_youxi', 'predefined')">❌</button></div>
-                        <div class="card-item" data-points="5" data-type="T" data-name="T/食物料理卡" id="predef_card_liaoli" onclick="openBuyerModal(5, 'T', 'T/食物料理卡')"><div class="card-title">T/食物料理卡</div><div class="card-desc">对方为你完成一道指定菜，对方陪你吃掉一碗菜</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_liaoli', 'predefined')">❌</button></div>
+                        <h3>💜 5积分 <button class="add-card-to-section-btn" onclick="openDefineCustomCardModal(5)">⊕ 添加</button></h3>
+                        <div class="card-item" data-points="5" data-type="E" data-name="E/手机时长卡" id="predef_card_shouji" onclick="openBuyerModal(5, 'E', 'E/手机时长卡')"><div class="card-title">E/手机时长卡</div><div class="card-desc">兑换30分钟无打扰玩手机时间</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_shouji', 'predefined')">❌</button></div>
+                        <div class="card-item" data-points="5" data-type="E" data-name="E/游戏陪玩卡" id="predef_card_youxi" onclick="openBuyerModal(5, 'E', 'E/游戏陪玩卡')"><div class="card-title">E/游戏陪玩卡</div><div class="card-desc">对方陪你玩喜欢的游戏2小时</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_youxi', 'predefined')">❌</button></div>
+                        <div class="card-item" data-points="5" data-type="T" data-name="T/食物料理卡" id="predef_card_liaoli" onclick="openBuyerModal(5, 'T', 'T/食物料理卡')"><div class="card-title">T/食物料理卡</div><div class="card-desc">对方为你完成一道指定菜，对方陪你吃掉一碗菜</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_liaoli', 'predefined')">❌</button></div>
                     </div>
                     <div class="points-section points-10">
-                        <h3>🖤 10积分 <button class="add-card-to-section-btn" onclick="openDefinePermanentCardModal(10)">⊕ 添加</button></h3>
-                        <div class="card-item" data-points="10" data-type="T" data-name="T/家务豁免卡" id="predef_card_huomian" onclick="openBuyerModal(10, 'T', 'T/家务豁免卡')"><div class="card-title">T/家务豁免卡</div><div class="card-desc">免除当日指定家务劳动</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_huomian', 'predefined')">❌</button></div>
-                        <div class="card-item" data-points="10" data-type="T" data-name="T/庆祝选择卡" id="predef_card_qingzhu" onclick="openBuyerModal(10, 'T', 'T/庆祝选择卡')"><div class="card-title">T/庆祝选择卡</div><div class="card-desc">纪念日当天持卡人拥有活动决定权</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_qingzhu', 'predefined')">❌</button></div>
-                        <div class="card-item" data-points="10" data-type="T" data-name="T/万能半日卡" id="predef_card_bannri" onclick="openBuyerModal(10, 'T', 'T/万能半日卡')"><div class="card-title">T/万能半日卡</div><div class="card-desc">可在周末或节假日空闲时陪伴（全心全意）</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_bannri', 'predefined')">❌</button></div>
+                        <h3>🖤 10积分 <button class="add-card-to-section-btn" onclick="openDefineCustomCardModal(10)">⊕ 添加</button></h3>
+                        <div class="card-item" data-points="10" data-type="T" data-name="T/家务豁免卡" id="predef_card_huomian" onclick="openBuyerModal(10, 'T', 'T/家务豁免卡')"><div class="card-title">T/家务豁免卡</div><div class="card-desc">免除当日指定家务劳动</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_huomian', 'predefined')">❌</button></div>
+                        <div class="card-item" data-points="10" data-type="T" data-name="T/庆祝选择卡" id="predef_card_qingzhu" onclick="openBuyerModal(10, 'T', 'T/庆祝选择卡')"><div class="card-title">T/庆祝选择卡</div><div class="card-desc">纪念日当天持卡人拥有活动决定权</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_qingzhu', 'predefined')">❌</button></div>
+                        <div class="card-item" data-points="10" data-type="T" data-name="T/万能半日卡" id="predef_card_bannri" onclick="openBuyerModal(10, 'T', 'T/万能半日卡')"><div class="card-title">T/万能半日卡</div><div class="card-desc">可在周末或节假日空闲时陪伴（全心全意）</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_bannri', 'predefined')">❌</button></div>
                     </div>
                     <div class="points-section points-20">
-                        <h3>🔥 20积分 <button class="add-card-to-section-btn" onclick="openDefinePermanentCardModal(20)">⊕ 添加</button></h3>
-                        <div class="card-item" data-points="20" data-type="E" data-name="E/万能和好卡" id="predef_card_hehao" onclick="openBuyerModal(20, 'E', 'E/万能和好卡')"><div class="card-title">E/万能和好卡</div><div class="card-desc">双方需要在15分钟内停止争论，倾诉以及沟通</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_hehao', 'predefined')">❌</button></div>
-                        <div class="card-item" data-points="20" data-type="T" data-name="T/万能包日卡" id="predef_card_baori" onclick="openBuyerModal(20, 'T', 'T/万能包日卡')"><div class="card-title">T/万能包日卡</div><div class="card-desc">可在周末或节假日空闲时陪伴（满足对方一切要求）叠加时每天加10分，对方获得三分之一</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_baori', 'predefined')">❌</button></div>
-                        <div class="card-item" data-points="20" data-type="H" data-name="H/周末掌控卡" id="predef_card_zhangkong" onclick="openBuyerModal(20, 'H', 'H/周末掌控卡')"><div class="card-title">H/周末掌控卡</div><div class="card-desc">一人十分解除当天的所有限制（此外当天所有日常不在加分）</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_zhangkong', 'predefined')">❌</button></div>
+                        <h3>🔥 20积分 <button class="add-card-to-section-btn" onclick="openDefineCustomCardModal(20)">⊕ 添加</button></h3>
+                        <div class="card-item" data-points="20" data-type="E" data-name="E/万能和好卡" id="predef_card_hehao" onclick="openBuyerModal(20, 'E', 'E/万能和好卡')"><div class="card-title">E/万能和好卡</div><div class="card-desc">双方需要在15分钟内停止争论，倾诉以及沟通</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_hehao', 'predefined')">❌</button></div>
+                        <div class="card-item" data-points="20" data-type="T" data-name="T/万能包日卡" id="predef_card_baori" onclick="openBuyerModal(20, 'T', 'T/万能包日卡')"><div class="card-title">T/万能包日卡</div><div class="card-desc">可在周末或节假日空闲时陪伴（满足对方一切要求）叠加时每天加10分，对方获得三分之一</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_baori', 'predefined')">❌</button></div>
+                        <div class="card-item" data-points="20" data-type="H" data-name="H/周末掌控卡" id="predef_card_zhangkong" onclick="openBuyerModal(20, 'H', 'H/周末掌控卡')"><div class="card-title">H/周末掌控卡</div><div class="card-desc">一人十分解除当天的所有限制（此外当天所有日常不在加分）</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_zhangkong', 'predefined')">❌</button></div>
                     </div>
 
 
                     <div class="points-section points-20">
-                        <h3>🌟 999积分 <button class="add-card-to-section-btn" onclick="openDefinePermanentCardModal(20)">⊕ 添加</button></h3>
-                         <div class="card-item" data-points="20" data-type="T" data-name="T/原地结婚卡" id="predef_card_baori" onclick="openBuyerModal(20, 'T', 'T/原地结婚卡')"><div class="card-title">T/原地结婚卡</div><div class="card-desc">当天带上身份证去民政局领结婚证</div><button class="delete-card-btn" onclick="handleDeleteCard('predef_card_baori', 'predefined')">❌</button></div>
+                        <h3>🌟 999积分 <button class="add-card-to-section-btn" onclick="openDefineCustomCardModal(999)">⊕ 添加</button></h3>
+                         <div class="card-item" data-points="999" data-type="T" data-name="T/原地结婚卡" id="predef_card_jiehun" onclick="openBuyerModal(999, 'T', 'T/原地结婚卡')"><div class="card-title">T/原地结婚卡</div><div class="card-desc">当天带上身份证去民政局领结婚证</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('predef_card_jiehun', 'predefined')">❌</button></div>
                     </div>
 
 
@@ -714,9 +800,10 @@
                         <h3 style="margin-bottom: 15px;">💡 使用说明</h3>
                         <div style="display: inline-block; text-align: left; font-size: 1.05em; line-height: 1.8; margin: 0 auto;">
                             <ul style="list-style: none; padding: 0; margin: 0;">
+                                <li><strong>积分交易：</strong>可直接在玩家间转移积分，支持备注说明，交易记录会计入总分体系。</li>
                                 <li><strong>E = 消费类卡片：</strong>购买后进入仓库，使用后从仓库移除。积分由购买方承担。</li>
                                 <li><strong>T = 交易类卡片：</strong>购买后进入仓库。使用后卡片从仓库移除，卡片原积分值将加入对方的“交易”积分中。购买方承担购买成本。</li>
-                                <li><strong>H = 开心类卡片：</strong>直接消耗，双方共同承担积分，不进入仓库。</li>
+                                <li><strong>H = 开心类卡片：：</strong>直接消耗，双方共同承担积分，不进入仓库。</li>
                                 <li><strong>IOU = 欠条卡片：</strong>购买后进入仓库，购买者扣除积分，另一方玩家立即获得相同积分。使用时，使用者获得（面值+利息）积分，另一方玩家扣除（面值+利息）积分。</li>
                                  <li><strong>特殊奖励卡：</strong>直接授予对应玩家奖励积分，不进入仓库。</li>
                             </ul>
@@ -731,11 +818,10 @@
                     <div class="penalty-card penalty-left">
                         <h3 style="color: #e74c3c; text-align: center; margin-bottom: 20px;">❌ 扣分规则</h3>
                         <div class="penalty-list">
-                            <div class="penalty-item" data-penalty-value="-1" data-penalty-desc="说话语气不好"><div class="penalty-item-info"><span class="penalty-score">-1</span><span>说话语气不好</span></div><div class="penalty-action-buttons"><button onclick="openPenaltyModal(-1, '说话语气不好')">应用</button></div></div>
-                            <div class="penalty-item" data-penalty-value="-2" data-penalty-desc="任意项没完成扣两分"><div class="penalty-item-info"><span class="penalty-score">-2</span><span>任意项没完成扣两分</span></div><div class="penalty-action-buttons"><button onclick="openPenaltyModal(-2, '任意项没完成扣两分')">应用</button></div></div>
-                            <div class="penalty-item" data-penalty-value="-2" data-penalty-desc="游戏手机超时扣分翻倍且叠加"><div class="penalty-item-info"><span class="penalty-score">-2</span><span>游戏手机超时扣分翻倍且叠加</span></div><div class="penalty-action-buttons"><button onclick="openPenaltyModal(-2, '游戏手机超时扣分翻倍且叠加')">应用</button></div></div>
+                            <div class="penalty-item" data-penalty-value="-1" data-penalty-desc="不耐烦"><div class="penalty-item-info"><span class="penalty-score">-1</span><span>不耐烦</span></div><div class="penalty-action-buttons"><button onclick="openPenaltyModal(-1, '不耐烦')">应用</button></div></div>
+                            <div class="penalty-item" data-penalty-value="-2" data-penalty-desc="反问句"><div class="penalty-item-info"><span class="penalty-score">-1</span><span>反问句</span></div><div class="penalty-action-buttons"><button onclick="openPenaltyModal(-1, '反问句')">应用</button></div></div>
+                            <div class="penalty-item" data-penalty-value="-2" data-penalty-desc="说脏话"><div class="penalty-item-info"><span class="penalty-score">-1</span><span>说脏话</span></div><div class="penalty-action-buttons"><button onclick="openPenaltyModal(-1, '说脏话')">应用</button></div></div>
                             <div class="penalty-item" data-penalty-value="-3" data-penalty-desc="冷暴力"><div class="penalty-item-info"><span class="penalty-score">-3</span><span>冷暴力</span></div><div class="penalty-action-buttons"><button onclick="openPenaltyModal(-3, '冷暴力')">应用</button></div></div>
-                            <div class="penalty-item" data-penalty-value="-5" data-penalty-desc="食言"><div class="penalty-item-info"><span class="penalty-score">-5</span><span>食言</span></div><div class="penalty-action-buttons"><button onclick="openPenaltyModal(-5, '食言')">应用</button></div></div>
                             <div class="penalty-item"><div class="penalty-item-info"><span class="penalty-score" style="background-color: #f39c12;">自定</span><span>其他自定义扣分</span></div><div class="penalty-action-buttons"><button onclick="openCustomPenaltyModal()" class="custom-penalty-btn">设置</button></div></div>
                         </div>
                         <div style="background: #ffebee; padding: 15px; border-radius: 8px; margin-top: 20px;"> <h4 style="color: #c62828; margin-bottom: 10px;">⚠️ 扣分说明</h4> <ul style="color: #666; margin-left: 20px;"><li>扣分会立即从当前积分中扣除 (体现为周记录中的负值)</li><li>如积分不足，将产生负债</li><li>连续违规行为将有额外惩罚</li><li>自定义扣分需双方同意并记录原因</li></ul></div>
@@ -754,8 +840,8 @@
                 <div class="total-scores">
                     <h3 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">🏆 积分排行榜</h3>
                     <div class="score-boards">
-                        <div class="score-board"><div class="player-name">七七</div><input type="number" class="total-score-input" id="qiqi-total" value="0" placeholder="输入积分"><button onclick="openConfirmAddTotalModal('qiqi')" style="margin-top: 12px; padding: 8px 20px; font-size: 0.95em; background: linear-gradient(45deg, #9b59b6, #8e44ad); color: white; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.1); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">📥 加入本周总分</button></div>
-                        <div class="score-board"><div class="player-name">一一</div><input type="number" class="total-score-input" id="yiyi-total" value="0" placeholder="输入积分"><button onclick="openConfirmAddTotalModal('yiyi')" style="margin-top: 12px; padding: 8px 20px; font-size: 0.95em; background: linear-gradient(45deg, #3498db, #2980b9); color: white; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.1); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">📥 加入本周总分</button></div>
+                        <div class="score-board"><div class="player-name">七七</div><input type="number" class="total-score-input" id="qiqi-total" value="0" placeholder="输入积分"><button onclick="openConfirmAddTotalModal('qiqi')" style="margin-top: 12px; padding: 8px 20px; font-size: 0.95em; background: linear-gradient(45deg, #9b59b6, #8e44ad); color: white; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.1); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='1)'">📥 加入本周总分</button></div>
+                        <div class="score-board"><div class="player-name">一一</div><input type="number" class="total-score-input" id="yiyi-total" value="0" placeholder="输入积分"><button onclick="openConfirmAddTotalModal('yiyi')" style="margin-top: 12px; padding: 8px 20px; font-size: 0.95em; background: linear-gradient(45deg, #3498db, #2980b9); color: white; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.1); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='1)'">📥 加入本周总分</button></div>
                     </div>
                     <div class="control-buttons"> <button class="btn btn-danger" onclick="resetAllData()">重置所有数据</button> </div>
                 </div>
@@ -792,7 +878,7 @@
                 <div style="margin-top: 30px; padding: 25px; background: white; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
                     <h3 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">📋 积分计算说明</h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                        <div style="background: #e8f4fd; padding: 20px; border-radius: 10px;"><h4 style="color: #1976d2; margin-bottom: 10px;">📊 积分计算规则</h4><ul style="color: #555; margin-left: 20px;"><li><strong>基础任务：</strong>书/睡/练 各-2, 0, 1分 (可点击切换)</li><li><strong>奖励积分：</strong>通过特殊奖励卡或自定义奖励获得</li><li><strong>罚分：</strong>通过扣分规则或自定义扣分产生 (自动记录)</li><li><strong>购卡：</strong>卡片购买成本 (自动记录)</li><li><strong>交易：</strong>对方使用T卡时，己方获得的积分 (自动记录)</li><li><strong>总分 = 基础 + 奖励 + 罚分 - 购卡 + 交易</strong> (罚分为负值)</li></ul></div>
+                        <div style="background: #e8f4fd; padding: 20px; border-radius: 10px;"><h4 style="color: #1976d2; margin-bottom: 10px;">📊 积分计算规则</h4><ul style="color: #555; margin-left: 20px;"><li><strong>基础任务：</strong>书/睡/练 各-2, 0, 1分 (可点击切换)</li><li><strong>奖励积分：</strong>通过特殊奖励卡或自定义奖励获得</li><li><strong>罚分：</strong>通过扣分规则或自定义扣分产生 (自动记录)</li><li><strong>购卡：：</strong>卡片购买成本 (自动记录)</li><li><strong>交易：</strong>对方使用T卡时，己方获得的积分 (自动记录)</li><li><strong>总分 = 基础 + 奖励 + 罚分 - 购卡 + 交易</strong> (罚分为负值)</li></ul></div>
                         <div style="background: #f3e5f5; padding: 20px; border-radius: 10px;"><h4 style="color: #7b1fa2; margin-bottom: 10px;">🎮 操作说明</h4><ul style="color: #555; margin-left: 20px;"><li>点击基础任务单元格切换数值</li><li>奖励通过"小卡片"页面的特殊卡或"小奖惩"页面的自定义奖励操作</li><li>罚分通过"小奖惩"页面操作自动更新</li><li>购卡积分根据卡片购买自动更新</li><li>交易积分根据对方使用T卡自动更新</li><li>系统自动计算本周各项积分及总分</li></ul></div>
                     </div>
                 </div>
@@ -800,7 +886,7 @@
             
             <div id="history" class="page">
                 <h2>📜 积分历史记录</h2>
-                <div class="table-container"> <table id="score-history-table"><thead><tr><th>纳入日期</th><th>玩家</th><th class="num-center">基础分详情</th><th class="num-center">奖励分</th><th>奖励分详情</th><th>罚分详情</th><th>购卡详情</th><th class="num-center">交易分</th><th class="total-highlight num-center">本周总计</th></tr></thead><tbody></tbody></table></div>
+                <div class="table-container"> <table id="score-history-table"><thead><tr><th>纳入日期</th><th>玩家</th><th class="num-center">基础分详情</th><th class="num-center">奖励分</th><th>奖励分详情</th><th>罚分详情</th><th>购卡详情</th><th class="num-center">交易分</th><th>交易明细</th><th class="total-highlight num-center">本周总计</th></tr></thead><tbody></tbody></table></div>
                 <div class="control-buttons"> <button class="btn btn-danger" onclick="clearScoreHistory()">清空历史记录</button> </div>
             </div>
         </div>
@@ -834,15 +920,17 @@
 
         let scoreHistoryLog = [];
         let warehousesData = { qiqi: [], yiyi: [] }; 
-        let tempDefinedCards = []; 
-        let permanentCardsData = {}; // Stores user-defined permanent cards { cardId: {details} }
-        let iouCardsData = {}; // Stores user-defined IOU cards { cardId: {details} } // NEW
+        // 统一为 customDefinedCards，包含以前的临时卡片和常用卡片
+        let customDefinedCards = {}; // Stores user-defined custom cards { cardId: {details} } 
+        let iouCardsData = {}; // Stores user-defined IOU cards { cardId: {details} }
         let hiddenPredefinedCardIds = []; // Stores IDs of predefined cards to hide
 
         const initialDayData = () => ({
             book: 0, sleep: 0, exercise: 0,
-            reward: 0, penalty: 0, consume: 0, trade: 0,
-            purchaseLog: [], penaltyLog: [], rewardLog: [], tradeLog: [] // NEW: Added tradeLog
+            reward: 0, penalty: 0, consume: 0, trade: 0, // trade is for T-card income
+            purchaseLog: [], penaltyLog: [], rewardLog: [], tradeLog: [], 
+            tradeFromLog: [], // Log for points transferred FROM this player
+            tradeToLog: []    // Log for points transferred TO this player
         });
 
         let weekData = {
@@ -952,12 +1040,12 @@
                 '/weekData': weekData,
                 '/totalScores': { qiqi: document.getElementById('qiqi-total').value, yiyi: document.getElementById('yiyi-total').value },
                 '/warehousesData': warehousesData,
-                '/permanentCardsData': permanentCardsData,
+                '/customDefinedCards': customDefinedCards, 
                 '/hiddenPredefinedCardIds': hiddenPredefinedCardIds,
-                '/iouCardsData': iouCardsData // NEW: Added IOU cards data
+                '/iouCardsData': iouCardsData
             };
             database.ref().update(updates).then(() => {
-                console.log('✅ 主数据、仓库、常用卡片、隐藏状态及欠条卡片保存成功'); // Updated log
+                console.log('✅ 主数据、仓库、自定义卡片、隐藏状态及欠条卡片保存成功'); 
                 if (showStatus) { setTimeout(() => { statusElement.textContent = '✅ 已连接'; statusElement.className = 'connection-status connected'; }, 1000); }
             }).catch((error) => {
                 console.error('❌ 保存失败:', error);
@@ -981,7 +1069,7 @@
             if (clickedTab) clickedTab.classList.add('active');
         }
 
-        let currentCardToBuy = { points: 0, type: '', name: '', isTemporary: false, isPermanent: false, id: null };
+        let currentCardToBuy = { points: 0, type: '', name: '', isCustom: false, id: null }; 
         let currentSpecialReward = { name: '', points: 0 };
 
         function openSpecialRewardModal(cardName, points) {
@@ -1006,7 +1094,8 @@
             closeSpecialRewardModal();
         }
 
-        function openBuyerModal(points, type, cardNameFromArg, isTemporary = false, isPermanent = false, cardId = null) {
+        // Modified openBuyerModal to use isCustom instead of isTemporary/isPermanent
+        function openBuyerModal(points, type, cardNameFromArg, isCustom = false, cardId = null) {
             requestEditPermission(() => {
                 const cardName = cardNameFromArg || (event && event.target.closest('.card-item') ? event.target.closest('.card-item').dataset.name : null);
                 const cardPoints = points !== undefined ? points : (event && event.target.closest('.card-item') ? parseInt(event.target.closest('.card-item').dataset.points) : 0);
@@ -1016,14 +1105,14 @@
                     if (cardElement && cardElement.dataset.type === 'special-reward') { openSpecialRewardModal(cardElement.dataset.name, parseInt(cardElement.dataset.points)); return; }
                     console.error("Could not determine card details for buyer modal."); return;
                 }
-                currentCardToBuy = { points: cardPoints, type: cardType, name: cardName, isTemporary: isTemporary, isPermanent: isPermanent, id: cardId };
+                currentCardToBuy = { points: cardPoints, type: cardType, name: cardName, isCustom: isCustom, id: cardId };
                 if (currentCardToBuy.type === 'H') { _handleHCardPurchaseInternal(currentCardToBuy.points, currentCardToBuy.name); return; } // Directly call internal for H cards after permission
                 document.getElementById('buyer-modal-card-name').textContent = ` "${currentCardToBuy.name}" (${currentCardToBuy.points}分/个)`;
                 document.getElementById('buy-card-quantity').value = 1;
                 document.getElementById('buyer-modal-overlay').style.display = 'flex';
             });
         }
-        function closeBuyerModal() { document.getElementById('buyer-modal-overlay').style.display = 'none'; currentCardToBuy = { points: 0, type: '', name: '', isTemporary: false, isPermanent: false, id: null };}
+        function closeBuyerModal() { document.getElementById('buyer-modal-overlay').style.display = 'none'; currentCardToBuy = { points: 0, type: '', name: '', isCustom: false, id: null };} 
         
         function renderWarehouses() {
             ['qiqi', 'yiyi'].forEach(player => {
@@ -1031,7 +1120,7 @@
                 if (warehousesData[player] && warehousesData[player].length > 0) {
                     warehousesData[player].forEach(card => {
                         const cardEl = document.createElement('div'); cardEl.className = 'warehouse-card-item';
-                        // 根据卡片类型选择不同的使用函数 // Modified for IOU card
+                        // 根据卡片类型选择不同的使用函数
                         if (card.type === 'IOU') {
                             cardEl.innerHTML = `<div class="warehouse-card-info"><span class="name">${card.name} (面值:${card.pointsValue}分, 利息:${card.interestRate}%)</span><span class="qty">数量: ${card.quantity}</span></div><button class="use-card-btn" onclick="openIOUReturnModal('${player}', '${card.name}')">使用</button>`;
                         } else {
@@ -1064,7 +1153,7 @@
             const playerWarehouse = warehousesData[player]; const cardIndex = playerWarehouse.findIndex(c => c.name === cardName);
             if (cardIndex === -1) { closeConsumeCardConfirmModal(); return; }
 
-            // IOU 卡片现在通过 openIOUReturnModal 和 processIOUReturn 处理，这里不再处理 // Modified
+            // IOU 卡片现在通过 openIOUReturnModal 和 processIOUReturn 处理，这里不再处理
             if (cardType === 'IOU') { return; }
 
             let message = `${player === 'qiqi' ? '七七' : '一一'} 使用了 "${cardName}".`;
@@ -1085,17 +1174,17 @@
             if (!currentCardToBuy.name) { alert('操作无效！'); return; }
             const quantityInput = document.getElementById('buy-card-quantity'); const quantity = parseInt(quantityInput.value);
             if (isNaN(quantity) || quantity < 1) { alert("请输入有效的购买数量 (至少为1)。"); quantityInput.focus(); return; }
-            const { points: singleCardCost, type: cardType, name: cardName, isTemporary, isPermanent, id: cardId } = currentCardToBuy; // NEW: Added cardId
+            const { points: singleCardCost, type: cardType, name: cardName, isCustom, id: cardId } = currentCardToBuy; 
             const totalCardCost = singleCardCost * quantity;
             const today = new Date(); const dayNames = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']; const currentDayKey = dayNames[today.getDay()];
             weekData[buyerPlayer][currentDayKey].consume = (parseInt(weekData[buyerPlayer][currentDayKey].consume) || 0) + totalCardCost;
             if (!weekData[buyerPlayer][currentDayKey].purchaseLog) weekData[buyerPlayer][currentDayKey].purchaseLog = [];
             weekData[buyerPlayer][currentDayKey].purchaseLog.push({ name: cardName, cost: totalCardCost, quantity: quantity, type: cardType });
 
-            // Special handling for IOU card purchase logic // NEW
+            // Special handling for IOU card purchase logic
             if (cardType === 'IOU') {
                 const otherPlayer = buyerPlayer === 'qiqi' ? 'yiyi' : 'qiqi';
-                const iouCardInfo = iouCardsData[cardId]; // Get IOU card details
+                const iouCardInfo = iouCardsData[cardId]; 
                 if (!iouCardInfo) { alert("欠条信息丢失，无法完成购买。"); return; }
                 const interestRate = iouCardInfo.interestRate;
 
@@ -1221,9 +1310,15 @@
             days.forEach(day => {
                 const dayData = weekData[player][day];
                 basicScore += (parseInt(dayData.book) || 0) + (parseInt(dayData.sleep) || 0) + (parseInt(dayData.exercise) || 0);
-                rewardScore += (parseInt(dayData.reward) || 0); penaltyScore += (parseInt(dayData.penalty) || 0); 
-                consumeScore += (parseInt(dayData.consume) || 0); tradeScore += (parseInt(dayData.trade) || 0); 
+                rewardScore += (parseInt(dayData.reward) || 0); 
+                penaltyScore += (parseInt(dayData.penalty) || 0); 
+                consumeScore += (parseInt(dayData.consume) || 0); 
+                tradeScore += (parseInt(dayData.trade) || 0); 
+                // Directly add/subtract from tradeScore based on tradeFromLog and tradeToLog
+                dayData.tradeFromLog.forEach(log => tradeScore -= log.amount); // Points flowing FROM this player
+                dayData.tradeToLog.forEach(log => tradeScore += log.amount);   // Points flowing TO this player
             });
+            // Total score calculation now correctly reflects direct trade influences via tradeScore
             return { basic: basicScore, reward: rewardScore, penalty: penaltyScore, consume: consumeScore, trade: tradeScore, total: basicScore + rewardScore + penaltyScore - consumeScore + tradeScore };
         }
 
@@ -1256,28 +1351,28 @@
                 if (entry.basicScoreDetails && entry.basicScoreDetails.length > 0) { const ul = document.createElement('ul'); entry.basicScoreDetails.forEach(detail => { const li = document.createElement('li'); li.textContent = `${dayChineseMap[detail.day] || detail.day} ${taskChineseMap[detail.task] || detail.task}: ${detail.score > 0 ? '+' : ''}${detail.score}分`; ul.appendChild(li); }); basicScoreCell.appendChild(ul); const totalBasicText = document.createElement('p'); totalBasicText.textContent = `(总基础: ${entry.scores.basic}分)`; totalBasicText.style.textAlign = "center"; totalBasicText.style.fontWeight = "bold"; totalBasicText.style.marginTop = "5px"; basicScoreCell.appendChild(totalBasicText); } else { basicScoreCell.textContent = `${entry.scores.basic}分 (无详情)`; basicScoreCell.classList.add('no-details');}
                 const rewardCellTotal = row.insertCell(); rewardCellTotal.textContent = entry.scores.reward; rewardCellTotal.classList.add('num-center');
                 const rewardDetailCell = row.insertCell(); rewardDetailCell.classList.add('basic-score-details');
-                if (entry.rewardDetails && entry.rewardDetails.length > 0) { const ul = document.createElement('ul'); entry.rewardDetails.forEach(detail => { const li = document.createElement('li'); li.textContent = `${detail.day ? (dayChineseMap[detail.day] || detail.day) + ' - ' : ''}${detail.desc}: +${detail.pointsAdded}分`; ul.appendChild(li); }); rewardDetailCell.appendChild(ul); } else if (entry.scores.reward > 0) { rewardDetailCell.textContent = `${entry.scores.reward}分 (无详情)`; } else { rewardDetailCell.textContent = '无'; rewardDetailCell.classList.add('no-details');}
+                // Only show reward details that are NOT trade-in
+                const filteredRewardDetails = entry.rewardDetails ? entry.rewardDetails.filter(d => d.type !== 'trade_in') : [];
+                if (filteredRewardDetails.length > 0) { const ul = document.createElement('ul'); filteredRewardDetails.forEach(detail => { const li = document.createElement('li'); li.textContent = `${detail.day ? (dayChineseMap[detail.day] || detail.day) + ' - ' : ''}${detail.desc}: +${detail.pointsAdded}分`; ul.appendChild(li); }); rewardDetailCell.appendChild(ul); } else if (entry.scores.reward > 0) { rewardDetailCell.textContent = `${entry.scores.reward}分 (无非交易奖励详情)`; } else { rewardDetailCell.textContent = '无'; rewardDetailCell.classList.add('no-details');}
                 
-                // Penalty Details // Modified for IOU
+                // Penalty Details
                 const penaltyCell = row.insertCell();
-                if (entry.penaltyDetails && entry.penaltyDetails.length > 0) {
+                // Only show penalty details that are NOT trade-out or IOU return deduction
+                const filteredPenaltyDetails = entry.penaltyDetails ? entry.penaltyDetails.filter(p => p.type !== 'iou_return_deduction' && p.type !== 'trade_out') : [];
+                if (filteredPenaltyDetails.length > 0) {
                     const ul = document.createElement('ul');
-                    entry.penaltyDetails.forEach(p => {
+                    filteredPenaltyDetails.forEach(p => {
                         const li = document.createElement('li');
-                        let descText = p.desc;
-                        if (p.type === 'iou_return_deduction') {
-                            descText = `归还欠条 "${p.desc}" (含利息)`;
-                        }
-                        li.textContent = `${descText}: ${p.pointsDeducted}分`;
+                        li.textContent = `${p.desc}: ${p.pointsDeducted}分`;
                         ul.appendChild(li);
                     });
                     penaltyCell.appendChild(ul);
                 } else {
-                    penaltyCell.textContent = entry.scores.penalty !== 0 ? `${entry.scores.penalty}分 (无详情)` : '无';
+                    penaltyCell.textContent = entry.scores.penalty !== 0 ? `${entry.scores.penalty}分 (无非交易罚分详情)` : '无';
                     if(entry.scores.penalty === 0) penaltyCell.classList.add('no-details');
                 }
 
-                // Consume Details // Modified for IOU
+                // Consume Details
                 const consumeCell = row.insertCell();
                 if (entry.consumedItemsDetail && entry.consumedItemsDetail.length > 0) {
                     const ul = document.createElement('ul');
@@ -1296,19 +1391,15 @@
                     if(entry.scores.consume === 0) consumeCell.classList.add('no-details');
                 }
 
-                // Trade Details // Modified for IOU
+                // Trade (T-card income) Details
                 const tradeCell = row.insertCell();
-                if (entry.tradeDetails && entry.tradeDetails.length > 0) {
+                // Filter out trade_in and iou_return_gain from tradeDetails here as they will be in Transaction Details
+                const filteredTradeDetails = entry.tradeDetails ? entry.tradeDetails.filter(t => t.type !== 'iou_purchase_income' && t.type !== 'iou_return_gain') : [];
+                if (filteredTradeDetails.length > 0) {
                     const ul = document.createElement('ul');
-                    entry.tradeDetails.forEach(t => {
+                    filteredTradeDetails.forEach(t => {
                         const li = document.createElement('li');
-                        let descText = t.desc;
-                        if (t.type === 'iou_purchase_income') {
-                            descText = `收到欠条购买收入 "${t.desc}"`;
-                        } else if (t.type === 'iou_return_gain') {
-                            descText = `使用欠条归还收入 "${t.desc}"`;
-                        }
-                        li.textContent = `${descText}: +${t.pointsAdded}分`;
+                        li.textContent = `${t.desc}: +${t.pointsAdded}分`;
                         ul.appendChild(li);
                     });
                     tradeCell.appendChild(ul);
@@ -1317,7 +1408,67 @@
                     if(entry.scores.trade === 0) tradeCell.classList.add('no-details');
                 }
                 tradeCell.classList.add('num-center'); // Ensure center alignment
-                const totalCell = row.insertCell(); totalCell.textContent = entry.scores.total; totalCell.classList.add('total-highlight', 'num-center');
+
+                // NEW: Transaction Details (Transfer In/Out)
+                const transactionDetailCell = row.insertCell();
+                let hasTransactions = false;
+                const transactionUl = document.createElement('ul');
+                // Display direct trade-out
+                if (entry.tradeFromLog && entry.tradeFromLog.length > 0) {
+                    hasTransactions = true;
+                    entry.tradeFromLog.forEach(log => {
+                        const li = document.createElement('li');
+                        li.textContent = `转出给${log.toPlayer === 'qiqi' ? '七七' : '一一'} (-${log.amount}分): ${log.memo}`;
+                        transactionUl.appendChild(li);
+                    });
+                }
+                // Display direct trade-in
+                if (entry.tradeToLog && entry.tradeToLog.length > 0) {
+                    hasTransactions = true;
+                    entry.tradeToLog.forEach(log => {
+                        const li = document.createElement('li');
+                        li.textContent = `从${log.fromPlayer === 'qiqi' ? '七七' : '一一'}转入 (+${log.amount}分): ${log.memo}`;
+                        transactionUl.appendChild(li);
+                    });
+                }
+                // Display IOU purchase income (as it's a direct point transfer from one player to another)
+                if (entry.tradeDetails) { // Re-checking original tradeDetails for IOU purchase income
+                    entry.tradeDetails.filter(t => t.type === 'iou_purchase_income').forEach(t => {
+                        hasTransactions = true;
+                        const li = document.createElement('li');
+                        li.textContent = `欠条购入收入 (+${t.pointsAdded}分): ${t.desc}`;
+                        transactionUl.appendChild(li);
+                    });
+                }
+                // Display IOU return gain/deduction (as it's a direct point transfer)
+                if (entry.tradeDetails) {
+                    entry.tradeDetails.filter(t => t.type === 'iou_return_gain').forEach(t => {
+                        hasTransactions = true;
+                        const li = document.createElement('li');
+                        li.textContent = `欠条归还收入 (+${t.pointsAdded}分): ${t.desc}`;
+                        transactionUl.appendChild(li);
+                    });
+                }
+                if (entry.penaltyDetails) {
+                     entry.penaltyDetails.filter(p => p.type === 'iou_return_deduction').forEach(p => {
+                        hasTransactions = true;
+                        const li = document.createElement('li');
+                        li.textContent = `欠条归还扣除 (${p.pointsDeducted}分): ${p.desc}`;
+                        transactionUl.appendChild(li);
+                    });
+                }
+
+
+                if (hasTransactions) {
+                    transactionDetailCell.appendChild(transactionUl);
+                } else {
+                    transactionDetailCell.textContent = '无';
+                    transactionDetailCell.classList.add('no-details');
+                }
+
+                const totalCell = row.insertCell(); 
+                totalCell.textContent = entry.scores.total; 
+                totalCell.classList.add('total-highlight', 'num-center');
             });
         }
 
@@ -1349,17 +1500,39 @@
             const scores = calculateWeekScore(player); const sum = scores.total;
             const totalInput = document.getElementById(player + '-total'); let currentTotal = parseInt(totalInput.value) || 0;
             totalInput.value = currentTotal + sum;
-            const consumedItemsDetail = []; const penaltyDetails = []; const basicScoreDetailsLog = []; const rewardDetailsLog = []; const tradeDetailsLog = []; // NEW: Added tradeDetailsLog
+
+            const consumedItemsDetail = []; 
+            const penaltyDetails = []; 
+            const basicScoreDetailsLog = []; 
+            const rewardDetailsLog = []; 
+            const tradeDetailsLog = []; // T-card income / IOU purchase income / IOU return gain
+            const tradeFromLog = []; // Collect tradeFromLog
+            const tradeToLog = [];   // Collect tradeToLog
+
             const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
             days.forEach(day => {
                 if (weekData[player][day].purchaseLog) { weekData[player][day].purchaseLog.forEach(log => consumedItemsDetail.push(log));}
                 if (weekData[player][day].penaltyLog) { weekData[player][day].penaltyLog.forEach(log => penaltyDetails.push(log));}
                 if (weekData[player][day].rewardLog) { weekData[player][day].rewardLog.forEach(log => rewardDetailsLog.push({...log, day: day }));}
-                if (weekData[player][day].tradeLog) { weekData[player][day].tradeLog.forEach(log => tradeDetailsLog.push({...log, day: day }));} // NEW: Collect tradeLog
+                if (weekData[player][day].tradeLog) { weekData[player][day].tradeLog.forEach(log => tradeDetailsLog.push({...log, day: day }));} 
+                if (weekData[player][day].tradeFromLog) { weekData[player][day].tradeFromLog.forEach(log => tradeFromLog.push({...log, day: day }));} 
+                if (weekData[player][day].tradeToLog) { weekData[player][day].tradeToLog.forEach(log => tradeToLog.push({...log, day: day }));}     
+
                 ['book', 'sleep', 'exercise'].forEach(task => { const taskScore = parseInt(weekData[player][day][task]) || 0; if (taskScore !== 0) { basicScoreDetailsLog.push({ day: day, task: task, score: taskScore }); }});
             });
-            // NEW: Add tradeDetails to history entry
-            const historyEntry = { timestamp: Date.now(), player: player, scores: scores, consumedItemsDetail: consumedItemsDetail, penaltyDetails: penaltyDetails, basicScoreDetails: basicScoreDetailsLog, rewardDetails: rewardDetailsLog, tradeDetails: tradeDetailsLog };
+            
+            const historyEntry = { 
+                timestamp: Date.now(), 
+                player: player, 
+                scores: scores, 
+                consumedItemsDetail: consumedItemsDetail, 
+                penaltyDetails: penaltyDetails, 
+                basicScoreDetails: basicScoreDetailsLog, 
+                rewardDetails: rewardDetailsLog, 
+                tradeDetails: tradeDetailsLog,
+                tradeFromLog: tradeFromLog, 
+                tradeToLog: tradeToLog       
+            };
             scoreHistoryLog.unshift(historyEntry); renderScoreHistoryTable(); _saveScoreHistoryToFirebaseInternal(); 
             
             // Clear the current week's data after adding to total
@@ -1371,7 +1544,7 @@
         
         function clearScoreHistory() { requestEditPermission(() => { if (confirm('确定要清空所有积分历史记录吗？此操作无法撤销！')) { scoreHistoryLog = []; renderScoreHistoryTable(); database.ref('/scoreHistory').remove().then(() => alert('积分历史记录已清空！')).catch(error => alert('清空积分历史记录失败: ' + error.message)); }});}
 
-        function resetAllData() { requestEditPermission(() => { if (confirm('确定要重置所有数据吗 (包括周记录, 总积分, 仓库, 常用卡片和积分历史)？此操作无法撤销！')) {
+        function resetAllData() { requestEditPermission(() => { if (confirm('确定要重置所有数据吗 (包括周记录, 总积分, 仓库, 自定义卡片和积分历史)？此操作无法撤销！')) { 
             Object.keys(weekData).forEach(p => { Object.keys(weekData[p]).forEach(day => { weekData[p][day] = initialDayData(); }); });
             document.getElementById('qiqi-total').value = 0; document.getElementById('yiyi-total').value = 0;
             document.querySelectorAll('.clickable-cell[onclick*="toggleBasicTask"]').forEach(cell => { cell.textContent = '0'; cell.className = cell.className.replace(/cell-(negative|zero|positive)/g, '').trim() + ' cell-zero'; });
@@ -1379,16 +1552,18 @@
             document.querySelectorAll('.small-input[readonly]').forEach(input => input.value = 0); 
             updateWeekSummary('qiqi'); updateWeekSummary('yiyi');
             warehousesData = { qiqi: [], yiyi: [] }; renderWarehouses();
-            tempDefinedCards = []; 
-            permanentCardsData = {}; iouCardsData = {}; // NEW: Reset IOU cards
+            customDefinedCards = {}; 
+            iouCardsData = {};
             hiddenPredefinedCardIds = []; 
             renderAllCards();
-            database.ref('/permanentCardsData').remove(); database.ref('/hiddenPredefinedCardIds').remove(); database.ref('/iouCardsData').remove(); // NEW: Remove IOU cards from Firebase
+            database.ref('/customDefinedCards').remove(); 
+            database.ref('/hiddenPredefinedCardIds').remove(); 
+            database.ref('/iouCardsData').remove(); 
             scoreHistoryLog = []; renderScoreHistoryTable(); database.ref('/scoreHistory').remove(); 
             _saveToFirebaseInternal(); alert('所有数据已重置！');
         }});}
 
-        function resetWeekData(player) { requestEditPermission(() => { // Removed confirmation here as it's now handled by addWeekTotalToTotal
+        function resetWeekData(player) { requestEditPermission(() => { 
             Object.keys(weekData[player]).forEach(day => { weekData[player][day] = initialDayData(); });
             const playerTable = document.querySelector(`#${player}-summary`).closest('.week-card').querySelector('.week-table');
             if (playerTable) {
@@ -1397,12 +1572,11 @@
                 playerTable.querySelectorAll('td input[readonly]').forEach(input => input.value = 0);
             }
             updateWeekSummary(player); _saveToFirebaseInternal(); 
-            // alert(`${player === 'qiqi' ? '七七' : '一一'} 的本周数据已清零！`); // This alert is now triggered by addWeekTotalToTotal
         });}
 
         function loadDataFromFirebase() {
             statusElement.textContent = '📥 加载数据...'; statusElement.className = 'connection-status connecting';
-            let loadedCount = 0; const totalToLoad = 6; // Changed from 5 to 6 for iouCardsData // Modified
+            let loadedCount = 0; const totalToLoad = 6; 
             
             const allLoaded = () => {
                 loadedCount++;
@@ -1415,75 +1589,60 @@
                 }
             };
 
-            database.ref('weekData').once('value').then((snapshot) => { if (snapshot.exists()) { const ld = snapshot.val(); Object.keys(ld).forEach(p=>{Object.keys(ld[p]).forEach(d=>{weekData[p][d]={...initialDayData(),...ld[p][d]}; weekData[p][d].purchaseLog = ld[p][d].purchaseLog || []; weekData[p][d].penaltyLog = ld[p][d].penaltyLog || []; weekData[p][d].rewardLog = ld[p][d].rewardLog || []; weekData[p][d].tradeLog = ld[p][d].tradeLog || []; });}); Object.entries(weekData).forEach(([p,days])=>{ const ptb=document.querySelector(`#${p}-summary`)?.closest('.week-card')?.querySelector('tbody'); if(!ptb)return; Object.entries(days).forEach(([day,sc])=>{ const di=['mon','tue','wed','thu','fri','sat','sun'].indexOf(day); if(di===-1)return; const tr=ptb.querySelector(`tr:nth-child(${di+1})`); if(!tr)return; Object.entries(sc).forEach(([k,v])=>{ if(['book','sleep','exercise'].includes(k)){const ci=['book','sleep','exercise'].indexOf(k)+2;const c=tr.querySelector(`td:nth-child(${ci})`);if(c){c.textContent=v; c.className=c.className.replace(/cell-(n|z|p).*/g,'').trim(); if(v===-2)c.classList.add('cell-negative'); else if(v===0)c.classList.add('cell-zero'); else if(v===1)c.classList.add('cell-positive');}} else if(k==='reward'){const c=tr.querySelector('td:nth-child(5)');if(c){c.textContent=v; c.className='reward-cell'; const rv=parseInt(v)||0; c.classList.add(`reward-${Math.min(3,Math.max(0,rv))}`);}} else if(k==='penalty'){const i=tr.querySelector('td:nth-child(6) input');if(i)i.value=v;} else if(k==='consume'){const i=tr.querySelector('td:nth-child(7) input');if(i)i.value=v;} else if(k==='trade'){const i=tr.querySelector('td:nth-child(8) input');if(i)i.value=v;}});});}); } allLoaded(); }).catch(err => { console.error("Error loading weekData: ", err); allLoaded(); });
+            database.ref('weekData').once('value').then((snapshot) => { if (snapshot.exists()) { const ld = snapshot.val(); Object.keys(ld).forEach(p=>{Object.keys(ld[p]).forEach(d=>{weekData[p][d]={...initialDayData(),...ld[p][d]}; weekData[p][d].purchaseLog = ld[p][d].purchaseLog || []; weekData[p][d].penaltyLog = ld[p][d].penaltyLog || []; weekData[p][d].rewardLog = ld[p][d].rewardLog || []; weekData[p][d].tradeLog = ld[p][d].tradeLog || []; weekData[p][d].tradeFromLog = ld[p][d].tradeFromLog || []; weekData[p][d].tradeToLog = ld[p][d].tradeToLog || []; });}); Object.entries(weekData).forEach(([p,days])=>{ const ptb=document.querySelector(`#${p}-summary`)?.closest('.week-card')?.querySelector('tbody'); if(!ptb)return; Object.entries(days).forEach(([day,sc])=>{ const di=['mon','tue','wed','thu','fri','sat','sun'].indexOf(day); if(di===-1)return; const tr=ptb.querySelector(`tr:nth-child(${di+1})`); if(!tr)return; Object.entries(sc).forEach(([k,v])=>{ if(['book','sleep','exercise'].includes(k)){const ci=['book','sleep','exercise'].indexOf(k)+2;const c=tr.querySelector(`td:nth-child(${ci})`);if(c){c.textContent=v; c.className=c.className.replace(/cell-(n|z|p).*/g,'').trim(); if(v===-2)c.classList.add('cell-negative'); else if(v===0)c.classList.add('cell-zero'); else if(v===1)c.classList.add('cell-positive');}} else if(k==='reward'){const c=tr.querySelector('td:nth-child(5)');if(c){c.textContent=v; c.className='reward-cell'; const rv=parseInt(v)||0; c.classList.add(`reward-${Math.min(3,Math.max(0,rv))}`);}} else if(k==='penalty'){const i=tr.querySelector('td:nth-child(6) input');if(i)i.value=v;} else if(k==='consume'){const i=tr.querySelector('td:nth-child(7) input');if(i)i.value=v;} else if(k==='trade'){const i=tr.querySelector('td:nth-child(8) input');if(i)i.value=v;}});});}); } allLoaded(); }).catch(err => { console.error("Error loading weekData: ", err); allLoaded(); });
             database.ref('totalScores').once('value').then((snapshot) => { if (snapshot.exists()) { const s = snapshot.val(); if (s.qiqi !== undefined) document.getElementById('qiqi-total').value = s.qiqi; if (s.yiyi !== undefined) document.getElementById('yiyi-total').value = s.yiyi;} allLoaded(); }).catch(err => { console.error("Error loading totalScores: ", err); allLoaded(); });
-            database.ref('scoreHistory').once('value').then((snapshot) => { let lh = (snapshot.exists() && Array.isArray(snapshot.val())) ? snapshot.val() : []; lh.forEach(e => { if (e.basicScoreDetails && !Array.isArray(e.basicScoreDetails)) e.basicScoreDetails = []; if (e.rewardDetails && !Array.isArray(e.rewardDetails)) e.rewardDetails = []; if (e.scores && e.scores.trade === undefined) e.scores.trade = 0; if (e.tradeDetails && !Array.isArray(e.tradeDetails)) e.tradeDetails = []; }); scoreHistoryLog = lh; allLoaded(); }).catch(err => { console.error("Error loading scoreHistory: ", err); allLoaded(); });
+            database.ref('scoreHistory').once('value').then((snapshot) => { let lh = (snapshot.exists() && Array.isArray(snapshot.val())) ? snapshot.val() : []; lh.forEach(e => { if (e.basicScoreDetails && !Array.isArray(e.basicScoreDetails)) e.basicScoreDetails = []; if (e.rewardDetails && !Array.isArray(e.rewardDetails)) e.rewardDetails = []; if (e.scores && e.scores.trade === undefined) e.scores.trade = 0; if (e.tradeDetails && !Array.isArray(e.tradeDetails)) e.tradeDetails = []; if (e.tradeFromLog && !Array.isArray(e.tradeFromLog)) e.tradeFromLog = []; if (e.tradeToLog && !Array.isArray(e.tradeToLog)) e.tradeToLog = []; }); scoreHistoryLog = lh; allLoaded(); }).catch(err => { console.error("Error loading scoreHistory: ", err); allLoaded(); });
             database.ref('warehousesData').once('value').then((snapshot) => { if (snapshot.exists()) { warehousesData = snapshot.val(); if (!Array.isArray(warehousesData.qiqi)) warehousesData.qiqi = []; if (!Array.isArray(warehousesData.yiyi)) warehousesData.yiyi = []; } else { warehousesData = { qiqi: [], yiyi: [] }; } allLoaded(); }).catch(err => { console.error("Error loading warehousesData: ", err); allLoaded(); });
-            database.ref('permanentCardsData').once('value').then((snapshot) => { permanentCardsData = snapshot.exists() ? snapshot.val() : {}; allLoaded(); }).catch(err => { console.error("Error loading permanentCardsData: ", err); allLoaded(); });
+            database.ref('customDefinedCards').once('value').then((snapshot) => { customDefinedCards = snapshot.exists() ? snapshot.val() : {}; allLoaded(); }).catch(err => { console.error("Error loading customDefinedCards: ", err); allLoaded(); }); 
             database.ref('hiddenPredefinedCardIds').once('value').then((snapshot) => { hiddenPredefinedCardIds = (snapshot.exists() && Array.isArray(snapshot.val())) ? snapshot.val() : []; allLoaded(); }).catch(err => { console.error("Error loading hiddenPredefinedCardIds: ", err); allLoaded(); });
-            database.ref('iouCardsData').once('value').then((snapshot) => { iouCardsData = snapshot.exists() ? snapshot.val() : {}; allLoaded(); }).catch(err => { console.error("Error loading iouCardsData: ", err); allLoaded(); }); // NEW: Load IOU Cards
+            database.ref('iouCardsData').once('value').then((snapshot) => { iouCardsData = snapshot.exists() ? snapshot.val() : {}; allLoaded(); }).catch(err => { console.error("Error loading iouCardsData: ", err); allLoaded(); });
         }
 
         function setupRealTimeSync() {
-            database.ref('weekData').on('value', (snapshot) => { if(!snapshot.exists()) return; const nd = snapshot.val(); if(JSON.stringify(nd)!==JSON.stringify(weekData)){ Object.keys(nd).forEach(p=>{Object.keys(nd[p]).forEach(d=>{weekData[p][d]={...initialDayData(),...nd[p][d]};weekData[p][d].purchaseLog=nd[p][d].purchaseLog||[];weekData[p][d].penaltyLog=nd[p][d].penaltyLog||[];weekData[p][d].rewardLog=nd[p][d].rewardLog||[]; weekData[p][d].tradeLog=nd[p][d].tradeLog||[]; });}); Object.entries(weekData).forEach(([p,days])=>{const ptb=document.querySelector(`#${p}-summary`)?.closest('.week-card')?.querySelector('tbody');if(!ptb)return;Object.entries(days).forEach(([day,sc])=>{const di=['mon','tue','wed','thu','fri','sat','sun'].indexOf(day);if(di===-1)return;const tr=ptb.querySelector(`tr:nth-child(${di+1})`);if(!tr)return;Object.entries(sc).forEach(([k,v])=>{if(['book','sleep','exercise'].includes(k)){const ci=['book','sleep','exercise'].indexOf(k)+2;const c=tr.querySelector(`td:nth-child(${ci})`);if(c&&c.textContent!=v){c.textContent=v;c.className=c.className.replace(/cell-(n|z|p).*/g,'').trim();if(v===-2)c.classList.add('cell-negative');else if(v===0)c.classList.add('cell-zero');else if(v===1)c.classList.add('cell-positive');}}else if(k==='reward'){const c=tr.querySelector('td:nth-child(5)');if(c&&c.textContent!=v){c.textContent=v;c.className='reward-cell';const rv=parseInt(v)||0;c.classList.add(`reward-${Math.min(3,Math.max(0,rv))}`);}}else if(k==='penalty'){const i=tr.querySelector('td:nth-child(6) input');if(i&&i.value!=v)i.value=v;}else if(k==='consume'){const i=tr.querySelector('td:nth-child(7) input');if(i&&i.value!=v)i.value=v;}else if(k==='trade'){const i=tr.querySelector('td:nth-child(8) input');if(i&&i.value!=v)i.value=v;}});});updateWeekSummary(p);});}});
+            database.ref('weekData').on('value', (snapshot) => { if(!snapshot.exists()) return; const nd = snapshot.val(); if(JSON.stringify(nd)!==JSON.stringify(weekData)){ Object.keys(nd).forEach(p=>{Object.keys(nd[p]).forEach(d=>{weekData[p][d]={...initialDayData(),...nd[p][d]};weekData[p][d].purchaseLog=nd[p][d].purchaseLog||[];weekData[p][d].penaltyLog=nd[p][d].penaltyLog||[];weekData[p][d].rewardLog=nd[p][d].rewardLog||[]; weekData[p][d].tradeLog=nd[p][d].tradeLog||[]; weekData[p][d].tradeFromLog=nd[p][d].tradeFromLog||[]; weekData[p][d].tradeToLog=nd[p][d].tradeToLog||[];});}); Object.entries(weekData).forEach(([p,days])=>{const ptb=document.querySelector(`#${p}-summary`)?.closest('.week-card')?.querySelector('tbody');if(!ptb)return;Object.entries(days).forEach(([day,sc])=>{const di=['mon','tue','wed','thu','fri','sat','sun'].indexOf(day);if(di===-1)return;const tr=ptb.querySelector(`tr:nth-child(${di+1})`);if(!tr)return;Object.entries(sc).forEach(([k,v])=>{if(['book','sleep','exercise'].includes(k)){const ci=['book','sleep','exercise'].indexOf(k)+2;const c=tr.querySelector(`td:nth-child(${ci})`);if(c&&c.textContent!=v){c.textContent=v;c.className=c.className.replace(/cell-(n|z|p).*/g,'').trim();if(v===-2)c.classList.add('cell-negative');else if(v===0)c.classList.add('cell-zero');else if(v===1)c.classList.add('cell-positive');}}else if(k==='reward'){const c=tr.querySelector('td:nth-child(5)');if(c&&c.textContent!=v){c.textContent=v;c.className='reward-cell';const rv=parseInt(v)||0;c.classList.add(`reward-${Math.min(3,Math.max(0,rv))}`);}}else if(k==='penalty'){const i=tr.querySelector('td:nth-child(6) input');if(i&&i.value!=v)i.value=v;}else if(k==='consume'){const i=tr.querySelector('td:nth-child(7) input');if(i&&i.value!=v)i.value=v;}else if(k==='trade'){const i=tr.querySelector('td:nth-child(8) input');if(i&&i.value!=v)i.value=v;}});});updateWeekSummary(p);});}});
             database.ref('totalScores').on('value', (snapshot) => { if(!snapshot.exists()) return; const s = snapshot.val(); const qi = document.getElementById('qiqi-total'); const yi = document.getElementById('yiyi-total'); if (s.qiqi !== undefined && qi.value != s.qiqi) qi.value = s.qiqi; if (s.yiyi !== undefined && yi.value != s.yiyi) yi.value = s.yiyi; });
-            database.ref('scoreHistory').on('value', (snapshot) => { let nh = (snapshot.exists() && Array.isArray(snapshot.val())) ? snapshot.val() : []; nh.forEach(e => { if (e.basicScoreDetails && !Array.isArray(e.basicScoreDetails)) e.basicScoreDetails = []; if (e.rewardDetails && !Array.isArray(e.rewardDetails)) e.rewardDetails = []; if (e.scores && e.scores.trade === undefined) e.scores.trade = 0; if (e.tradeDetails && !Array.isArray(e.tradeDetails)) e.tradeDetails = []; }); if (JSON.stringify(nh) !== JSON.stringify(scoreHistoryLog)) { scoreHistoryLog = nh; renderScoreHistoryTable(); }});
+            database.ref('scoreHistory').on('value', (snapshot) => { let nh = (snapshot.exists() && Array.isArray(snapshot.val())) ? snapshot.val() : []; nh.forEach(e => { if (e.basicScoreDetails && !Array.isArray(e.basicScoreDetails)) e.basicScoreDetails = []; if (e.rewardDetails && !Array.isArray(e.rewardDetails)) e.rewardDetails = []; if (e.scores && e.scores.trade === undefined) e.scores.trade = 0; if (e.tradeDetails && !Array.isArray(e.tradeDetails)) e.tradeDetails = []; if (e.tradeFromLog && !Array.isArray(e.tradeFromLog)) e.tradeFromLog = []; if (e.tradeToLog && !Array.isArray(e.tradeToLog)) e.tradeToLog = []; }); if (JSON.stringify(nh) !== JSON.stringify(scoreHistoryLog)) { scoreHistoryLog = nh; renderScoreHistoryTable(); }});
             database.ref('warehousesData').on('value', (snapshot) => { let nw = {qiqi: [], yiyi: []}; if (snapshot.exists()) { nw = snapshot.val(); if (!Array.isArray(nw.qiqi)) nw.qiqi = []; if (!Array.isArray(nw.yiyi)) nw.yiyi = [];} if (JSON.stringify(nw) !== JSON.stringify(warehousesData)) { warehousesData = nw; renderWarehouses(); }});
-            database.ref('permanentCardsData').on('value', (snapshot) => { let npc = snapshot.exists() ? snapshot.val() : {}; if (JSON.stringify(npc) !== JSON.stringify(permanentCardsData)) { permanentCardsData = npc; renderAllCards(); }});
+            database.ref('customDefinedCards').on('value', (snapshot) => { let nc = snapshot.exists() ? snapshot.val() : {}; if (JSON.stringify(nc) !== JSON.stringify(customDefinedCards)) { customDefinedCards = nc; renderAllCards(); }}); 
             database.ref('hiddenPredefinedCardIds').on('value', (snapshot) => { let nhp = (snapshot.exists() && Array.isArray(snapshot.val())) ? snapshot.val() : []; if (JSON.stringify(nhp) !== JSON.stringify(hiddenPredefinedCardIds)) { hiddenPredefinedCardIds = nhp; renderAllCards(); }});
-            database.ref('iouCardsData').on('value', (snapshot) => { let niou = snapshot.exists() ? snapshot.val() : {}; if (JSON.stringify(niou) !== JSON.stringify(iouCardsData)) { iouCardsData = niou; renderAllCards(); }}); // NEW: Realtime sync for IOU Cards
+            database.ref('iouCardsData').on('value', (snapshot) => { let niou = snapshot.exists() ? snapshot.val() : {}; if (JSON.stringify(niou) !== JSON.stringify(iouCardsData)) { iouCardsData = niou; renderAllCards(); }});
         }
 
-        function openDefineTempCardModal() {
+        // Renamed and consolidated functions for defining cards
+        function openDefineCustomCardModal(defaultPoints = null) {
             requestEditPermission(() => {
-                document.getElementById('temp-card-name').value = ''; document.getElementById('temp-card-points').value = ''; document.getElementById('temp-card-type').value = 'E'; document.getElementById('define-temp-card-modal-overlay').style.display = 'flex'; document.getElementById('temp-card-name').focus();
-            });
-        }
-        function closeDefineTempCardModal() { document.getElementById('define-temp-card-modal-overlay').style.display = 'none'; }
-        function defineAndListTempCard() { requestEditPermission(_defineAndListTempCardInternal); }
-        function _defineAndListTempCardInternal() {
-            const name = document.getElementById('temp-card-name').value.trim(); const points = parseInt(document.getElementById('temp-card-points').value); const type = document.getElementById('temp-card-type').value;
-            if (!name) { alert('请输入卡片名称。'); return; } if (isNaN(points) || points <= 0) { alert('请输入有效的积分消耗。'); return; } if (!type) { alert('请选择卡片类型。'); return; }
-            const nameConflict = tempDefinedCards.some(card => card.name === name) || 
-                                Object.values(permanentCardsData).some(card => card.name === name) ||
-                                Object.values(iouCardsData).some(card => card.name === name) || // NEW: Check IOU cards
-                                Array.from(document.querySelectorAll('#main-cards-grid .card-item[data-name]')).some(el => el.dataset.name === name && !hiddenPredefinedCardIds.includes(el.id));
-            if (nameConflict) { alert('已存在同名卡片 (包括预设、常用、临时或欠条卡片)，请使用其他名称。'); return; } // Updated alert
-            const newTempCard = { id: 'temp_' + Date.now(), name: name, points: points, type: type, desc: `临时卡: ${type === 'E' ? '消费类' : '交易类'}，价值${points}分。`, isTemporary: true };
-            tempDefinedCards.push(newTempCard); renderAllCards(); closeDefineTempCardModal(); alert(`临时卡片 "${name}" 已创建并上架！`);
-        }
-
-        function openDefinePermanentCardModal(defaultPoints = null) {
-            requestEditPermission(() => {
-                document.getElementById('permanent-card-name').value = ''; 
-                const pointsInput = document.getElementById('permanent-card-points');
+                document.getElementById('custom-card-name').value = ''; 
+                const pointsInput = document.getElementById('custom-card-points');
                 pointsInput.value = defaultPoints !== null ? defaultPoints : '';
-                document.getElementById('permanent-card-type').value = 'E'; 
-                document.getElementById('permanent-card-desc').value = '';
-                document.getElementById('define-permanent-card-modal-overlay').style.display = 'flex'; 
-                document.getElementById('permanent-card-name').focus();
+                document.getElementById('custom-card-type').value = 'E'; 
+                document.getElementById('custom-card-desc').value = '';
+                document.getElementById('define-custom-card-modal-overlay').style.display = 'flex'; 
+                document.getElementById('custom-card-name').focus();
             });
         }
-        function closeDefinePermanentCardModal() { document.getElementById('define-permanent-card-modal-overlay').style.display = 'none'; }
-        function defineAndListPermanentCard() { requestEditPermission(_defineAndListPermanentCardInternal); }
-        function _defineAndListPermanentCardInternal() {
-            const name = document.getElementById('permanent-card-name').value.trim(); 
-            const points = parseInt(document.getElementById('permanent-card-points').value);
-            const type = document.getElementById('permanent-card-type').value; 
-            const desc = document.getElementById('permanent-card-desc').value.trim();
+        function closeDefineCustomCardModal() { document.getElementById('define-custom-card-modal-overlay').style.display = 'none'; }
+        function defineAndListCustomCard() { requestEditPermission(_defineAndListCustomCardInternal); }
+        function _defineAndListCustomCardInternal() {
+            const name = document.getElementById('custom-card-name').value.trim(); 
+            const points = parseInt(document.getElementById('custom-card-points').value);
+            const type = document.getElementById('custom-card-type').value; 
+            const desc = document.getElementById('custom-card-desc').value.trim();
             if (!name) { alert('请输入卡片名称。'); return; } if (isNaN(points) || points <= 0) { alert('请输入有效的积分消耗。'); return; }
-            if (!type) { alert('请选择卡片类型。'); return; } if (!desc) { alert('请输入卡片描述。'); return; }
-            const nameConflict = tempDefinedCards.some(card => card.name === name) || 
-                                Object.values(permanentCardsData).some(card => card.name === name) ||
-                                Object.values(iouCardsData).some(card => card.name === name) || // NEW: Check IOU cards
-                                Array.from(document.querySelectorAll('#main-cards-grid .card-item[data-name]:not([style*="display: none"])')).some(el => el.dataset.name === name); // Check only visible predefined
-            if (nameConflict) { alert('已存在同名卡片 (包括预设、常用、临时或欠条卡片)，请使用其他名称。'); return; } // Updated alert
-            const cardId = 'perm_' + Date.now();
-            permanentCardsData[cardId] = { id: cardId, name: name, points: points, type: type, desc: desc, isPermanent: true };
-            renderAllCards(); _saveToFirebaseInternal(); closeDefinePermanentCardModal(); alert(`常用卡片 "${name}" 已创建并上架！`);
+            if (!type) { alert('请选择卡片类型。'); return; } 
+            // H类型卡片不需要描述
+            if (type !== 'H' && !desc) { alert('请输入卡片描述。'); return; } 
+
+            const nameConflict = Object.values(customDefinedCards).some(card => card.name === name) ||
+                                Object.values(iouCardsData).some(card => card.name === name) ||
+                                Array.from(document.querySelectorAll('#main-cards-grid .card-item[data-name]')).some(el => el.dataset.name === name && !hiddenPredefinedCardIds.includes(el.id));
+            if (nameConflict) { alert('已存在同名卡片 (包括预设、自定义或欠条卡片)，请使用其他名称。'); return; } 
+            
+            const cardId = 'custom_' + Date.now();
+            customDefinedCards[cardId] = { id: cardId, name: name, points: points, type: type, desc: desc, isCustom: true }; 
+            renderAllCards(); _saveToFirebaseInternal(); closeDefineCustomCardModal(); alert(`自定义卡片 "${name}" 已创建并上架！`);
         }
 
-        // NEW: IOU Card Definition Functions
+        // IOU Card Definition Functions
         function openDefineIOUCardModal() {
             requestEditPermission(() => {
                 document.getElementById('iou-card-points').value = '';
@@ -1507,8 +1666,7 @@
             if (isNaN(interest) || interest < 0 || interest > 100) { alert('请输入有效的利息百分比 (0-100)。'); return; }
             
             // Check for name conflict (though name includes points and interest, it's good practice)
-            const nameConflict = tempDefinedCards.some(card => card.name === cardName) ||
-                                Object.values(permanentCardsData).some(card => card.name === cardName) ||
+            const nameConflict = Object.values(customDefinedCards).some(card => card.name === cardName) ||
                                 Object.values(iouCardsData).some(card => card.name === cardName) ||
                                 Array.from(document.querySelectorAll('#main-cards-grid .card-item[data-name]')).some(el => el.dataset.name === cardName && !hiddenPredefinedCardIds.includes(el.id));
             if (nameConflict) { alert('已存在相同面值和利息的欠条，请调整后重新定义。'); return; }
@@ -1528,7 +1686,7 @@
             alert(`欠条卡片 "${cardName}" 已创建并上架！`);
         }
 
-        // NEW: IOU Card Return Functions
+        // IOU Card Return Functions
         let currentIOUCardToReturn = null;
         function openIOUReturnModal(player, cardName) {
             requestEditPermission(() => {
@@ -1558,17 +1716,17 @@
             const dayNames = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
             const currentDayKey = dayNames[today.getDay()];
 
-            // User gets points
+            // User gets points (计入trade)
             weekData[player][currentDayKey].trade = (parseInt(weekData[player][currentDayKey].trade) || 0) + returnAmount;
-            // Other player loses points (as penalty)
-            weekData[otherPlayer][currentDayKey].penalty = (parseInt(weekData[otherPlayer][currentDayKey].penalty) || 0) - returnAmount;
+            // Other player loses points (从trade中扣除)
+            weekData[otherPlayer][currentDayKey].trade = (parseInt(weekData[otherPlayer][currentDayKey].trade) || 0) - returnAmount;
 
-            // Record to history logs
-            if (!weekData[player][currentDayKey].tradeLog) weekData[player][currentDayKey].tradeLog = [];
-            weekData[player][currentDayKey].tradeLog.push({ desc: `使用欠条 "${card.name}" 归还`, pointsAdded: returnAmount, type: 'iou_return_gain' });
+            // Record to history logs (使用tradeToLog和tradeFromLog)
+            if (!weekData[player][currentDayKey].tradeToLog) weekData[player][currentDayKey].tradeToLog = [];
+            weekData[player][currentDayKey].tradeToLog.push({ desc: `使用欠条 "${card.name}" 归还`, amount: returnAmount, fromPlayer: otherPlayer, type: 'iou_return_gain' });
 
-            if (!weekData[otherPlayer][currentDayKey].penaltyLog) weekData[otherPlayer][currentDayKey].penaltyLog = [];
-            weekData[otherPlayer][currentDayKey].penaltyLog.push({ desc: `因对方使用欠条 "${card.name}" 被扣除 (含利息)`, pointsDeducted: -returnAmount, type: 'iou_return_deduction' });
+            if (!weekData[otherPlayer][currentDayKey].tradeFromLog) weekData[otherPlayer][currentDayKey].tradeFromLog = [];
+            weekData[otherPlayer][currentDayKey].tradeFromLog.push({ desc: `因对方使用欠条 "${card.name}" 被扣除 (含利息)`, amount: returnAmount, toPlayer: player, type: 'iou_return_deduction' });
 
 
             // Remove card from warehouse
@@ -1606,95 +1764,68 @@
                 }
             });
             
-            // 2. Clear existing dynamically added permanent cards from main grid before re-rendering
-            document.querySelectorAll('#main-cards-grid .card-item[data-permanent="true"]').forEach(el => el.remove());
-            // NEW: Clear existing dynamically added IOU cards from main grid
-            document.querySelectorAll('#main-cards-grid .points-section.points-iou').forEach(el => {
-                // Only remove if it's not the initial predefined IOU section if you had one.
-                // Assuming points-iou is only for dynamically added ones.
-                el.remove();
-            });
-
-
-            // 3. Render Permanent Cards into main point sections
-            Object.values(permanentCardsData).forEach(card => {
-                const cardPoints = parseInt(card.points);
-                const colorClass = getCardColorClass(cardPoints);
-                let targetSection = document.querySelector(`#main-cards-grid .points-section.${colorClass}`);
-                
-                if (!targetSection) { 
-                    targetSection = document.createElement('div');
-                    targetSection.className = `points-section ${colorClass}`;
-                    const h3 = document.createElement('h3');
-                    h3.innerHTML = `⭐ ${cardPoints}积分 (自定义) <button class="add-card-to-section-btn" onclick="openDefinePermanentCardModal(${cardPoints})">⊕ 添加</button>`;
-                    targetSection.appendChild(h3);
-                    document.getElementById('main-cards-grid').appendChild(targetSection);
-                }
-
-                const cardEl = document.createElement('div');
-                cardEl.className = 'card-item';
-                cardEl.dataset.points = card.points; cardEl.dataset.type = card.type; cardEl.dataset.name = card.name;
-                cardEl.dataset.id = card.id; cardEl.dataset.permanent = "true";
-                cardEl.onclick = () => openBuyerModal(card.points, card.type, card.name, false, true, card.id);
-                cardEl.innerHTML = `<div class="card-title">${card.name}</div><div class="card-desc">${card.desc}</div><button class="delete-card-btn" onclick="handleDeleteCard('${card.id}', 'permanent')">❌</button>`;
-                targetSection.appendChild(cardEl);
-            });
-
-            // 4. Render Temporary Cards into their dedicated section
+            // 2. Clear existing dynamically added custom cards from main grid before re-rendering
+            // Also clear the temporary cards grid as they are now consolidated
+            document.querySelectorAll('#main-cards-grid .card-item[data-custom="true"]').forEach(el => el.remove());
             const tempGrid = document.getElementById('temp-cards-grid');
-            const tempSection = document.getElementById('temporary-cards-section');
+            tempGrid.innerHTML = '';
             const noTempItemsText = document.getElementById('no-temp-cards-text');
-            tempGrid.innerHTML = ''; 
-            if (noTempItemsText) tempGrid.appendChild(noTempItemsText); 
+            if (noTempItemsText) tempGrid.appendChild(noTempItemsText);
+
+            // 3. Render Custom Cards (formerly temporary and permanent) into their dedicated section AND main sections
+            const customCardsArray = Object.values(customDefinedCards);
+            const customSection = document.getElementById('temporary-cards-section'); // Reusing this ID for '自定义卡片' section
             
-            if (tempDefinedCards.length > 0) {
-                tempSection.style.display = 'block';
+            if (customCardsArray.length > 0) {
+                customSection.style.display = 'block';
                 if(noTempItemsText) noTempItemsText.style.display = 'none';
-                tempDefinedCards.forEach(card => {
+                customCardsArray.forEach(card => {
                     const cardPoints = parseInt(card.points);
                     const colorClass = getCardColorClass(cardPoints);
-                    const sectionWrapper = document.createElement('div'); 
-                    sectionWrapper.className = `points-section ${colorClass} temp-card-wrapper`;
-                    const cardEl = document.createElement('div');
-                    cardEl.className = 'card-item';
-                    cardEl.onclick = () => openBuyerModal(card.points, card.type, card.name, true, false, card.id);
-                    cardEl.innerHTML = `<div class="card-title">${card.name} (临时)</div><div class="card-desc">${card.desc}</div><button class="delete-card-btn" onclick="handleDeleteCard('${card.id}', 'temporary')">❌</button>`;
-                    sectionWrapper.appendChild(cardEl);
-                    tempGrid.appendChild(sectionWrapper);
+                    
+                    // Add to Custom Cards Section
+                    const customCardElInCustomSection = document.createElement('div');
+                    customCardElInCustomSection.className = 'card-item';
+                    customCardElInCustomSection.onclick = () => openBuyerModal(card.points, card.type, card.name, true, card.id);
+                    customCardElInCustomSection.innerHTML = `<div class="card-title">${card.name}</div><div class="card-desc">${card.desc}</div><button class="delete-card-btn" onclick="handleDeleteCard('${card.id}', 'custom')">❌</button>`;
+                    
+                    const sectionWrapperForCustomSection = document.createElement('div'); 
+                    sectionWrapperForCustomSection.className = `points-section ${colorClass} temp-card-wrapper`; // Keeping class name for consistent styling
+                    sectionWrapperForCustomSection.appendChild(customCardElInCustomSection);
+                    tempGrid.appendChild(sectionWrapperForCustomSection);
+
+                    // Also add to Main Cards Grid if it's not an H type (H cards are direct use, not for purchase)
+                    if (card.type !== 'H') {
+                        let targetSection = document.querySelector(`#main-cards-grid .points-section.${colorClass}`);
+                        if (!targetSection) { 
+                            targetSection = document.createElement('div');
+                            targetSection.className = `points-section ${colorClass}`;
+                            const h3 = document.createElement('h3');
+                            h3.innerHTML = `自定义 ${cardPoints}积分 <button class="add-card-to-section-btn" onclick="openDefineCustomCardModal(${cardPoints})">⊕ 添加</button>`;
+                            targetSection.appendChild(h3);
+                            document.getElementById('main-cards-grid').appendChild(targetSection);
+                        }
+                        const cardElInMainGrid = document.createElement('div');
+                        cardElInMainGrid.className = 'card-item';
+                        cardElInMainGrid.dataset.points = card.points; cardElInMainGrid.dataset.type = card.type; cardElInMainGrid.dataset.name = card.name;
+                        cardElInMainGrid.dataset.id = card.id; cardElInMainGrid.dataset.custom = "true";
+                        cardElInMainGrid.onclick = () => openBuyerModal(card.points, card.type, card.name, true, card.id);
+                        cardElInMainGrid.innerHTML = `<div class="card-title">${card.name}</div><div class="card-desc">${card.desc}</div><button class="delete-card-btn" onclick="handleDeleteCard('${card.id}', 'custom')">❌</button>`;
+                        targetSection.appendChild(cardElInMainGrid);
+                    }
                 });
             } else {
                 if(noTempItemsText) noTempItemsText.style.display = 'block';
             }
 
-            // 5. Render All Permanent Cards into their dedicated overview section
-            const allPermGrid = document.getElementById('all-permanent-cards-grid');
-            const allPermSection = document.getElementById('all-permanent-cards-section');
-            const noPermItemsText = document.getElementById('no-permanent-cards-text');
-            allPermGrid.innerHTML = ''; // Clear previous
-            if (noPermItemsText) allPermGrid.appendChild(noPermItemsText);
+            // Remove the old 'all-permanent-cards-section' logic as it's now consolidated
+            // const allPermSection = document.getElementById('all-permanent-cards-section');
+            // if (allPermSection) allPermSection.style.display = 'none'; // Ensure it's hidden
 
-            if (Object.keys(permanentCardsData).length > 0) {
-                allPermSection.style.display = 'block';
-                if(noPermItemsText) noPermItemsText.style.display = 'none';
-                Object.values(permanentCardsData).forEach(card => {
-                    const cardPoints = parseInt(card.points);
-                    const colorClass = getCardColorClass(cardPoints);
-                    const sectionWrapper = document.createElement('div');
-                    sectionWrapper.className = `points-section ${colorClass} permanent-card-list-item-wrapper`; // Distinct wrapper class
-                    const cardEl = document.createElement('div');
-                    cardEl.className = 'card-item';
-                    cardEl.dataset.id = card.id; // Ensure ID is present for delete
-                    cardEl.dataset.permanent = "true";
-                    cardEl.onclick = () => openBuyerModal(card.points, card.type, card.name, false, true, card.id);
-                    cardEl.innerHTML = `<div class="card-title">${card.name}</div><div class="card-desc">${card.desc}</div><button class="delete-card-btn" onclick="handleDeleteCard('${card.id}', 'permanent')">❌</button>`;
-                    sectionWrapper.appendChild(cardEl);
-                    allPermGrid.appendChild(sectionWrapper);
-                });
-            } else {
-                if(noPermItemsText) noPermItemsText.style.display = 'block';
-            }
+            // 4. Clear existing dynamically added IOU cards from main grid
+            document.querySelectorAll('#main-cards-grid .points-section.points-iou').forEach(el => el.remove());
 
-            // NEW: Render IOU Cards into a new section in main-cards-grid
+            // 5. Render IOU Cards into a new section in main-cards-grid
             const mainCardsGrid = document.getElementById('main-cards-grid');
             if (Object.keys(iouCardsData).length > 0) {
                 const iouSection = document.createElement('div');
@@ -1709,7 +1840,7 @@
                     cardEl.dataset.name = card.name;
                     cardEl.dataset.id = card.id;
                     cardEl.dataset.iou = "true"; // Mark as IOU card
-                    cardEl.onclick = () => openBuyerModal(card.points, card.type, card.name, false, false, card.id);
+                    cardEl.onclick = () => openBuyerModal(card.points, card.type, card.name, false, card.id);
                     cardEl.innerHTML = `<div class="card-title">${card.name}</div><div class="card-desc">${card.desc}</div><button class="delete-card-btn" onclick="handleDeleteCard('${card.id}', 'iou')">❌</button>`;
                     iouSection.appendChild(cardEl);
                 });
@@ -1726,11 +1857,9 @@
                     if (!hiddenPredefinedCardIds.includes(identifier)) {
                         hiddenPredefinedCardIds.push(identifier);
                     }
-                } else if (cardTypeString === 'permanent') {
-                    delete permanentCardsData[identifier];
-                } else if (cardTypeString === 'temporary') {
-                    tempDefinedCards = tempDefinedCards.filter(card => card.id !== identifier);
-                } else if (cardTypeString === 'iou') { // NEW: Handle IOU card deletion
+                } else if (cardTypeString === 'custom') { 
+                    delete customDefinedCards[identifier];
+                } else if (cardTypeString === 'iou') {
                     delete iouCardsData[identifier];
                 }
                 renderAllCards(); 
@@ -1739,6 +1868,65 @@
             });
         }
 
+        // NEW: Function for direct points trade
+        function executePointsTrade() {
+            requestEditPermission(() => _executePointsTradeInternal());
+        }
+
+        function _executePointsTradeInternal() {
+            const fromPlayer = document.getElementById('trade-from').value;
+            const toPlayer = document.getElementById('trade-to').value;
+            const amount = parseInt(document.getElementById('trade-amount').value);
+            const memo = document.getElementById('trade-memo').value.trim();
+
+            if (!fromPlayer || !toPlayer) {
+                alert('请选择转账方和接收方！');
+                return;
+            }
+
+            if (fromPlayer === toPlayer) {
+                alert('转账方和接收方不能是同一人！');
+                return;
+            }
+
+            if (isNaN(amount) || amount <= 0) {
+                alert('请输入有效的积分数量！');
+                return;
+            }
+
+            if (!memo) {
+                alert('请填写交易备注！');
+                return;
+            }
+
+            const today = new Date();
+            const dayNames = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+            const currentDayKey = dayNames[today.getDay()];
+
+            // === 修改点1：转出方积分直接从 trade 列扣除 ===
+            weekData[fromPlayer][currentDayKey].trade = (parseInt(weekData[fromPlayer][currentDayKey].trade) || 0) - amount;
+            // 记录转账方转出明细
+            if (!weekData[fromPlayer][currentDayKey].tradeFromLog) weekData[fromPlayer][currentDayKey].tradeFromLog = [];
+            weekData[fromPlayer][currentDayKey].tradeFromLog.push({ amount: amount, toPlayer: toPlayer, memo: memo, type: 'direct_trade_out' });
+
+            // === 修改点2：接收方积分直接增加到 trade 列 ===
+            weekData[toPlayer][currentDayKey].trade = (parseInt(weekData[toPlayer][currentDayKey].trade) || 0) + amount;
+            // 记录接收方转入明细
+            if (!weekData[toPlayer][currentDayKey].tradeToLog) weekData[toPlayer][currentDayKey].tradeToLog = [];
+            weekData[toPlayer][currentDayKey].tradeToLog.push({ amount: amount, fromPlayer: fromPlayer, memo: memo, type: 'direct_trade_in' });
+
+            updateWeekSummary(fromPlayer);
+            updateWeekSummary(toPlayer);
+            _saveToFirebaseInternal();
+
+            alert(`交易成功！\n${fromPlayer === 'qiqi' ? '七七' : '一一'} 向 ${toPlayer === 'qiqi' ? '七七' : '一一'} 转账 ${amount} 积分\n备注：${memo}`);
+
+            // 清空表单
+            document.getElementById('trade-from').value = '';
+            document.getElementById('trade-to').value = '';
+            document.getElementById('trade-amount').value = '';
+            document.getElementById('trade-memo').value = '';
+        }
 
         document.addEventListener('DOMContentLoaded', function() {
             // No initial login needed, so hide the login overlay
@@ -1764,6 +1952,23 @@
             const initialActiveTab = document.querySelector('.nav-tab.active');
             if (initialActiveTab) { const pageIdMatch = initialActiveTab.getAttribute('onclick').match(/showPage\('([^']*)'\)/); if (pageIdMatch && pageIdMatch[1]) showPage(pageIdMatch[1]); else showPage('daily'); } else { showPage('daily'); }
             // renderAllCards is called within allLoaded() after Firebase data is fetched
+
+            // NEW: 动态更新接收方选项的监听器
+            document.getElementById('trade-from').addEventListener('change', function() {
+                const toSelect = document.getElementById('trade-to');
+                const fromValue = this.value;
+                
+                toSelect.innerHTML = '<option value="">请选择</option>'; // Clear接收方选项
+                
+                if (fromValue === 'qiqi') {
+                    toSelect.innerHTML += '<option value="yiyi">一一</option>';
+                } else if (fromValue === 'yiyi') {
+                    toSelect.innerHTML += '<option value="qiqi">七七</option>';
+                } else {
+                    // If 'from' is empty, show both options for 'to'
+                    toSelect.innerHTML += '<option value="qiqi">七七</option><option value="yiyi">一一</option>';
+                }
+            });
         });
 
     </script>
