@@ -527,11 +527,26 @@
             .container { padding: 5px; } .header h1 { font-size: 1.8em; } .header p { font-size: 1em; }
             .content { padding: 15px; margin: 10px 5px; } .penalty-section { grid-template-columns: 1fr; gap: 20px; }
             .nav-tabs { flex-direction: row; flex-wrap: wrap; padding: 5px;} .nav-tab { padding: 10px 15px; font-size: 0.9em; margin: 2px;}
-            .score-boards { grid-template-columns: 1fr; gap: 15px;} .week-table { font-size: 0.75em;}
+            .score-boards { grid-template-columns: 1fr; gap: 15px;} 
+            
+            /* Adjusted for week tables */
+            .week-table-container {
+                overflow-x: auto; /* Allow horizontal scrolling if table is too wide */
+                -webkit-overflow-scrolling: touch;
+                margin: 0 -15px; /* Adjust to align with card edges, offsetting padding */
+                padding: 0 15px; /* Add internal padding for table content */
+                box-sizing: border-box; /* Include padding in width calculation */
+            }
+            .week-table { 
+                width: 100%; /* Ensure table takes full width of its container */
+                min-width: 500px; /* Set a minimum width for the table to prevent squishing */
+                font-size: 0.75em;
+            }
             .week-table th, .week-table td { padding: 3px 2px; font-size: 0.75em;}
             .small-input {width: 30px; font-size: 0.7em; padding: 1px;}
-            .week-table-container, #history .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch;}
-            .clickable-cell { min-width: 30px;} .connection-status { top: 10px; right: 10px; padding: 8px 12px; font-size: 0.8em;}
+            .clickable-cell { min-width: 30px;} 
+            
+            .connection-status { top: 10px; right: 10px; padding: 8px 12px; font-size: 0.8em;}
             #score-history-table { font-size: 0.8em;} #score-history-table th, #score-history-table td { padding: 6px 4px;}
             .warehouse-grid { grid-template-columns: 1fr; }
             .trade-form { grid-template-columns: 1fr; gap: 10px; }
@@ -564,24 +579,38 @@
                 font-size: 0.8em; /* Smaller font size for labels */
             }
             
-            /* Ensure the info boxes for "积分计算说明" and "操作说明" are responsive */
-            .bank-section > div:last-child > div {
+            /* Ensure the info boxes for "积分计算说明" and "操作说明" are responsive and smaller */
+            .bank-section > div:last-child { /* Targets the div containing both info boxes */
+                padding: 15px; /* Reduce overall padding for this container */
+            }
+            .bank-section > div:last-child > div { /* Targets the individual info boxes */
                 grid-template-columns: 1fr; /* Stack columns on small screens */
                 gap: 15px; /* Adjust gap */
-                padding: 15px; /* Reduce padding */
+                padding: 15px; /* Reduce padding for individual boxes */
             }
 
             .bank-section > div:last-child h4 {
-                font-size: 1.1em; /* Smaller heading font size */
+                font-size: 1.0em; /* Smaller heading font size */
             }
 
             .bank-section > div:last-child ul {
-                font-size: 0.9em; /* Smaller list item font size */
+                font-size: 0.85em; /* Smaller list item font size */
             }
         }
         @media (max-width: 480px) {
             .header h1 { font-size: 1.5em;} .nav-tab { padding: 8px 10px; font-size: 0.75em;}
-            .content { padding: 10px;} .week-table th, .week-table td { padding: 2px 1px; font-size: 0.65em;}
+            .content { padding: 10px;} 
+            
+            /* Further adjust week table for very small screens */
+            .week-table-container {
+                margin: 0 -10px; /* Further adjust margin for very small screens */
+                padding: 0 10px; /* Further adjust padding */
+            }
+            .week-table {
+                min-width: 400px; /* Even smaller min-width, adjust as needed */
+                font-size: 0.6em; /* Even smaller font size for table content */
+            }
+            .week-table th, .week-table td { padding: 1px; font-size: 0.6em;}
             .small-input { width: 25px; font-size: 0.6em; padding: 1px;}
             .total-score-input { font-size: 1.8em;} .stat-number { font-size: 1.3em;} .stat-label { font-size: 0.8em;}
             #score-history-table { font-size: 0.7em;} #score-history-table th, #score-history-table td { padding: 4px 2px;}
@@ -592,6 +621,20 @@
             /* Further adjustments for "积分排行榜" on extra small screens */
             .stats-grid {
                 grid-template-columns: 1fr; /* Stack items vertically */
+            }
+            
+            /* Further adjust the info boxes for very small screens */
+            .bank-section > div:last-child {
+                padding: 10px; /* Even less padding */
+            }
+            .bank-section > div:last-child > div {
+                padding: 10px; /* Even less padding for individual boxes */
+            }
+            .bank-section > div:last-child h4 {
+                font-size: 0.9em;
+            }
+            .bank-section > div:last-child ul {
+                font-size: 0.8em;
             }
         }
 
@@ -978,7 +1021,7 @@
                                 <li><strong>E = 消费类卡片：</strong>购买后进入仓库，使用后从仓库移除。积分由购买方承担。</li>
                                 <li><strong>T = 交易类卡片：</strong>购买后进入仓库。使用后卡片从仓库移除，卡片原积分值将加入对方的“交易”积分中。购买方承担购买成本。</li>
                                 <li><strong>H = 开心类卡片：：</strong>直接消耗，双方共同承担积分，不进入仓库。</li>
-                                <li><strong>IOU = 欠条卡片：</strong>购买后进入仓库，购买者扣除积分，另一方玩家立即获得相同积分。使用时，使用者获得（面值+利息）积分，另一方玩家扣除（面值+利息）积分。</li>
+                                <li><strong>IOU = 欠条卡片：：</strong>购买后进入仓库，购买者扣除积分，另一方玩家立即获得相同积分。使用时，使用者获得（面值+利息）积分，另一方玩家扣除（面值+利息）积分。</li>
                                  <li><strong>特殊奖励卡：：</strong>直接授予对应玩家奖励积分，不进入仓库。</li>
                             </ul>
                         </div>
@@ -2081,7 +2124,7 @@
 
                 if (cardTypeString === 'predefined') {
                     if (!hiddenPredefinedCardIds.includes(identifier)) {
-                        hiddenPreefinedCardIds.push(identifier);
+                        hiddenPredefinedCardIds.push(identifier);
                     }
                 } else if (cardTypeString === 'custom') { 
                     delete customDefinedCards[identifier];
