@@ -14,7 +14,7 @@
         body {
             font-family: 'Microsoft YaHei', Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            min-height: 100%; /* Adjusted min-height */
             line-height: 1.6;
         }
 
@@ -383,7 +383,15 @@
         .week-table th { background: #f8f9fa; font-weight: bold; font-size: 0.9em; }
         .stats-overview { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); margin-bottom: 30px; text-align: center; }
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0; }
-        .stat-item { background: linear-gradient(45deg, #9b59b6, #8e44ad); color: white; padding: 20px; border-radius: 10px; transition: transform 0.3s ease; }
+        .stat-item { 
+            background: linear-gradient(45deg, #9b59b6, #8e44ad); 
+            color: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            transition: transform 0.3s ease; 
+            max-width: 100%; /* Ensure images within these items are responsive */
+            height: auto; /* Ensure images within these items are responsive */
+        }
         .stat-item:hover { transform: scale(1.05); }
         .stat-number { font-size: 2em; font-weight: bold; margin-bottom: 5px; }
         .stat-label { font-size: 0.9em; opacity: 0.9; }
@@ -527,6 +535,49 @@
             #score-history-table { font-size: 0.8em;} #score-history-table th, #score-history-table td { padding: 6px 4px;}
             .warehouse-grid { grid-template-columns: 1fr; }
             .trade-form { grid-template-columns: 1fr; gap: 10px; }
+
+            /* Adjustments for the new sections in "小银行" */
+            .bank-section .week-card {
+                padding: 15px; /* Reduce padding for smaller screens */
+            }
+
+            .bank-section .week-title {
+                font-size: 1.3em; /* Smaller title font size */
+                padding: 10px; /* Adjust padding */
+            }
+
+            /* Adjust .stats-grid for "积分排行榜" to be more responsive */
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Allow smaller min width */
+                gap: 10px; /* Reduce gap */
+            }
+
+            .stat-item {
+                padding: 15px; /* Reduce padding */
+            }
+
+            .stat-number {
+                font-size: 1.5em; /* Smaller font size for numbers */
+            }
+
+            .stat-label {
+                font-size: 0.8em; /* Smaller font size for labels */
+            }
+            
+            /* Ensure the info boxes for "积分计算说明" and "操作说明" are responsive */
+            .bank-section > div:last-child > div {
+                grid-template-columns: 1fr; /* Stack columns on small screens */
+                gap: 15px; /* Adjust gap */
+                padding: 15px; /* Reduce padding */
+            }
+
+            .bank-section > div:last-child h4 {
+                font-size: 1.1em; /* Smaller heading font size */
+            }
+
+            .bank-section > div:last-child ul {
+                font-size: 0.9em; /* Smaller list item font size */
+            }
         }
         @media (max-width: 480px) {
             .header h1 { font-size: 1.5em;} .nav-tab { padding: 8px 10px; font-size: 0.75em;}
@@ -537,6 +588,11 @@
             #score-history-table ul { padding-left: 10px; font-size: 0.85em; }
             #score-history-table .basic-score-details ul { font-size: 0.8em; }
             .clickable-cell { min-width: 25px;}
+
+            /* Further adjustments for "积分排行榜" on extra small screens */
+            .stats-grid {
+                grid-template-columns: 1fr; /* Stack items vertically */
+            }
         }
 
         /* Styles for editable daily tasks content */
@@ -923,7 +979,7 @@
                                 <li><strong>T = 交易类卡片：</strong>购买后进入仓库。使用后卡片从仓库移除，卡片原积分值将加入对方的“交易”积分中。购买方承担购买成本。</li>
                                 <li><strong>H = 开心类卡片：：</strong>直接消耗，双方共同承担积分，不进入仓库。</li>
                                 <li><strong>IOU = 欠条卡片：</strong>购买后进入仓库，购买者扣除积分，另一方玩家立即获得相同积分。使用时，使用者获得（面值+利息）积分，另一方玩家扣除（面值+利息）积分。</li>
-                                 <li><strong>特殊奖励卡：</strong>直接授予对应玩家奖励积分，不进入仓库。</li>
+                                 <li><strong>特殊奖励卡：：</strong>直接授予对应玩家奖励积分，不进入仓库。</li>
                             </ul>
                         </div>
                     </div>
@@ -996,7 +1052,7 @@
                 <div style="margin-top: 30px; padding: 25px; background: white; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
                     <h3 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">📋 积分计算说明</h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                        <div style="background: #e8f4fd; padding: 20px; border-radius: 10px;"><h4 style="color: #1976d2; margin-bottom: 10px;">📊 积分计算规则</h4><ul style="list-style: none; padding-left: 0; color: #555;"><li><strong>基础任务：</strong>各个项目可点击切换-2, 0, 1分</li><li><strong>奖励积分：</strong>通过特殊奖励卡或自定义奖励获得</li><li><strong>罚分：</strong>通过扣分规则或自定义扣分产生 (自动记录)</li><li><strong>购卡：</strong>卡片购买成本 (自动记录)</li><li><strong>交易：</strong>对方使用T卡时，己方获得的积分 (自动记录)</li><li><strong>总分 = 基础 + 奖励 + 罚分 - 购卡 + 交易</strong> (罚分为负值)</li></ul></div>
+                        <div style="background: #e8f4fd; padding: 20px; border-radius: 10px;"><h4 style="color: #1976d2; margin-bottom: 10px;">📊 积分计算规则</h4><ul style="list-style: none; padding-left: 0; color: #555;"><li><strong>基础任务：</strong>各个项目可点击切换-2, 0, 1分</li><li><strong>奖励积分：</strong>通过特殊奖励卡或自定义奖励获得</li><li><strong>罚分：</strong>通过扣分规则或自定义扣分产生 (自动记录)</li><li><strong>购卡：：</strong>卡片购买成本 (自动记录)</li><li><strong>交易：：</strong>对方使用T卡时，己方获得的积分 (自动记录)</li><li><strong>总分 = 基础 + 奖励 + 罚分 - 购卡 + 交易</strong> (罚分为负值)</li></ul></div>
 <div style="background: #f3e5f5; padding: 20px; border-radius: 10px;"><h4 style="color: #7b1fa2; margin-bottom: 10px;">🎮 操作说明</h4><ul style="color: #555; padding-left: 20px;"><li>点击基础任务单元格切换数值</li><li>奖励通过"小卡片"页面的特殊卡或"小奖惩"页面的自定义奖励操作</li><li>罚分通过"小奖惩"页面操作自动更新</li><li>购卡积分根据卡片购买自动更新</li><li>交易积分根据对方使用T卡自动更新</li><li>系统自动计算本周各项积分及总分</li></ul></div>
                     </div>
                 </div>
@@ -1643,7 +1699,7 @@
                 if (weekData[player][day].rewardLog) { weekData[player][day].rewardLog.forEach(log => rewardDetailsLog.push({...log, day: day }));}
                 if (weekData[player][day].tradeLog) { weekData[player][day].tradeLog.forEach(log => tradeDetailsLog.push({...log, day: day }));} 
                 if (weekData[player][day].tradeFromLog) { weekData[player][day].tradeFromLog.forEach(log => tradeFromLog.push({...log, day: day }));} 
-                if (weekData[player][day].tradeToLog) { weekData[player][day].tradeToLog.forEach(log => tradeToLog.push({...log, day: day }));}       
+                if (weekData[player][day].tradeToLog) { weekData[player][day].tradeToLog.forEach(log => tradeToLog.push({...log, day: day }));}        
 
                 ['book', 'sleep', 'exercise'].forEach(task => { const taskScore = parseInt(weekData[player][day][task]) || 0; if (taskScore !== 0) { basicScoreDetailsLog.push({ day: day, task: task, score: taskScore }); }});
             });
@@ -1658,7 +1714,7 @@
                 rewardDetails: rewardDetailsLog, 
                 tradeDetails: tradeDetailsLog,
                 tradeFromLog: tradeFromLog, 
-                tradeToLog: tradeToLog         
+                tradeToLog: tradeToLog           
             };
             scoreHistoryLog.unshift(historyEntry); renderScoreHistoryTable(); _saveScoreHistoryToFirebaseInternal(); 
             
@@ -2025,7 +2081,7 @@
 
                 if (cardTypeString === 'predefined') {
                     if (!hiddenPredefinedCardIds.includes(identifier)) {
-                        hiddenPredefinedCardIds.push(identifier);
+                        hiddenPreefinedCardIds.push(identifier);
                     }
                 } else if (cardTypeString === 'custom') { 
                     delete customDefinedCards[identifier];
