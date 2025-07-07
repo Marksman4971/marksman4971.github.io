@@ -245,7 +245,18 @@
         .points-iou { border-top-color: #f39c12; } /* Added for IOU cards */
         .weekly-rewards-section { border-top-color: #1abc9c; }
         .warehouse-section { border-top-color: #3498db; }
-        .points-section h3, .weekly-rewards-section h3, .warehouse-section h3 { text-align: center; margin-bottom: 20px; font-size: 1.8em; color: #2c3e50; }
+        /* Custom Card section style */
+        .custom-cards-section {
+            background: white; /* Match other sections */
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-top: 5px solid #9b59b6; /* Purple border for custom cards */
+            margin-bottom: 30px;
+        }
+        .points-section h3, .weekly-rewards-section h3, .warehouse-section h3, .custom-cards-section h3 { /* Added custom-cards-section h3 */
+            text-align: center; margin-bottom: 20px; font-size: 1.8em; color: #2c3e50;
+        }
         
         .card-item { background: #f8f9fa; margin: 10px 0; padding: 15px; border-radius: 10px; border-left: 4px solid #3498db; transition: all 0.3s ease; cursor: pointer; position: relative; /* For delete button */ }
         .card-item.info-card { border-left-color: #1abc9c; }
@@ -277,7 +288,7 @@
         .card-item .delete-card-btn:hover { opacity: 1; background: #c0392b; transform: scale(1.1); }
 
         /* Style for the "Add Card to Section" button */
-        .points-section h3 {
+        .points-section h3, .custom-cards-section h3 { /* Added custom-cards-section h3 */
             position: relative;
             display: flex;
             justify-content: space-between; /* This will push the button to the right if it's the last child */
@@ -675,13 +686,13 @@
                     <div style="margin-top: 20px; padding: 15px; background: #e8f4fd; border-radius: 10px;">
                         <h4>💫 每日任务：</h4>
                         <ul style="margin-top: 10px; padding-left: 20px;">
-                             <li><strong>工作日计划试行版</strong><br>
+                            <li>**工作日计划试行版**<br>
                                 1. 饭后散步20分钟（1积分，翻倍+0，上限1）<br>
                                 2. 学习提升30分钟（1积分，翻倍+1，上限2）<br>
                                 3. 正式锻炼30分钟（1积分，翻倍+2，上限3）<br>
                                 4. 禁止游戏</li>
                                 <br>
-                            <li><strong>休息日计划试行版</strong><br>
+                            <li>**休息日计划试行版**<br>
                                 1. 锻炼1小时<br>
                                 2. 学习3小时<br>
                                 3. 午休1小时<br>
@@ -748,12 +759,13 @@
                     </div>
                 </div>
 
-                <div id="temporary-cards-section" style="display: block;"> <h3 style="text-align:center; margin-top:40px; margin-bottom:20px; color: #2c3e50;">⭐ 自定义卡片</h3>
+                <div id="temporary-cards-section" class="points-section custom-cards-section" style="display: block;"> 
+                    <h3 style="text-align:center; margin-top:0px; margin-bottom:20px; color: #2c3e50;">⭐ 自定义卡片</h3>
                     <div id="temp-cards-grid" class="points-grid">
                         <p id="no-temp-cards-text" class="no-cards-text" style="grid-column: 1 / -1;">尚未定义自定义卡片。</p>
                     </div>
                 </div>
-
+                
                 <h3 style="text-align:center; margin-top:40px; margin-bottom:20px; color: #2c3e50;">🛒 可购买卡片</h3>
                 <div id="main-cards-grid" class="points-grid">
                     <div class="points-section points-1">
@@ -811,12 +823,12 @@
                         <h3 style="margin-bottom: 15px;">💡 使用说明</h3>
                         <div style="display: inline-block; text-align: left; font-size: 1.05em; line-height: 1.8; margin: 0 auto;">
                             <ul style="list-style: none; padding: 0; margin: 0;">
-                                <li><strong>积分交易：</strong>可直接在玩家间转移积分，支持备注说明，交易记录会计入总分体系。</li>
-                                <li><strong>E = 消费类卡片：</strong>购买后进入仓库，使用后从仓库移除。积分由购买方承担。</li>
-                                <li><strong>T = 交易类卡片：</strong>购买后进入仓库。使用后卡片从仓库移除，卡片原积分值将加入对方的“交易”积分中。购买方承担购买成本。</li>
-                                <li><strong>H = 开心类卡片：：</strong>直接消耗，双方共同承担积分，不进入仓库。</li>
-                                <li><strong>IOU = 欠条卡片：</strong>购买后进入仓库，购买者扣除积分，另一方玩家立即获得相同积分。使用时，使用者获得（面值+利息）积分，另一方玩家扣除（面值+利息）积分。</li>
-                                 <li><strong>特殊奖励卡：</strong>直接授予对应玩家奖励积分，不进入仓库。</li>
+                                <li>**积分交易：**可直接在玩家间转移积分，支持备注说明，交易记录会计入总分体系。</li>
+                                <li>**E = 消费类卡片：**购买后进入仓库，使用后从仓库移除。积分由购买方承担。</li>
+                                <li>**T = 交易类卡片：**购买后进入仓库。使用后卡片从仓库移除，卡片原积分值将加入对方的“交易”积分中。购买方承担购买成本。</li>
+                                <li>**H = 开心类卡片：：**直接消耗，双方共同承担积分，不进入仓库。</li>
+                                <li>**IOU = 欠条卡片：**购买后进入仓库，购买者扣除积分，另一方玩家立即获得相同积分。使用时，使用者获得（面值+利息）积分，另一方玩家扣除（面值+利息）积分。</li>
+                                 <li>**特殊奖励卡：**直接授予对应玩家奖励积分，不进入仓库。</li>
                             </ul>
                         </div>
                     </div>
@@ -889,7 +901,7 @@
                 <div style="margin-top: 30px; padding: 25px; background: white; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
                     <h3 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">📋 积分计算说明</h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                        <div style="background: #e8f4fd; padding: 20px; border-radius: 10px;"><h4 style="color: #1976d2; margin-bottom: 10px;">📊 积分计算规则</h4><ul style="color: #555; margin-left: 20px;"><li><strong>基础任务：</strong>各个项目可点击切换-2, 0, 1分</li><li><strong>奖励积分：</strong>通过特殊奖励卡或自定义奖励获得</li><li><strong>罚分：</strong>通过扣分规则或自定义扣分产生 (自动记录)</li><li><strong>购卡：：</strong>卡片购买成本 (自动记录)</li><li><strong>交易：</strong>对方使用T卡时，己方获得的积分 (自动记录)</li><li><strong>总分 = 基础 + 奖励 + 罚分 - 购卡 + 交易</strong> (罚分为负值)</li></ul></div>
+                        <div style="background: #e8f4fd; padding: 20px; border-radius: 10px;"><h4 style="color: #1976d2; margin-bottom: 10px;">📊 积分计算规则</h4><ul style="color: #555; margin-left: 20px;"><li>**基础任务：**各个项目可点击切换-2, 0, 1分</li><li>**奖励积分：**通过特殊奖励卡或自定义奖励获得</li><li>**罚分：**通过扣分规则或自定义扣分产生 (自动记录)</li><li>**购卡：：**卡片购买成本 (自动记录)</li><li>**交易：**对方使用T卡时，己方获得的积分 (自动记录)</li><li>**总分 = 基础 + 奖励 + 罚分 - 购卡 + 交易** (罚分为负值)</li></ul></div>
                         <div style="background: #f3e5f5; padding: 20px; border-radius: 10px;"><h4 style="color: #7b1fa2; margin-bottom: 10px;">🎮 操作说明</h4><ul style="color: #555; margin-left: 20px;"><li>点击基础任务单元格切换数值</li><li>奖励通过"小卡片"页面的特殊卡或"小奖惩"页面的自定义奖励操作</li><li>罚分通过"小奖惩"页面操作自动更新</li><li>购卡积分根据卡片购买自动更新</li><li>交易积分根据对方使用T卡自动更新</li><li>系统自动计算本周各项积分及总分</li></ul></div>
                     </div>
                 </div>
@@ -1326,16 +1338,19 @@
                 consumeScore += (parseInt(dayData.consume) || 0); 
                 tradeScore += (parseInt(dayData.trade) || 0); 
                 // Directly add/subtract from tradeScore based on tradeFromLog and tradeToLog
-                dayData.tradeFromLog.forEach(log => tradeScore -= log.amount); // Points flowing FROM this player
-                dayData.tradeToLog.forEach(log => tradeScore += log.amount);   // Points flowing TO this player
+                dayData.tradeFromLog.forEach(log => tradeScore -= log.amount); /* */ // Points flowing FROM this player
+                dayData.tradeToLog.forEach(log => tradeScore += log.amount); /* */  // Points flowing TO this player
             });
             // Total score calculation now correctly reflects direct trade influences via tradeScore
-            return { basic: basicScore, reward: rewardScore, penalty: penaltyScore, consume: consumeScore, trade: tradeScore, total: basicScore + rewardScore + penaltyScore - consumeScore + tradeScore };
+            return { basic: basicScore, reward: rewardScore, penalty: penaltyScore, consume: consumeScore, trade: tradeScore, total: basicScore + rewardScore + penaltyScore - consumeScore + tradeScore }; /* */
         }
 
         function updateWeekSummary(player) {
             const scores = calculateWeekScore(player); const summaryElement = document.getElementById(`${player}-summary`);
-            if (summaryElement) { summaryElement.innerHTML = `<strong>本周积分：${scores.total}分 ✨</strong> <br> (基础: ${scores.basic} 📚, 奖励: ${scores.reward} 🎁, 罚分: ${scores.penalty} 💔, 购卡: ${scores.consume} 💳, 交易: ${scores.trade} 🔄)`;}
+            if (summaryElement) { summaryElement.innerHTML = `<strong>本周积分：${scores.total}分 ✨</strong> <br> (基础: 0 📚, 奖励: 0 🎁, 罚分: 0 💔, 购卡: 0 💳, 交易: 0 🔄)`;
+                /* Update the week summary with accurate trade score */
+                summaryElement.innerHTML = `<strong>本周积分：${scores.total}分 ✨</strong> <br> (基础: ${scores.basic} 📚, 奖励: ${scores.reward} 🎁, 罚分: ${scores.penalty} 💔, 购卡: ${scores.consume} 💳, 交易: ${scores.trade} 🔄)`;
+            }
             const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
             const playerTableBody = document.querySelector(`#${player}-summary`).closest('.week-card').querySelector('tbody');
             if (!playerTableBody) return;
@@ -1363,13 +1378,13 @@
                 const rewardCellTotal = row.insertCell(); rewardCellTotal.textContent = entry.scores.reward; rewardCellTotal.classList.add('num-center');
                 const rewardDetailCell = row.insertCell(); rewardDetailCell.classList.add('basic-score-details');
                 // Only show reward details that are NOT trade-in
-                const filteredRewardDetails = entry.rewardDetails ? entry.rewardDetails.filter(d => d.type !== 'trade_in') : [];
+                const filteredRewardDetails = entry.rewardDetails ? entry.rewardDetails.filter(d => d.type !== 'trade_in') : []; /* */
                 if (filteredRewardDetails.length > 0) { const ul = document.createElement('ul'); filteredRewardDetails.forEach(detail => { const li = document.createElement('li'); li.textContent = `${detail.day ? (dayChineseMap[detail.day] || detail.day) + ' - ' : ''}${detail.desc}: +${detail.pointsAdded}分`; ul.appendChild(li); }); rewardDetailCell.appendChild(ul); } else if (entry.scores.reward > 0) { rewardDetailCell.textContent = `${entry.scores.reward}分 (无非交易奖励详情)`; } else { rewardDetailCell.textContent = '无'; rewardDetailCell.classList.add('no-details');}
                 
                 // Penalty Details
                 const penaltyCell = row.insertCell();
                 // Only show penalty details that are NOT trade-out or IOU return deduction
-                const filteredPenaltyDetails = entry.penaltyDetails ? entry.penaltyDetails.filter(p => p.type !== 'iou_return_deduction' && p.type !== 'trade_out') : [];
+                const filteredPenaltyDetails = entry.penaltyDetails ? entry.penaltyDetails.filter(p => p.type !== 'iou_return_deduction' && p.type !== 'trade_out') : []; /* */
                 if (filteredPenaltyDetails.length > 0) {
                     const ul = document.createElement('ul');
                     filteredPenaltyDetails.forEach(p => {
@@ -1405,7 +1420,7 @@
                 // Trade (T-card income) Details
                 const tradeCell = row.insertCell();
                 // Filter out trade_in and iou_return_gain from tradeDetails here as they will be in Transaction Details
-                const filteredTradeDetails = entry.tradeDetails ? entry.tradeDetails.filter(t => t.type !== 'iou_purchase_income' && t.type !== 'iou_return_gain') : [];
+                const filteredTradeDetails = entry.tradeDetails ? entry.tradeDetails.filter(t => t.type !== 'iou_purchase_income' && t.type !== 'iou_return_gain') : []; /* */
                 if (filteredTradeDetails.length > 0) {
                     const ul = document.createElement('ul');
                     filteredTradeDetails.forEach(t => {
@@ -1728,16 +1743,16 @@
             const currentDayKey = dayNames[today.getDay()];
 
             // User gets points (计入trade)
-            weekData[player][currentDayKey].trade = (parseInt(weekData[player][currentDayKey].trade) || 0) + returnAmount;
+            weekData[player][currentDayKey].trade = (parseInt(weekData[player][currentDayKey].trade) || 0) + returnAmount; /* */
             // Other player loses points (从trade中扣除)
-            weekData[otherPlayer][currentDayKey].trade = (parseInt(weekData[otherPlayer][currentDayKey].trade) || 0) - returnAmount;
+            weekData[otherPlayer][currentDayKey].trade = (parseInt(weekData[otherPlayer][currentDayKey].trade) || 0) - returnAmount; /* */
 
             // Record to history logs (使用tradeToLog和tradeFromLog)
             if (!weekData[player][currentDayKey].tradeToLog) weekData[player][currentDayKey].tradeToLog = [];
-            weekData[player][currentDayKey].tradeToLog.push({ desc: `使用欠条 "${card.name}" 归还`, amount: returnAmount, fromPlayer: otherPlayer, type: 'iou_return_gain' });
+            weekData[player][currentDayKey].tradeToLog.push({ desc: `使用欠条 "${card.name}" 归还`, amount: returnAmount, fromPlayer: otherPlayer, type: 'iou_return_gain' }); /* */
 
             if (!weekData[otherPlayer][currentDayKey].tradeFromLog) weekData[otherPlayer][currentDayKey].tradeFromLog = [];
-            weekData[otherPlayer][currentDayKey].tradeFromLog.push({ desc: `因对方使用欠条 "${card.name}" 被扣除 (含利息)`, amount: returnAmount, toPlayer: player, type: 'iou_return_deduction' });
+            weekData[otherPlayer][currentDayKey].tradeFromLog.push({ desc: `因对方使用欠条 "${card.name}" 被扣除 (含利息)`, amount: returnAmount, toPlayer: player, type: 'iou_return_deduction' }); /* */
 
 
             // Remove card from warehouse
@@ -1776,86 +1791,90 @@
             });
             
             // 2. Clear existing dynamically added custom cards from main grid before re-rendering
-            // Also clear the temporary cards grid as they are now consolidated
+            // Also clear the custom cards grid within the .custom-cards-section
             document.querySelectorAll('#main-cards-grid .card-item[data-custom="true"]').forEach(el => el.remove());
-            const tempGrid = document.getElementById('temp-cards-grid');
-            tempGrid.innerHTML = '';
-            const noTempItemsText = document.getElementById('no-temp-cards-text');
-            if (noTempItemsText) tempGrid.appendChild(noTempItemsText);
+            const customCardsGrid = document.getElementById('temp-cards-grid'); 
+            customCardsGrid.innerHTML = ''; 
+            const noCustomItemsText = document.getElementById('no-temp-cards-text'); 
+            if (noCustomItemsText) customCardsGrid.appendChild(noCustomItemsText); 
 
             // 3. Render Custom Cards (formerly temporary and permanent) into their dedicated section AND main sections
             const customCardsArray = Object.values(customDefinedCards);
-            const customSection = document.getElementById('temporary-cards-section'); // Reusing this ID for '自定义卡片' section
+            const customSectionWrapper = document.getElementById('temporary-cards-section'); 
             
             if (customCardsArray.length > 0) {
-                customSection.style.display = 'block';
-                if(noTempItemsText) noTempItemsText.style.display = 'none';
+                customSectionWrapper.style.display = 'block'; 
+                if(noCustomItemsText) noCustomItemsText.style.display = 'none'; 
+                
                 customCardsArray.forEach(card => {
                     const cardPoints = parseInt(card.points);
                     const colorClass = getCardColorClass(cardPoints);
                     
-                    // Add to Custom Cards Section
-                    const customCardElInCustomSection = document.createElement('div');
-                    customCardElInCustomSection.className = 'card-item';
-                    customCardElInCustomSection.onclick = () => openBuyerModal(card.points, card.type, card.name, true, card.id);
-                    customCardElInCustomSection.innerHTML = `<div class="card-title">${card.name}</div><div class="card-desc">${card.desc}</div><button class="delete-card-btn" onclick="handleDeleteCard('${card.id}', 'custom')">❌</button>`;
+                    // Add to Custom Cards Section (the box at the top)
+                    const customCardElInCustomSection = document.createElement('div'); 
+                    customCardElInCustomSection.className = `card-item ${colorClass}`; 
+                    customCardElInCustomSection.onclick = (event) => { /* Added event parameter */
+                        event.stopPropagation(); /* Stop propagation to prevent card purchase modal */
+                        openBuyerModal(card.points, card.type, card.name, true, card.id); 
+                    };
+                    customCardElInCustomSection.innerHTML = `<div class="card-title">${card.name}</div><div class="card-desc">${card.desc}</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('${card.id}', 'custom')">❌</button>`; /* Added event.stopPropagation() here */
                     
-                    const sectionWrapperForCustomSection = document.createElement('div'); 
-                    sectionWrapperForCustomSection.className = `points-section ${colorClass} temp-card-wrapper`; // Keeping class name for consistent styling
-                    sectionWrapperForCustomSection.appendChild(customCardElInCustomSection);
-                    tempGrid.appendChild(sectionWrapperForCustomSection);
+                    customCardsGrid.appendChild(customCardElInCustomSection); 
 
                     // Also add to Main Cards Grid if it's not an H type (H cards are direct use, not for purchase)
-                    if (card.type !== 'H') {
-                        let targetSection = document.querySelector(`#main-cards-grid .points-section.${colorClass}`);
+                    if (card.type !== 'H') { 
+                        let targetSection = document.querySelector(`#main-cards-grid .points-section.${colorClass}`); 
                         if (!targetSection) { 
-                            targetSection = document.createElement('div');
-                            targetSection.className = `points-section ${colorClass}`;
-                            const h3 = document.createElement('h3');
-                            h3.innerHTML = `自定义 ${cardPoints}积分 <button class="add-card-to-section-btn" onclick="openDefineCustomCardModal(${cardPoints})">⊕ 添加</button>`;
-                            targetSection.appendChild(h3);
-                            document.getElementById('main-cards-grid').appendChild(targetSection);
+                            // Create section if it doesn't exist for this point value
+                            targetSection = document.createElement('div'); 
+                            targetSection.className = `points-section ${colorClass}`; 
+                            const h3 = document.createElement('h3'); 
+                            h3.innerHTML = `自定义 ${cardPoints}积分 <button class="add-card-to-section-btn" onclick="openDefineCustomCardModal(${cardPoints})">⊕ 添加</button>`; 
+                            targetSection.appendChild(h3); 
+                            document.getElementById('main-cards-grid').appendChild(targetSection); 
                         }
-                        const cardElInMainGrid = document.createElement('div');
-                        cardElInMainGrid.className = 'card-item';
-                        cardElInMainGrid.dataset.points = card.points; cardElInMainGrid.dataset.type = card.type; cardElInMainGrid.dataset.name = card.name;
-                        cardElInMainGrid.dataset.id = card.id; cardElInMainGrid.dataset.custom = "true";
-                        cardElInMainGrid.onclick = () => openBuyerModal(card.points, card.type, card.name, true, card.id);
-                        cardElInMainGrid.innerHTML = `<div class="card-title">${card.name}</div><div class="card-desc">${card.desc}</div><button class="delete-card-btn" onclick="handleDeleteCard('${card.id}', 'custom')">❌</button>`;
-                        targetSection.appendChild(cardElInMainGrid);
+                        const cardElInMainGrid = document.createElement('div'); 
+                        cardElInMainGrid.className = 'card-item'; 
+                        cardElInMainGrid.dataset.points = card.points; cardElInMainGrid.dataset.type = card.type; cardElInMainGrid.dataset.name = card.name; 
+                        cardElInMainGrid.dataset.id = card.id; cardElInMainGrid.dataset.custom = "true"; 
+                        cardElInMainGrid.onclick = (event) => { /* Added event parameter */
+                            event.stopPropagation(); /* Stop propagation to prevent card purchase modal */
+                            openBuyerModal(card.points, card.type, card.name, true, card.id); 
+                        };
+                        cardElInMainGrid.innerHTML = `<div class="card-title">${card.name}</div><div class="card-desc">${card.desc}</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('${card.id}', 'custom')">❌</button>`; /* Added event.stopPropagation() here */
+                        targetSection.appendChild(cardElInMainGrid); 
                     }
                 });
             } else {
-                if(noTempItemsText) noTempItemsText.style.display = 'block';
+                if(noCustomItemsText) noCustomItemsText.style.display = 'block'; 
             }
 
-            // Remove the old 'all-permanent-cards-section' logic as it's now consolidated
-            // const allPermSection = document.getElementById('all-permanent-cards-section');
-            // if (allPermSection) allPermSection.style.display = 'none'; // Ensure it's hidden
-
             // 4. Clear existing dynamically added IOU cards from main grid
-            document.querySelectorAll('#main-cards-grid .points-section.points-iou').forEach(el => el.remove());
+            document.querySelectorAll('#main-cards-grid .points-section.points-iou').forEach(el => el.remove()); 
 
             // 5. Render IOU Cards into a new section in main-cards-grid
-            const mainCardsGrid = document.getElementById('main-cards-grid');
-            if (Object.keys(iouCardsData).length > 0) {
-                const iouSection = document.createElement('div');
-                iouSection.className = 'points-section points-iou'; // Use the new IOU color class
+            const mainCardsGrid = document.getElementById('main-cards-grid'); 
+            if (Object.keys(iouCardsData).length > 0) { 
+                const iouSection = document.createElement('div'); 
+                iouSection.className = 'points-section points-iou'; 
                 iouSection.innerHTML = `<h3>📝 欠条卡片 <button class="add-card-to-section-btn" onclick="openDefineIOUCardModal()">⊕ 添加</button></h3>`;
                 
-                Object.values(iouCardsData).forEach(card => {
-                    const cardEl = document.createElement('div');
-                    cardEl.className = 'card-item';
-                    cardEl.dataset.points = card.points;
-                    cardEl.dataset.type = card.type;
-                    cardEl.dataset.name = card.name;
-                    cardEl.dataset.id = card.id;
-                    cardEl.dataset.iou = "true"; // Mark as IOU card
-                    cardEl.onclick = () => openBuyerModal(card.points, card.type, card.name, false, card.id);
-                    cardEl.innerHTML = `<div class="card-title">${card.name}</div><div class="card-desc">${card.desc}</div><button class="delete-card-btn" onclick="handleDeleteCard('${card.id}', 'iou')">❌</button>`;
-                    iouSection.appendChild(cardEl);
+                Object.values(iouCardsData).forEach(card => { 
+                    const cardEl = document.createElement('div'); 
+                    cardEl.className = 'card-item'; 
+                    cardEl.dataset.points = card.points; 
+                    cardEl.dataset.type = card.type; 
+                    cardEl.dataset.name = card.name; 
+                    cardEl.dataset.id = card.id; 
+                    cardEl.dataset.iou = "true"; 
+                    cardEl.onclick = (event) => { /* Added event parameter */
+                        event.stopPropagation(); /* Stop propagation to prevent card purchase modal */
+                        openBuyerModal(card.points, card.type, card.name, false, card.id); 
+                    };
+                    cardEl.innerHTML = `<div class="card-title">${card.name}</div><div class="card-desc">${card.desc}</div><button class="delete-card-btn" onclick="event.stopPropagation(); handleDeleteCard('${card.id}', 'iou')">❌</button>`; /* Added event.stopPropagation() here */
+                    iouSection.appendChild(cardEl); 
                 });
-                mainCardsGrid.appendChild(iouSection);
+                mainCardsGrid.appendChild(iouSection); 
             }
         }
 
@@ -1915,16 +1934,16 @@
             const currentDayKey = dayNames[today.getDay()];
 
             // === 修改点1：转出方积分直接从 trade 列扣除 ===
-            weekData[fromPlayer][currentDayKey].trade = (parseInt(weekData[fromPlayer][currentDayKey].trade) || 0) - amount;
+            weekData[fromPlayer][currentDayKey].trade = (parseInt(weekData[fromPlayer][currentDayKey].trade) || 0) - amount; 
             // 记录转账方转出明细
             if (!weekData[fromPlayer][currentDayKey].tradeFromLog) weekData[fromPlayer][currentDayKey].tradeFromLog = [];
-            weekData[fromPlayer][currentDayKey].tradeFromLog.push({ amount: amount, toPlayer: toPlayer, memo: memo, type: 'direct_trade_out' });
+            weekData[fromPlayer][currentDayKey].tradeFromLog.push({ amount: amount, toPlayer: toPlayer, memo: memo, type: 'direct_trade_out' }); 
 
             // === 修改点2：接收方积分直接增加到 trade 列 ===
-            weekData[toPlayer][currentDayKey].trade = (parseInt(weekData[toPlayer][currentDayKey].trade) || 0) + amount;
+            weekData[toPlayer][currentDayKey].trade = (parseInt(weekData[toPlayer][currentDayKey].trade) || 0) + amount; 
             // 记录接收方转入明细
             if (!weekData[toPlayer][currentDayKey].tradeToLog) weekData[toPlayer][currentDayKey].tradeToLog = [];
-            weekData[toPlayer][currentDayKey].tradeToLog.push({ amount: amount, fromPlayer: fromPlayer, memo: memo, type: 'direct_trade_in' });
+            weekData[toPlayer][currentDayKey].tradeToLog.push({ amount: amount, fromPlayer: fromPlayer, memo: memo, type: 'direct_trade_in' }); 
 
             updateWeekSummary(fromPlayer);
             updateWeekSummary(toPlayer);
