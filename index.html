@@ -2,7 +2,10 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
     <title>积分管理系统 V2.0</title>
     
     <!-- Firebase SDK -->
@@ -50,6 +53,12 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            /* 防止移动端点击高亮 */
+            -webkit-tap-highlight-color: transparent;
+            /* 防止移动端选择文本 */
+            -webkit-touch-callout: none;
         }
 
         .container {
@@ -560,24 +569,296 @@
 
         /* 响应式设计 */
         @media (max-width: 768px) {
-            .container { padding: 10px; }
-            .header h1 { font-size: 2em; }
-            .content { padding: 20px; }
+            /* 基础布局优化 */
+            .container { 
+                padding: 8px; 
+                max-width: 100%;
+            }
+            
+            .header {
+                margin-bottom: 20px;
+            }
+            
+            .header h1 { 
+                font-size: 1.8em;
+                margin-bottom: 5px;
+            }
+            
+            .header p {
+                font-size: 1em;
+            }
+            
+            .content { 
+                padding: 15px;
+                border-radius: 15px;
+            }
+
+            /* 导航栏优化 */
+            .nav-tabs {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+                padding: 8px;
+                margin-bottom: 20px;
+            }
+            
+            .nav-tab {
+                padding: 12px 8px;
+                font-size: 0.85em;
+                text-align: center;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            /* 表单优化 */
             .trade-form { 
                 grid-template-columns: 1fr; 
-                gap: 10px; 
+                gap: 12px; 
             }
+            
+            .penalty-section {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                margin: 20px 0;
+            }
+            
+            .penalty-group, .reward-group {
+                padding: 20px;
+            }
+
+            /* 悬赏信息优化 */
             .bounty-info {
+                grid-template-columns: 1fr;
+                gap: 8px;
+                font-size: 0.9em;
+            }
+            
+            .bounty-item {
+                padding: 15px;
+                margin-bottom: 10px;
+            }
+            
+            .bounty-actions {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .bounty-btn {
+                width: 100%;
+                padding: 10px;
+            }
+
+            /* 状态指示器优化 */
+            .connection-status {
+                position: fixed;
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                text-align: center;
+                font-size: 0.8em;
+                padding: 8px 10px;
+                z-index: 1001;
+            }
+            
+            #auth-status {
+                top: 50px !important;
+                left: 10px;
+                right: 10px;
+            }
+
+            /* 统计表格优化 */
+            .stats-table {
+                font-size: 0.85em;
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .stats-table th,
+            .stats-table td {
+                padding: 8px 4px;
+                min-width: 60px;
+            }
+
+            /* 模态框优化 */
+            .modal-box {
+                padding: 20px;
+                margin: 10px;
+                width: calc(100% - 20px);
+                max-width: none;
+            }
+            
+            .modal-input {
+                font-size: 16px; /* 防止iOS缩放 */
+            }
+
+            /* 同步信息面板优化 */
+            .sync-info {
+                padding: 15px;
+                margin: 15px 0;
+            }
+            
+            .sync-info h4 {
+                font-size: 1.1em;
+            }
+            
+            .sync-info p {
+                font-size: 0.85em;
+                margin: 5px 0;
+            }
+
+            /* 积分管理按钮优化 */
+            .modal-btn {
+                padding: 12px;
+                font-size: 0.9em;
+            }
+
+            /* 页面标题优化 */
+            .page h2 {
+                font-size: 1.6em;
+                margin-bottom: 20px;
+            }
+
+            /* 每日任务优化 */
+            .editable-content {
+                padding: 12px 15px;
+                font-size: 1em;
+                min-height: 100px;
+            }
+            
+            .daily-task-controls {
+                text-align: center;
+                margin-top: 12px;
+            }
+            
+            .daily-task-controls button {
+                padding: 10px 20px;
+                font-size: 0.9em;
+                width: 100%;
+                max-width: 200px;
+            }
+
+            /* 历史记录优化 */
+            #history-list > div {
+                padding: 12px 0;
+            }
+            
+            /* 悬赏创建按钮优化 */
+            .create-bounty-btn {
+                width: 100%;
+                margin-top: 10px;
+                padding: 12px 20px;
+            }
+            
+            .bounty-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
+            }
+            
+            .bounty-title {
+                text-align: center;
+                margin-bottom: 0;
+            }
+        }
+
+        /* 超小屏幕优化 */
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+            
+            .nav-tabs {
                 grid-template-columns: 1fr;
                 gap: 5px;
             }
-            .nav-tabs {
-                flex-direction: column;
-                gap: 5px;
-            }
+            
             .nav-tab {
-                padding: 10px 15px;
-                font-size: 0.9em;
+                padding: 10px;
+                font-size: 0.8em;
+            }
+            
+            .content {
+                padding: 10px;
+            }
+            
+            .page h2 {
+                font-size: 1.4em;
+            }
+            
+            .modal-box {
+                padding: 15px;
+                margin: 5px;
+            }
+            
+            .connection-status {
+                font-size: 0.75em;
+                padding: 6px 8px;
+            }
+        }
+
+        /* 移动端触摸优化 */
+        @media (max-width: 768px) {
+            /* 增加按钮触摸目标大小 */
+            button, .nav-tab, .bounty-btn, .modal-btn {
+                min-height: 44px; /* Apple推荐的最小触摸目标 */
+                min-width: 44px;
+            }
+            
+            /* 优化输入框在移动端的体验 */
+            input, select, textarea {
+                -webkit-appearance: none;
+                border-radius: 8px;
+                font-size: 16px; /* 防止iOS Safari缩放 */
+            }
+            
+            /* 优化长按菜单 */
+            .bounty-item, .stats-table, .editable-content {
+                -webkit-touch-callout: default;
+            }
+            
+            /* 滚动优化 */
+            .content, .modal-box, .bounty-list {
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            /* 表格水平滚动优化 */
+            .stats-table {
+                -webkit-overflow-scrolling: touch;
+                scroll-behavior: smooth;
+            }
+            
+            /* 表单元素间距优化 */
+            .form-group {
+                margin-bottom: 16px;
+            }
+            
+            /* 状态指示器在移动端的安全区域适配 */
+            .connection-status {
+                top: max(10px, env(safe-area-inset-top));
+            }
+            
+            #auth-status {
+                top: max(50px, calc(env(safe-area-inset-top) + 40px)) !important;
+            }
+        }
+
+        /* iPhone X 及以上设备的安全区域适配 */
+        @supports (padding: max(0px)) {
+            @media (max-width: 768px) {
+                .container {
+                    padding-left: max(8px, env(safe-area-inset-left));
+                    padding-right: max(8px, env(safe-area-inset-right));
+                    padding-bottom: max(8px, env(safe-area-inset-bottom));
+                }
+                
+                .modal-box {
+                    margin-left: max(10px, env(safe-area-inset-left));
+                    margin-right: max(10px, env(safe-area-inset-right));
+                    margin-bottom: max(10px, env(safe-area-inset-bottom));
+                }
             }
         }
 
