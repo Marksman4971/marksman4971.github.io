@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>积分悬赏系统</title>
+    <title>积分管理系统 V2.0</title>
     
     <!-- Firebase SDK -->
     <script type="module">
@@ -825,21 +825,13 @@
             <div id="bank" class="page">
                 <h2>🏦 积分统计</h2>
                 
-                <!-- 同步控制面板 -->
+                <!-- 自动同步状态面板 -->
                 <div class="sync-info">
-                    <h4>☁️ 数据同步</h4>
+                    <h4>☁️ 自动数据同步</h4>
                     <p id="sync-status">正在检查连接状态...</p>
                     <p id="last-sync">上次同步：未同步</p>
-                    <p style="font-size: 0.85em; color: #666;">🔄 已启用自动同步：所有数据修改将实时保存到云端</p>
-                    
-                    <div class="sync-controls">
-                        <button id="upload-btn" class="sync-btn" onclick="uploadToFirebase()" disabled>
-                            📤 手动上传
-                        </button>
-                        <button id="download-btn" class="sync-btn" onclick="downloadFromFirebase()" disabled>
-                            📥 下载数据
-                        </button>
-                    </div>
+                    <p style="font-size: 0.85em; color: #666;">🔄 自动同步已启用：所有数据变更将实时同步到云端</p>
+                    <p style="font-size: 0.8em; color: #888; margin-top: 8px;">📱 页面打开时自动下载最新数据 | 💾 数据修改时自动上传到云端</p>
                 </div>
                 
                 <!-- 积分管理操作 -->
@@ -1595,14 +1587,40 @@
                 bankData,
                 historyData,
                 bountyCounter,
-                dailyTasksContent
+                dailyTasksContent,
+                lastUpdated: new Date().toISOString()
             };
             localStorage.setItem('pointSystemV2', JSON.stringify(data));
             
             // 自动同步到云端
             if (isOnline && isFirebaseReady) {
-                uploadToFirebase(true); // 静默上传
+                autoUploadToFirebase(data); // 自动上传
             }
+        }
+
+        // 自动上传到Firebase（静默，带防抖）
+        let uploadTimeout = null;
+        async function autoUploadToFirebase(data) {
+            // 防抖：500ms内多次调用只执行最后一次
+            if (uploadTimeout) {
+                clearTimeout(uploadTimeout);
+            }
+            
+            uploadTimeout = setTimeout(async () => {
+                if (!isFirebaseReady || !isOnline) {
+                    return;
+                }
+
+                try {
+                    await window.firebaseDb.set(window.firebaseDb.ref(window.firebaseDb.database, 'pointSystemV2'), data);
+                    updateLastSyncTime();
+                    updateConnectionStatus(true, '数据已自动同步');
+                    console.log('数据自动上传成功');
+                } catch (error) {
+                    console.error('自动上传失败:', error);
+                    updateConnectionStatus(false, '自动上传失败：' + error.message);
+                }
+            }, 500);
         }
 
         // Firebase 同步功能
@@ -1613,18 +1631,16 @@
             
             if (online) {
                 statusElement.className = 'connection-status status-online';
-                statusElement.textContent = '🟢 在线';
+                statusElement.textContent = '🟢 在线同步';
                 if (syncStatusElement) {
-                    syncStatusElement.textContent = message || '已连接到云端数据库';
+                    syncStatusElement.textContent = message || '已连接到云端数据库，自动同步已启用';
                 }
-                enableSyncButtons();
             } else {
                 statusElement.className = 'connection-status status-offline';
-                statusElement.textContent = '🔴 离线';
+                statusElement.textContent = '🔴 离线模式';
                 if (syncStatusElement) {
-                    syncStatusElement.textContent = message || '无法连接到云端数据库';
+                    syncStatusElement.textContent = message || '无法连接到云端数据库，使用本地模式';
                 }
-                disableSyncButtons();
             }
         }
 
@@ -1635,25 +1651,11 @@
             statusElement.className = 'connection-status status-syncing';
             statusElement.textContent = '🟡 同步中';
             if (syncStatusElement) {
-                syncStatusElement.textContent = message;
+                syncStatusElement.textContent = message || '正在自动同步数据...';
             }
         }
 
-        function enableSyncButtons() {
-            const buttons = ['upload-btn', 'download-btn'];
-            buttons.forEach(id => {
-                const btn = document.getElementById(id);
-                if (btn) btn.disabled = false;
-            });
-        }
-
-        function disableSyncButtons() {
-            const buttons = ['upload-btn', 'download-btn'];
-            buttons.forEach(id => {
-                const btn = document.getElementById(id);
-                if (btn) btn.disabled = true;
-            });
-        }
+        // 移除了手动同步按钮控制函数，改为全自动同步
 
         function updateLastSyncTime() {
             lastSyncTime = new Date();
@@ -1663,94 +1665,7 @@
             }
         }
 
-        async function uploadToFirebase(silent = false) {
-            if (!isFirebaseReady || !isOnline) {
-                if (!silent) alert('Firebase未准备就绪或网络离线');
-                return;
-            }
-
-            try {
-                if (!silent) updateSyncingStatus('正在上传数据到云端...');
-
-                const data = {
-                    bountyData,
-                    bankData,
-                    historyData,
-                    bountyCounter,
-                    dailyTasksContent,
-                    lastUpdated: new Date().toISOString()
-                };
-
-                await window.firebaseDb.set(window.firebaseDb.ref(window.firebaseDb.database, 'pointSystemV2'), data);
-                
-                updateLastSyncTime();
-                updateConnectionStatus(true, '数据上传成功');
-                
-                if (!silent) {
-                    alert('数据已成功上传到云端！');
-                }
-            } catch (error) {
-                console.error('上传失败:', error);
-                updateConnectionStatus(false, '上传失败：' + error.message);
-                if (!silent) {
-                    alert('上传失败：' + error.message);
-                }
-            }
-        }
-
-        async function downloadFromFirebase() {
-            if (!isFirebaseReady || !isOnline) {
-                alert('Firebase未准备就绪或网络离线');
-                return;
-            }
-
-            try {
-                updateSyncingStatus('正在从云端下载数据...');
-
-                const snapshot = await window.firebaseDb.get(window.firebaseDb.ref(window.firebaseDb.database, 'pointSystemV2'));
-                
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    
-                    // 确认是否覆盖本地数据
-                    if (!confirm('确定要用云端数据覆盖本地数据吗？此操作无法撤销！')) {
-                        updateConnectionStatus(true, '下载已取消');
-                        return;
-                    }
-                    
-                    // 恢复数据
-                    bountyData = data.bountyData || [];
-                    bankData = data.bankData || { qiqi: { reward: 0, penalty: 0, bounty: 0, trade: 0 }, yiyi: { reward: 0, penalty: 0, bounty: 0, trade: 0 } };
-                    historyData = data.historyData || [];
-                    bountyCounter = data.bountyCounter || 1;
-                    dailyTasksContent = data.dailyTasksContent || '';
-                    
-                    // 更新界面
-                    if (dailyTasksContent) {
-                        document.getElementById('daily-tasks-content').innerHTML = dailyTasksContent;
-                    }
-                    
-                    // 保存到本地
-                    saveData();
-                    
-                    // 刷新所有页面
-                    refreshBankPage();
-                    refreshHistoryPage();
-                    refreshBountyList();
-                    
-                    updateLastSyncTime();
-                    updateConnectionStatus(true, '数据下载成功');
-                    alert('数据已成功从云端下载！');
-                } else {
-                    updateConnectionStatus(true, '云端暂无数据');
-                    alert('云端暂无数据');
-                }
-            } catch (error) {
-                console.error('下载失败:', error);
-                updateConnectionStatus(false, '下载失败：' + error.message);
-                alert('下载失败：' + error.message);
-            }
-        }
+        // 旧的手动同步函数已移除，现在使用全自动同步
 
 
         // 密码保护功能
@@ -1819,6 +1734,8 @@
                     const connected = snapshot.val();
                     if (connected) {
                         updateConnectionStatus(true, 'Firebase连接成功');
+                        // 连接成功后自动下载云端数据
+                        autoDownloadFromFirebase();
                     } else {
                         updateConnectionStatus(false, 'Firebase连接断开');
                     }
@@ -1829,6 +1746,81 @@
             } catch (error) {
                 console.error('Firebase初始化失败:', error);
                 updateConnectionStatus(false, 'Firebase初始化失败');
+            }
+        }
+
+        // 自动下载云端数据（静默）
+        async function autoDownloadFromFirebase() {
+            if (!isFirebaseReady || !isOnline) {
+                return;
+            }
+
+            try {
+                updateSyncingStatus('正在同步云端数据...');
+
+                const snapshot = await window.firebaseDb.get(window.firebaseDb.ref(window.firebaseDb.database, 'pointSystemV2'));
+                
+                if (snapshot.exists()) {
+                    const cloudData = snapshot.val();
+                    const localData = localStorage.getItem('pointSystemV2');
+                    
+                    // 比较本地和云端数据的更新时间
+                    let shouldUpdate = true;
+                    if (localData) {
+                        try {
+                            const parsedLocal = JSON.parse(localData);
+                            const localTime = parsedLocal.lastUpdated ? new Date(parsedLocal.lastUpdated) : new Date(0);
+                            const cloudTime = cloudData.lastUpdated ? new Date(cloudData.lastUpdated) : new Date(0);
+                            
+                            // 如果本地数据比云端数据更新，则不覆盖
+                            shouldUpdate = cloudTime > localTime;
+                        } catch (e) {
+                            console.log('本地数据解析失败，使用云端数据');
+                        }
+                    }
+                    
+                    if (shouldUpdate) {
+                        // 恢复云端数据
+                        bountyData = cloudData.bountyData || [];
+                        bankData = cloudData.bankData || { qiqi: { reward: 0, penalty: 0, bounty: 0, trade: 0 }, yiyi: { reward: 0, penalty: 0, bounty: 0, trade: 0 } };
+                        historyData = cloudData.historyData || [];
+                        bountyCounter = cloudData.bountyCounter || 1;
+                        dailyTasksContent = cloudData.dailyTasksContent || '';
+                        
+                        // 更新界面
+                        if (dailyTasksContent) {
+                            document.getElementById('daily-tasks-content').innerHTML = dailyTasksContent;
+                        }
+                        
+                        // 保存到本地
+                        localStorage.setItem('pointSystemV2', JSON.stringify({
+                            bountyData,
+                            bankData,
+                            historyData,
+                            bountyCounter,
+                            dailyTasksContent,
+                            lastUpdated: cloudData.lastUpdated
+                        }));
+                        
+                        // 刷新所有页面
+                        refreshBankPage();
+                        refreshHistoryPage();
+                        refreshBountyList();
+                        
+                        updateLastSyncTime();
+                        updateConnectionStatus(true, '数据同步完成');
+                        console.log('自动同步云端数据成功');
+                    } else {
+                        updateConnectionStatus(true, '本地数据为最新版本');
+                        console.log('本地数据较新，跳过同步');
+                    }
+                } else {
+                    updateConnectionStatus(true, '云端暂无数据');
+                    console.log('云端暂无数据');
+                }
+            } catch (error) {
+                console.error('自动同步失败:', error);
+                updateConnectionStatus(false, '自动同步失败：' + error.message);
             }
         }
 
