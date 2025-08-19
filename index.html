@@ -1810,15 +1810,15 @@
             </div>
 
             <div class="form-group">
-                <label for="bounty-time-limit">时间限制</label>
+                <label for="bounty-time-limit">时间限制（可选）</label>
                 <div style="display: flex; gap: 10px; align-items: center;">
-                    <input type="number" id="bounty-time-value" class="modal-input" placeholder="时间" min="1" max="72" style="flex: 1;">
+                    <input type="number" id="bounty-time-value" class="modal-input" placeholder="不填则无时间限制" min="1" max="72" style="flex: 1;">
                     <select id="bounty-time-unit" class="modal-input" style="flex: 1;">
                         <option value="hours">小时</option>
                         <option value="days">天</option>
                     </select>
                 </div>
-                <small style="color: #666; font-size: 0.9em;">超期后自动放弃，积分归还发布者</small>
+                <small style="color: #666; font-size: 0.9em;">不填时间限制则永不过期；填写后超期自动放弃，积分归还发布者</small>
             </div>
 
             <!-- 系统任务提示 -->
@@ -2009,8 +2009,9 @@
                 alert('请输入有效的悬赏积分（≥1）');
                 return;
             }
-            if (!timeValue || timeValue < 1) {
-                alert('请输入有效的时间限制');
+            // 时间限制变为可选，如果填写了就验证
+            if (timeValue && timeValue < 1) {
+                alert('时间限制必须大于0');
                 return;
             }
             // 系统任务不需要检查自接限制
@@ -2019,13 +2020,25 @@
                 return;
             }
 
-            // 计算到期时间
+            // 计算到期时间（如果设置了时间限制）
             const now = new Date();
-            const expireAt = new Date(now);
-            if (timeUnit === 'hours') {
-                expireAt.setHours(expireAt.getHours() + timeValue);
-            } else {
-                expireAt.setDate(expireAt.getDate() + timeValue);
+            let expireAt = null;
+            let timeLimit = null;
+            let displayExpireAt = null;
+
+            if (timeValue && timeValue > 0) {
+                expireAt = new Date(now);
+                if (timeUnit === 'hours') {
+                    expireAt.setHours(expireAt.getHours() + timeValue);
+                } else {
+                    expireAt.setDate(expireAt.getDate() + timeValue);
+                }
+                timeLimit = {
+                    value: timeValue,
+                    unit: timeUnit,
+                    displayText: `${timeValue}${timeUnit === 'hours' ? '小时' : '天'}`
+                };
+                displayExpireAt = expireAt.toLocaleString();
             }
 
             // 创建悬赏
@@ -2036,19 +2049,15 @@
                 title,
                 description,
                 points,
-                timeLimit: {
-                    value: timeValue,
-                    unit: timeUnit,
-                    displayText: `${timeValue}${timeUnit === 'hours' ? '小时' : '天'}`
-                },
+                timeLimit,
                 status: assignee ? 'taken' : 'open',
                 createdAt: now.toISOString(),
-                expireAt: expireAt.toISOString(),
+                expireAt: expireAt ? expireAt.toISOString() : null,
                 startedAt: assignee ? now.toISOString() : null,
                 completedAt: null,
                 settledAt: null,
                 displayCreatedAt: now.toLocaleString(),
-                displayExpireAt: expireAt.toLocaleString()
+                displayExpireAt
             };
 
             bountyData.push(bounty);
@@ -2617,6 +2626,23 @@
             }).join('');
         }
 
+        // 添加历史记录
+        function addHistory(message, type = 'system') {
+            const historyEntry = {
+                id: Date.now(),
+                type: type === 'system' ? '系统记录' : type === 'bounty' ? '悬赏记录' : '操作记录',
+                message: message,
+                timestamp: new Date().toISOString(),
+                displayTime: new Date().toLocaleString()
+            };
+            historyData.unshift(historyEntry);
+            
+            // 只保留最近500条记录
+            if (historyData.length > 500) {
+                historyData = historyData.slice(0, 500);
+            }
+        }
+
         // 历史记录页面
         function refreshHistoryPage() {
             const listElement = document.getElementById('history-list');
@@ -2630,9 +2656,9 @@
                 <div style="border-bottom: 1px solid #eee; padding: 15px 0;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                         <strong style="color: #2c3e50;">${entry.type}</strong>
-                        <span style="color: #666; font-size: 0.9em;">${entry.time}</span>
+                        <span style="color: #666; font-size: 0.9em;">${entry.displayTime || entry.time}</span>
                     </div>
-                    <div style="color: #555; margin-bottom: 8px;">${entry.description}</div>
+                    <div style="color: #555; margin-bottom: 8px;">${entry.message || entry.description}</div>
                     ${entry.details && entry.details.changes ? `
                         <div style="background: #f8f9fa; padding: 8px; border-radius: 5px; font-size: 0.9em;">
                             ${entry.details.changes.map(change => `<div>• ${change}</div>`).join('')}
@@ -3136,12 +3162,16 @@
             }
 
             const password = prompt('请输入管理密码进行数据修改：');
-            if (password === ADMIN_PASSWORD) {
+            
+            if (password === null) {
+                // 用户点击了取消
+                return;
+            } else if (password === ADMIN_PASSWORD) {
                 isAuthenticated = true;
                 localStorage.setItem(PASSWORD_STORAGE_KEY, Date.now().toString());
                 updateAuthStatus(true, PASSWORD_VALID_HOURS);
                 callback();
-            } else if (password !== null) {
+            } else {
                 alert('密码错误！');
             }
         }
