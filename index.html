@@ -96,7 +96,7 @@
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 0 20px 20px 20px;
         }
 
         .header {
@@ -944,19 +944,27 @@
             .task-grid {
                 clear: both;
                 width: 100%;
-                display: block;
+                display: grid;
+                gap: 15px;
             }
             
             .task-item {
                 display: block;
-                background: #f8f9fa;
-                border: 1px solid #dee2e6;
-                border-left: 4px solid #007bff;
-                border-radius: 4px;
-                padding: 16px;
+                background: white;
+                border: none;
+                border-left: 4px solid #3498db;
+                border-radius: 10px;
+                padding: 20px;
                 margin-bottom: 15px;
                 box-sizing: border-box;
                 position: relative;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                transition: all 0.3s ease;
+            }
+            
+            .task-item:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.15);
             }
             
             .task-item.completed {
@@ -965,55 +973,74 @@
             }
             
             .task-title {
-                font-size: 1.1em;
-                font-weight: 600;
+                font-size: 1.2em;
+                font-weight: bold;
                 margin: 0 0 8px 0;
-                color: #212529;
+                color: #2c3e50;
                 line-height: 1.4;
-                padding-right: 80px; /* 为积分标签留空间 */
+                padding-right: 100px; /* 为积分标签留空间 */
             }
             
             .task-description {
-                color: #6c757d;
-                margin-bottom: 12px;
+                color: #555;
+                margin: 10px 0;
                 line-height: 1.5;
                 font-size: 0.95em;
             }
             
             .task-actions {
-                display: block;
-                text-align: left;
+                display: flex;
+                gap: 10px;
+                margin-top: 15px;
             }
             
             .task-actions button {
-                display: inline-block;
-                margin-right: 8px;
-                margin-bottom: 4px;
-                padding: 6px 12px;
-                border: 1px solid #dee2e6;
-                border-radius: 3px;
-                background: #ffffff;
-                color: #495057;
+                padding: 8px 16px;
+                border: none;
+                border-radius: 5px;
                 cursor: pointer;
-                font-size: 0.85em;
-                text-decoration: none;
+                font-size: 0.9em;
+                transition: all 0.2s ease;
             }
             
             .task-actions button:hover {
-                background: #e9ecef;
+                transform: translateY(-1px);
+                box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+            }
+            
+            /* 任务按钮专用样式 */
+            .task-actions .btn-success {
+                background: #28a745;
+                color: white;
+            }
+            
+            .task-actions .btn-primary {
+                background: #007bff;
+                color: white;
+            }
+            
+            .task-actions .btn-danger {
+                background: #dc3545;
+                color: white;
+            }
+            
+            .task-actions .btn-secondary {
+                background: #6c757d;
+                color: white;
             }
             
             .task-reward {
                 position: absolute;
-                top: 16px;
-                right: 16px;
+                top: 20px;
+                right: 20px;
                 background: #fff3cd;
                 border: 1px solid #ffeaa7;
                 color: #856404;
-                padding: 4px 10px;
-                border-radius: 12px;
-                font-size: 0.8em;
-                font-weight: 500;
+                padding: 6px 12px;
+                border-radius: 15px;
+                font-size: 0.85em;
+                font-weight: 600;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
             
             .task-completed .task-title {
@@ -1273,28 +1300,30 @@
             }
             
             .task-grid {
-                display: block;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
             }
             
             .task-item {
-                display: inline-block;
-                vertical-align: top;
-                width: calc(50% - 15px);
-                margin: 7.5px;
+                display: block;
+                width: auto;
+                margin: 0;
             }
         }
 
         /* Internet Explorer 兼容性修复 */
         @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
             .task-grid {
-                display: block;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
             }
             
             .task-item {
-                display: inline-block;
-                vertical-align: top;
-                width: 45%;
-                margin: 2.5%;
+                display: block;
+                width: auto;
+                margin: 0;
             }
             
             .user-task-header {
@@ -1493,17 +1522,122 @@
         #daily .task-grid {
             clear: both !important;
             width: 100% !important;
-            display: block !important;
+            display: grid !important;
+            gap: 15px !important;
         }
         
         #daily .no-tasks {
             text-align: center !important;
             color: #6c757d !important;
             padding: 40px 20px !important;
-            font-style: italic !important;
-            background: #f8f9fa !important;
-            border: 1px dashed #dee2e6 !important;
-            border-radius: 4px !important;
+        }
+        
+        /* 强制每日任务项样式 - 美化卡片设计 */
+        #daily .task-item {
+            display: block !important;
+            background: white !important;
+            border: none !important;
+            border-left: 4px solid #3498db !important;
+            border-radius: 10px !important;
+            padding: 20px !important;
+            margin-bottom: 15px !important;
+            box-sizing: border-box !important;
+            position: relative !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+            transition: all 0.3s ease !important;
+            width: auto !important;
+            margin: 0 !important;
+        }
+        
+        #daily .task-item:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15) !important;
+        }
+        
+        #daily .task-item.completed {
+            background: #f0f9f0 !important;
+            border-left-color: #28a745 !important;
+        }
+        
+        #daily .task-title {
+            font-size: 1.2em !important;
+            font-weight: bold !important;
+            margin: 0 0 8px 0 !important;
+            color: #2c3e50 !important;
+            line-height: 1.4 !important;
+            padding-right: 100px !important;
+        }
+        
+        #daily .task-description {
+            color: #555 !important;
+            margin: 10px 0 !important;
+            line-height: 1.5 !important;
+            font-size: 0.95em !important;
+        }
+        
+        #daily .task-actions {
+            display: flex !important;
+            gap: 10px !important;
+            margin-top: 15px !important;
+        }
+        
+        #daily .task-actions button {
+            padding: 8px 16px !important;
+            border: none !important;
+            border-radius: 5px !important;
+            cursor: pointer !important;
+            font-size: 0.9em !important;
+            transition: all 0.2s ease !important;
+        }
+        
+        #daily .task-actions button:hover {
+            transform: translateY(-1px) !important;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2) !important;
+        }
+        
+        #daily .task-actions .btn-success {
+            background: #28a745 !important;
+            color: white !important;
+        }
+        
+        #daily .task-actions .btn-primary {
+            background: #007bff !important;
+            color: white !important;
+        }
+        
+        #daily .task-actions .btn-danger {
+            background: #dc3545 !important;
+            color: white !important;
+        }
+        
+        #daily .task-actions .btn-secondary {
+            background: #6c757d !important;
+            color: white !important;
+        }
+        
+        #daily .task-reward {
+            position: absolute !important;
+            top: 20px !important;
+            right: 20px !important;
+            background: #fff3cd !important;
+            border: 1px solid #ffeaa7 !important;
+            color: #856404 !important;
+            padding: 6px 12px !important;
+            border-radius: 15px !important;
+            font-size: 0.85em !important;
+            font-weight: 600 !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+        }
+        
+        #daily .task-completed .task-title {
+            text-decoration: line-through !important;
+            color: #6c757d !important;
+        }
+        
+        #daily .task-completed .task-reward {
+            background: #d4edda !important;
+            border-color: #c3e6cb !important;
+            color: #155724 !important;
         }
     </style>
 </head>
@@ -1526,7 +1660,7 @@
 
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="showPage('daily')">📅 小日常</button>
-            <button class="nav-tab" onclick="showPage('cards')">🎫 小卡片</button>
+            <button class="nav-tab" onclick="showPage('cards')">🎫 小任务</button>
             <button class="nav-tab" onclick="showPage('penalty')">⚖️ 小奖惩</button>
             <button class="nav-tab" onclick="showPage('bank')">🏦 小银行</button>
             <button class="nav-tab" onclick="showPage('history')">📜 积分历史</button>
@@ -1747,7 +1881,7 @@
                     <ul style="color: #555; padding-left: 20px;">
                         <li><strong>奖励积分：</strong>通过奖励系统获得的正向积分</li>
                         <li><strong>罚分：</strong>通过扣分系统产生的负向积分</li>
-                        <li><strong>悬赏：</strong>发布悬赏任务的支出（负值）</li>
+                        <li><strong>悬赏：</strong>发布悬赏任务的支出（显示为负数）</li>
                         <li><strong>交易：</strong>积分转账收支和完成悬赏的收入</li>
                         <li><strong>总分 = 奖 + 罚 + 悬赏 + 交易</strong></li>
                     </ul>
@@ -2095,7 +2229,7 @@
                     return;
                 }
                 bankData[publisher].reward -= points;
-                bankData[publisher].bounty += points;
+                bankData[publisher].bounty -= points;
                 
                 addHistory(`${publisher === 'qiqi' ? '七七' : '一一'}发布悬赏"${title}"，扣除${points}积分`, 'bounty');
                 alert('悬赏创建成功！积分已扣除。');
@@ -2350,7 +2484,7 @@
 
                 if (confirm(`确认结算悬赏？\n${getPlayerName(bounty.publisher)} 将扣除 ${bounty.points} 悬赏积分\n${getPlayerName(bounty.assignee)} 将获得 ${bounty.points} 交易积分`)) {
                 // 执行记账
-                bankData[bounty.publisher].bounty -= bounty.points;
+                bankData[bounty.publisher].bounty += bounty.points;
                 bankData[bounty.assignee].trade += bounty.points;
 
                 // 添加历史记录
@@ -2396,12 +2530,9 @@
                 // 根据不同状态说明积分返还情况
                 let refundInfo = '';
                 if (bounty.status === 'settled') {
-                    refundInfo = `积分返还：\n`;
-                    refundInfo += `• ${getPlayerName(bounty.publisher)} 悬赏 +${bounty.points}\n`;
-                    refundInfo += `• ${getPlayerName(bounty.assignee)} 交易 -${bounty.points}\n\n`;
-                    refundInfo += `注意：此操作将撤销已结算的积分！`;
+                    refundInfo = `此悬赏已结算完成，删除后只会移除记录，不会退还积分。`;
                 } else {
-                    refundInfo = `此悬赏尚未结算，删除不会影响积分。`;
+                    refundInfo = `此悬赏尚未结算，删除后将退还发布者的悬赏积分。`;
                 }
 
                 confirmMessage += refundInfo;
@@ -2409,39 +2540,39 @@
                 if (confirm(confirmMessage)) {
                     // 处理积分返还
                     if (bounty.status === 'settled') {
-                        // 已结算的悬赏需要撤销积分变动
-                        bankData[bounty.publisher].bounty += bounty.points; // 返还发布者的悬赏支出
-                        bankData[bounty.assignee].trade -= bounty.points;   // 扣除承接者的交易收入
-
-                        // 添加撤销记录到历史
+                        // 已结算的悬赏：只删除记录，不退还积分
                         const historyEntry = {
                             id: `history_${Date.now()}`,
                             type: '悬赏删除',
                             time: new Date().toLocaleString(),
-                            description: `删除悬赏"${bounty.title}"，积分已原路返还`,
+                            description: `删除已结算悬赏"${bounty.title}"`,
                             details: {
                                 publisher: bounty.publisher,
                                 assignee: bounty.assignee,
                                 points: bounty.points,
-                                changes: [
-                                    `${getPlayerName(bounty.publisher)} 悬赏 +${bounty.points}（返还）`,
-                                    `${getPlayerName(bounty.assignee)} 交易 -${bounty.points}（扣除）`
-                                ]
+                                changes: ['已结算悬赏删除，不涉及积分变动']
                             }
                         };
                         historyData.unshift(historyEntry);
                     } else {
-                        // 未结算的悬赏只记录删除
+                        // 未结算的悬赏：退还发布者的悬赏积分
+                        if (bounty.publisher !== 'system') {
+                            // 普通悬赏需要退还积分
+                            bankData[bounty.publisher].bounty += bounty.points; // 将负数悬赏归零
+                        }
+                        
                         const historyEntry = {
                             id: `history_${Date.now()}`,
                             type: '悬赏删除',
                             time: new Date().toLocaleString(),
-                            description: `删除悬赏"${bounty.title}"（${getStatusText(bounty.status)}状态）`,
+                            description: `删除未结算悬赏"${bounty.title}"${bounty.publisher !== 'system' ? '，积分已退还' : ''}`,
                             details: {
                                 publisher: bounty.publisher,
                                 assignee: bounty.assignee || '无',
                                 points: bounty.points,
-                                changes: ['未涉及积分变动']
+                                changes: bounty.publisher !== 'system' ? 
+                                    [`${getPlayerName(bounty.publisher)} 悬赏 +${bounty.points}（退还）`] : 
+                                    ['系统任务删除，无积分变动']
                             }
                         };
                         historyData.unshift(historyEntry);
@@ -2456,7 +2587,7 @@
                     saveData();
                     refreshBountyList();
                     
-                    alert('悬赏已删除' + (bounty.status === 'settled' ? '，积分已原路返还！' : '！'));
+                    alert('悬赏已删除' + (bounty.status === 'settled' ? '！' : '，积分已退还！'));
                 }
             });
         }
@@ -2637,9 +2768,9 @@
             };
             historyData.unshift(historyEntry);
             
-            // 只保留最近500条记录
-            if (historyData.length > 500) {
-                historyData = historyData.slice(0, 500);
+            // 只保留最近2000条记录
+            if (historyData.length > 5000) {
+                historyData = historyData.slice(0, 5000);
             }
         }
 
@@ -2796,6 +2927,7 @@
         }
 
         function completeTask(user, taskId) {
+            if (!dailyTasks || !dailyTasks[user]) return;
             const task = dailyTasks[user].find(t => t.id === taskId);
             if (!task) return;
 
@@ -2823,6 +2955,7 @@
         }
 
         function editTask(user, taskId) {
+            if (!dailyTasks || !dailyTasks[user]) return;
             const task = dailyTasks[user].find(t => t.id === taskId);
             if (!task) return;
 
@@ -2839,6 +2972,7 @@
             if (!confirm('确定要删除这个任务吗？')) return;
 
             requireAuth(() => {
+                if (!dailyTasks || !dailyTasks[user]) return;
                 const taskIndex = dailyTasks[user].findIndex(t => t.id === taskId);
                 if (taskIndex !== -1) {
                     const task = dailyTasks[user][taskIndex];
@@ -2864,7 +2998,7 @@
             const manageList = document.getElementById('task-manage-list');
             manageList.innerHTML = '';
 
-            if (dailyTasks[user].length === 0) {
+            if (!dailyTasks || !dailyTasks[user] || dailyTasks[user].length === 0) {
                 manageList.innerHTML = '<div class="no-tasks">暂无任务</div>';
             } else {
                 dailyTasks[user].forEach(task => {
@@ -2896,30 +3030,41 @@
         }
 
         function refreshDailyTasks() {
+            // 确保 dailyTasks 已初始化
+            if (!dailyTasks) {
+                dailyTasks = { qiqi: [], yiyi: [] };
+            }
+            if (!dailyTasks.qiqi) dailyTasks.qiqi = [];
+            if (!dailyTasks.yiyi) dailyTasks.yiyi = [];
+            
             // 刷新七七的任务
             const qiqiContainer = document.getElementById('qiqi-tasks');
-            qiqiContainer.innerHTML = '';
-            
-            if (dailyTasks.qiqi.length === 0) {
-                qiqiContainer.innerHTML = '<div class="no-tasks">暂无任务</div>';
-            } else {
-                dailyTasks.qiqi.forEach(task => {
-                    const taskElement = createTaskElement(task, 'qiqi');
-                    qiqiContainer.appendChild(taskElement);
-                });
+            if (qiqiContainer) {
+                qiqiContainer.innerHTML = '';
+                
+                if (dailyTasks.qiqi.length === 0) {
+                    qiqiContainer.innerHTML = '<div class="no-tasks">暂无任务</div>';
+                } else {
+                    dailyTasks.qiqi.forEach(task => {
+                        const taskElement = createTaskElement(task, 'qiqi');
+                        qiqiContainer.appendChild(taskElement);
+                    });
+                }
             }
 
             // 刷新一一的任务
             const yiyiContainer = document.getElementById('yiyi-tasks');
-            yiyiContainer.innerHTML = '';
-            
-            if (dailyTasks.yiyi.length === 0) {
-                yiyiContainer.innerHTML = '<div class="no-tasks">暂无任务</div>';
-            } else {
-                dailyTasks.yiyi.forEach(task => {
-                    const taskElement = createTaskElement(task, 'yiyi');
-                    yiyiContainer.appendChild(taskElement);
-                });
+            if (yiyiContainer) {
+                yiyiContainer.innerHTML = '';
+                
+                if (dailyTasks.yiyi.length === 0) {
+                    yiyiContainer.innerHTML = '<div class="no-tasks">暂无任务</div>';
+                } else {
+                    dailyTasks.yiyi.forEach(task => {
+                        const taskElement = createTaskElement(task, 'yiyi');
+                        yiyiContainer.appendChild(taskElement);
+                    });
+                }
             }
         }
 
@@ -2956,11 +3101,17 @@
 
         function resetDailyTasks() {
             // 重置所有任务的完成状态，但保留任务本身和已获得的积分
+            if (!dailyTasks) {
+                dailyTasks = { qiqi: [], yiyi: [] };
+                return;
+            }
             Object.keys(dailyTasks).forEach(user => {
-                dailyTasks[user].forEach(task => {
-                    task.completed = false;
-                    task.completedAt = null;
-                });
+                if (dailyTasks[user] && Array.isArray(dailyTasks[user])) {
+                    dailyTasks[user].forEach(task => {
+                        task.completed = false;
+                        task.completedAt = null;
+                    });
+                }
             });
             
             console.log('每日任务状态已重置');
