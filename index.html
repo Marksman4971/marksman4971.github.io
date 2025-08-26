@@ -2656,6 +2656,96 @@
             background: linear-gradient(135deg, #0056b3, #003d82);
         }
 
+        /* 任务特殊属性样式 */
+        .task-attributes {
+            margin: 6px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .task-attribute {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.75em;
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .task-attribute.exclusive-qiqi {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            box-shadow: 0 1px 3px rgba(255, 107, 107, 0.4);
+        }
+
+        .task-attribute.exclusive-yiyi {
+            background: linear-gradient(135deg, #4834d4, #341f97);
+            box-shadow: 0 1px 3px rgba(72, 52, 212, 0.4);
+        }
+
+        .task-attribute.double-value {
+            background: linear-gradient(135deg, #ffa502, #ff6348);
+            box-shadow: 0 1px 3px rgba(255, 165, 2, 0.4);
+        }
+
+        .task-attribute.streak-bonus {
+            background: linear-gradient(135deg, #ff3838, #c44569);
+            box-shadow: 0 1px 3px rgba(255, 56, 56, 0.4);
+        }
+
+        .task-attribute.weekly-limit {
+            background: linear-gradient(135deg, #00d2d3, #006ba6);
+            box-shadow: 0 1px 3px rgba(0, 210, 211, 0.4);
+        }
+
+        /* 特殊属性选择卡片样式 */
+        .special-attribute-card {
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .special-attribute-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .special-attribute-card.checked {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+        .double-value-card {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border: 2px solid #ffb74d;
+        }
+
+        .double-value-card.checked {
+            background: linear-gradient(135deg, #ffcc02 0%, #ff9800 100%);
+            border: 2px solid #f57600;
+        }
+
+        .streak-bonus-card {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            border: 2px solid #f06292;
+        }
+
+        .streak-bonus-card.checked {
+            background: linear-gradient(135deg, #ff5722 0%, #d32f2f 100%);
+            border: 2px solid #c62828;
+        }
+
+        .streak-bonus-card.checked .card-text,
+        .double-value-card.checked .card-text {
+            color: white !important;
+        }
+
         .task-pool-list {
             margin: 30px 0;
             max-height: 500px;
@@ -3835,6 +3925,50 @@
                 <textarea id="pool-task-description" class="modal-input" placeholder="输入任务的详细说明" maxlength="200" rows="3"></textarea>
             </div>
             
+            <!-- 特殊属性设置 -->
+            <div class="form-group">
+                <label style="font-weight: 600; color: #2c3e50; margin-bottom: 10px; display: block;">🎆 特殊属性</label>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <!-- 专属设置 -->
+                    <div>
+                        <label for="pool-task-exclusive" style="font-size: 0.9em; color: #555; margin-bottom: 5px; display: block;">📍 专属设置</label>
+                        <select id="pool-task-exclusive" class="modal-input" style="font-size: 0.9em;">
+                            <option value="">无专属</option>
+                            <option value="qiqi">七七专属</option>
+                            <option value="yiyi">一一专属</option>
+                        </select>
+                    </div>
+                    
+                    <!-- 每周次数限制 -->
+                    <div>
+                        <label for="pool-task-weekly-limit" style="font-size: 0.9em; color: #555; margin-bottom: 5px; display: block;">🏃 每周次数限制</label>
+                        <input type="number" id="pool-task-weekly-limit" class="modal-input" placeholder="不限" min="0" max="7" style="font-size: 0.9em;">
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 25px; align-items: center; flex-wrap: nowrap;">
+                    <div style="display: flex; align-items: center; gap: 8px; white-space: nowrap;">
+                        <input type="checkbox" id="pool-task-double-value" style="transform: scale(1.1); vertical-align: middle;">
+                        <label for="pool-task-double-value" style="font-size: 0.9em; color: #555; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 4px;">
+                            <span>💪</span><span>以一抵二</span>
+                        </label>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; white-space: nowrap;">
+                        <input type="checkbox" id="pool-task-streak-bonus" style="transform: scale(1.1); vertical-align: middle;">
+                        <label for="pool-task-streak-bonus" style="font-size: 0.9em; color: #555; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 4px;">
+                            <span>🔥</span><span>连胜奖励</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div style="font-size: 0.8em; color: #666; margin-top: 10px; line-height: 1.4;">
+                    <div>• <strong>以一抵二：</strong>一个任务算作两个任务</div>
+                    <div>• <strong>连胜奖励：</strong>连续7天完成同一任务额外+5分</div>
+                    <div>• <strong>次数限制：</strong>每周最多可选择的次数</div>
+                </div>
+            </div>
+            
             <div class="form-group">
                 <button class="modal-btn btn-primary" onclick="addPoolTask()" style="width: 100%;">添加到任务池</button>
             </div>
@@ -3845,6 +3979,7 @@
             </div>
 
             <div class="modal-actions">
+                <button class="modal-btn btn-secondary" onclick="debugTaskPoolSync()" style="margin-right: 10px;" title="仅在同步异常时使用">调试同步</button>
                 <button class="modal-btn btn-secondary" onclick="closeTaskPoolModal()">关闭</button>
             </div>
         </div>
@@ -5172,9 +5307,14 @@
             }
         });
 
+
         function addPoolTask() {
             const taskName = document.getElementById('pool-task-name').value.trim();
             const taskDescription = document.getElementById('pool-task-description').value.trim();
+            const exclusive = document.getElementById('pool-task-exclusive').value;
+            const weeklyLimit = parseInt(document.getElementById('pool-task-weekly-limit').value) || null;
+            const doubleValue = document.getElementById('pool-task-double-value').checked;
+            const streakBonus = document.getElementById('pool-task-streak-bonus').checked;
             
             if (!taskName) {
                 alert('请输入任务标题');
@@ -5190,15 +5330,28 @@
                 id: `pool_${Date.now()}`,
                 name: taskName,
                 description: taskDescription,
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                // 特殊属性
+                exclusive: exclusive || null,          // 专属：'qiqi', 'yiyi', 或 null
+                weeklyLimit: weeklyLimit,              // 每周次数限制
+                doubleValue: doubleValue,              // 以一抵二
+                streakBonus: streakBonus               // 连胜奖励
             };
 
             taskPool.push(newTask);
             saveData();
             refreshTaskPoolDisplay();
             refreshDailyTasks();
+            
+            // 清空表单
             document.getElementById('pool-task-name').value = '';
             document.getElementById('pool-task-description').value = '';
+            document.getElementById('pool-task-exclusive').value = '';
+            document.getElementById('pool-task-weekly-limit').value = '';
+            document.getElementById('pool-task-double-value').checked = false;
+            document.getElementById('pool-task-streak-bonus').checked = false;
+            
+            alert('任务添加成功！');
         }
 
         function removePoolTask(taskId) {
@@ -5228,6 +5381,10 @@
                 // 填入当前任务的信息到表单中
                 document.getElementById('pool-task-name').value = task.name;
                 document.getElementById('pool-task-description').value = task.description || '';
+                document.getElementById('pool-task-exclusive').value = task.exclusive || '';
+                document.getElementById('pool-task-weekly-limit').value = task.weeklyLimit || '';
+                document.getElementById('pool-task-double-value').checked = task.doubleValue || false;
+                document.getElementById('pool-task-streak-bonus').checked = task.streakBonus || false;
                 
                 // 修改按钮文字和事件
                 const addButton = document.querySelector('.task-pool-modal-box .btn-primary');
@@ -5251,6 +5408,10 @@
         function updatePoolTask(taskId) {
             const name = document.getElementById('pool-task-name').value.trim();
             const description = document.getElementById('pool-task-description').value.trim();
+            const exclusive = document.getElementById('pool-task-exclusive').value;
+            const weeklyLimit = parseInt(document.getElementById('pool-task-weekly-limit').value) || null;
+            const doubleValue = document.getElementById('pool-task-double-value').checked;
+            const streakBonus = document.getElementById('pool-task-streak-bonus').checked;
 
             if (!name) {
                 alert('请输入任务名称');
@@ -5265,6 +5426,10 @@
                 ...taskPool[taskIndex],
                 name: name,
                 description: description,
+                exclusive: exclusive || null,
+                weeklyLimit: weeklyLimit,
+                doubleValue: doubleValue,
+                streakBonus: streakBonus,
                 updatedAt: new Date().toISOString()
             };
 
@@ -5290,6 +5455,10 @@
             // 清空表单
             document.getElementById('pool-task-name').value = '';
             document.getElementById('pool-task-description').value = '';
+            document.getElementById('pool-task-exclusive').value = '';
+            document.getElementById('pool-task-weekly-limit').value = '';
+            document.getElementById('pool-task-double-value').checked = false;
+            document.getElementById('pool-task-streak-bonus').checked = false;
             
             // 恢复按钮状态
             const addButton = document.querySelector('.task-pool-modal-box .btn-primary');
@@ -5300,6 +5469,191 @@
             const cancelBtn = document.getElementById('cancel-edit-btn');
             if (cancelBtn) {
                 cancelBtn.remove();
+            }
+        }
+
+        // 调试任务池同步功能
+        async function debugTaskPoolSync() {
+            let debugInfo = '🔍 任务池同步调试信息\n\n';
+            let parsed = null; // 在函数开始时定义
+            
+            // 本地任务池状态
+            debugInfo += `📱 本地任务池: ${taskPool.length} 个任务\n`;
+            taskPool.forEach((task, index) => {
+                debugInfo += `  ${index + 1}. ${task.name}\n`;
+            });
+            
+            // 检查本地存储
+            const localData = localStorage.getItem('pointSystemV2');
+            if (localData) {
+                try {
+                    parsed = JSON.parse(localData);
+                    const localTaskPool = parsed.taskPool || [];
+                    debugInfo += `\n💾 本地存储任务池: ${localTaskPool.length} 个任务\n`;
+                    localTaskPool.forEach((task, index) => {
+                        debugInfo += `  ${index + 1}. ${task.name}\n`;
+                    });
+                } catch (e) {
+                    debugInfo += `\n❌ 本地存储解析失败: ${e.message}\n`;
+                }
+            }
+            
+            // 检查云端数据
+            if (isFirebaseReady && isOnline) {
+                debugInfo += `\n☁️ 正在检查云端数据...\n`;
+                try {
+                    const snapshot = await window.firebaseDb.get(window.firebaseDb.ref(window.firebaseDb.database, 'pointSystemV2'));
+                    if (snapshot.exists()) {
+                        const cloudData = snapshot.val();
+                        const cloudTaskPool = cloudData.taskPool || [];
+                        debugInfo += `☁️ 云端任务池: ${cloudTaskPool.length} 个任务\n`;
+                        cloudTaskPool.forEach((task, index) => {
+                            debugInfo += `  ${index + 1}. ${task.name}\n`;
+                        });
+                        
+                        const localTime = new Date(parsed ? parsed.lastUpdated || 0 : 0);
+                        const cloudTime = new Date(cloudData.lastUpdated || 0);
+                        debugInfo += `\n🕰️ 时间戳对比:\n`;
+                        debugInfo += `  本地: ${localTime.toLocaleString()}\n`;
+                        debugInfo += `  云端: ${cloudTime.toLocaleString()}\n`;
+                        debugInfo += `  云端较新: ${cloudTime > localTime ? '是' : '否'}\n`;
+                    } else {
+                        debugInfo += `❌ 云端没有数据\n`;
+                    }
+                } catch (e) {
+                    debugInfo += `❌ 云端数据获取失败: ${e.message}\n`;
+                }
+            } else {
+                debugInfo += `\n❌ Firebase状态: 不可用 (Ready: ${isFirebaseReady}, Online: ${isOnline})\n`;
+            }
+            
+            // 强制下载云端数据
+            debugInfo += `\n🔄 正在强制下载云端数据...\n`;
+            try {
+                await forceDownloadFromFirebase();
+                debugInfo += `✅ 强制下载完成\n`;
+                
+                // 更新后的状态
+                debugInfo += `\n🔄 下载后的任务池: ${taskPool.length} 个任务\n`;
+                taskPool.forEach((task, index) => {
+                    debugInfo += `  ${index + 1}. ${task.name}\n`;
+                });
+            } catch (e) {
+                debugInfo += `❌ 强制下载失败: ${e.message}\n`;
+            }
+            
+            alert(debugInfo);
+        }
+
+        // 强制下载云端数据（忽略时间戳检查）
+        async function forceDownloadFromFirebase() {
+            if (!isFirebaseReady || !isOnline) {
+                throw new Error('网络或Firebase不可用');
+            }
+
+            try {
+                const snapshot = await window.firebaseDb.get(window.firebaseDb.ref(window.firebaseDb.database, 'pointSystemV2'));
+                
+                if (snapshot.exists()) {
+                    const cloudData = snapshot.val();
+                    
+                    // 直接使用云端数据，不检查时间戳
+                    bountyData = cloudData.bountyData || [];
+                    bankData = cloudData.bankData || { qiqi: { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0 }, yiyi: { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0 } };
+                    
+                    // 兼容性处理
+                    if (bankData.qiqi.daily !== undefined && bankData.qiqi.dailyIncome === undefined) {
+                        bankData.qiqi.dailyIncome = Math.max(0, bankData.qiqi.daily);
+                        bankData.qiqi.dailyPenalty = Math.min(0, bankData.qiqi.daily);
+                        delete bankData.qiqi.daily;
+                    }
+                    if (bankData.yiyi.daily !== undefined && bankData.yiyi.dailyIncome === undefined) {
+                        bankData.yiyi.dailyIncome = Math.max(0, bankData.yiyi.daily);
+                        bankData.yiyi.dailyPenalty = Math.min(0, bankData.yiyi.daily);
+                        delete bankData.yiyi.daily;
+                    }
+                    if (bankData.qiqi.bounty !== undefined && bankData.qiqi.publish === undefined) {
+                        bankData.qiqi.publish = Math.min(0, bankData.qiqi.bounty);
+                        bankData.qiqi.obtain = Math.max(0, bankData.qiqi.bounty);
+                        delete bankData.qiqi.bounty;
+                    }
+                    if (bankData.yiyi.bounty !== undefined && bankData.yiyi.publish === undefined) {
+                        bankData.yiyi.publish = Math.min(0, bankData.yiyi.bounty);
+                        bankData.yiyi.obtain = Math.max(0, bankData.yiyi.bounty);
+                        delete bankData.yiyi.bounty;
+                    }
+                    
+                    // 确保字段存在
+                    if (!bankData.qiqi.publish) bankData.qiqi.publish = 0;
+                    if (!bankData.qiqi.obtain) bankData.qiqi.obtain = 0;
+                    if (!bankData.yiyi.publish) bankData.yiyi.publish = 0;
+                    if (!bankData.yiyi.obtain) bankData.yiyi.obtain = 0;
+                    if (!bankData.qiqi.dailyIncome) bankData.qiqi.dailyIncome = 0;
+                    if (!bankData.qiqi.dailyPenalty) bankData.qiqi.dailyPenalty = 0;
+                    if (!bankData.yiyi.dailyIncome) bankData.yiyi.dailyIncome = 0;
+                    if (!bankData.yiyi.dailyPenalty) bankData.yiyi.dailyPenalty = 0;
+                    
+                    historyData = cloudData.historyData || [];
+                    bountyCounter = cloudData.bountyCounter || 1;
+                    dailyTasksContent = cloudData.dailyTasksContent || '';
+                    
+                    // 重点：恢复任务池数据
+                    taskPool = cloudData.taskPool || [];
+                    taskCounter = cloudData.taskCounter || 1;
+                    
+                    // 恢复每日任务数据
+                    if (cloudData.dailyTasks && Array.isArray(cloudData.dailyTasks.qiqi) && Array.isArray(cloudData.dailyTasks.yiyi)) {
+                        dailyTasks = {
+                            qiqi: cloudData.dailyTasks.qiqi || [null, null, null],
+                            yiyi: cloudData.dailyTasks.yiyi || [null, null, null],
+                            progress: cloudData.dailyTasks.progress || { qiqi: 0, yiyi: 0 }
+                        };
+                    } else {
+                        dailyTasks = {
+                            qiqi: [null, null, null],
+                            yiyi: [null, null, null],
+                            progress: { qiqi: 0, yiyi: 0 }
+                        };
+                    }
+                    
+                    lastResetDate = cloudData.lastResetDate || null;
+                    weeklyData = cloudData.weeklyData || { qiqi: 0, yiyi: 0, lastResetDate: new Date().toISOString() };
+                    monthlyStarBonus = cloudData.monthlyStarBonus || { qiqi: 0, yiyi: 0, lastBonusDate: new Date().toISOString() };
+                    
+                    // 检查是否需要每日重置
+                    checkDailyReset();
+                    
+                    // 保存到本地
+                    localStorage.setItem('pointSystemV2', JSON.stringify({
+                        bountyData,
+                        bankData,
+                        historyData,
+                        bountyCounter,
+                        dailyTasksContent,
+                        dailyTasks,
+                        taskPool,
+                        taskCounter,
+                        lastResetDate,
+                        weeklyData,
+                        monthlyStarBonus,
+                        lastUpdated: cloudData.lastUpdated
+                    }));
+                    
+                    // 刷新所有界面
+                    refreshBankPage();
+                    refreshHistoryPage();
+                    refreshBountyList();
+                    refreshDailyTasks();
+                    updateTaskPoolPreview();
+                    refreshTaskPoolDisplay();
+                    
+                    console.log('强制下载云端数据成功，任务池:', taskPool.length, '个任务');
+                } else {
+                    throw new Error('云端没有数据');
+                }
+            } catch (error) {
+                console.error('强制下载失败:', error);
+                throw error;
             }
         }
 
@@ -5321,6 +5675,7 @@
                             <div class="pool-task-item">
                                 <div class="pool-task-content">
                                     <div class="pool-task-name">${task.name}</div>
+                                    ${getTaskSpecialAttributes(task)}
                                     ${task.description ? `<div class="pool-task-description">${task.description}</div>` : ''}
                                 </div>
                                 <div class="pool-task-actions">
@@ -5335,6 +5690,39 @@
 
             // 更新主页面上的任务池预览
             updateTaskPoolPreview();
+        }
+
+        // 生成任务特殊属性的HTML显示
+        function getTaskSpecialAttributes(task) {
+            const attributes = [];
+            
+            // 专属属性
+            if (task.exclusive === 'qiqi') {
+                attributes.push('<span class="task-attribute exclusive-qiqi">🎯 七七专属</span>');
+            } else if (task.exclusive === 'yiyi') {
+                attributes.push('<span class="task-attribute exclusive-yiyi">🎯 一一专属</span>');
+            }
+            
+            // 以一抵二
+            if (task.doubleValue) {
+                attributes.push('<span class="task-attribute double-value">💪 以一抵二</span>');
+            }
+            
+            // 连胜奖励
+            if (task.streakBonus) {
+                attributes.push('<span class="task-attribute streak-bonus">🔥 连胜奖励</span>');
+            }
+            
+            // 每周次数限制
+            if (task.weeklyLimit && task.weeklyLimit > 0) {
+                attributes.push(`<span class="task-attribute weekly-limit">🏃 限${task.weeklyLimit}次/周</span>`);
+            }
+            
+            if (attributes.length === 0) {
+                return '';
+            }
+            
+            return `<div class="task-attributes">${attributes.join(' ')}</div>`;
         }
 
         function updateTaskPoolPreview() {
@@ -5352,6 +5740,7 @@
                                     <div class="preview-task-count">#${index + 1}</div>
                                     ${task.description ? '<div class="preview-task-expand">▼</div>' : ''}
                                 </div>
+                                ${getTaskSpecialAttributes(task)}
                                 ${task.description ? `
                                     <div class="preview-task-details" id="preview-${task.id}" style="display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee; font-size: 0.85em; color: #666; line-height: 1.4;">
                                         ${task.description}
@@ -5415,6 +5804,8 @@
 
             // 获取当前用户已选择的任务
             const selectedTasks = dailyTasks[user].filter(task => task !== null).map(task => task.poolTaskId);
+            // 获取当前周的任务使用次数统计
+            const weeklyTaskUsage = getWeeklyTaskUsage(user);
 
             availableList.innerHTML = `
                 <div class="available-task-grid">
@@ -5425,11 +5816,28 @@
                 let className = 'available-task-item';
                 let clickHandler = `selectTaskFromPool('${poolTask.id}', '${poolTask.name}')`;
                 let statusText = '';
+                let canSelect = true;
 
-                if (isSelected && !isCurrentSlot) {
+                // 检查专属属性
+                if (poolTask.exclusive && poolTask.exclusive !== user) {
+                    className += ' disabled';
+                    clickHandler = '';
+                    statusText = `<div class="task-unavailable-reason">${poolTask.exclusive === 'qiqi' ? '七七' : '一一'}专属任务</div>`;
+                    canSelect = false;
+                }
+                // 检查每周次数限制
+                else if (poolTask.weeklyLimit && weeklyTaskUsage[poolTask.id] >= poolTask.weeklyLimit && !isCurrentSlot) {
+                    className += ' disabled';
+                    clickHandler = '';
+                    statusText = `<div class="task-unavailable-reason">本周已达使用上限 (${weeklyTaskUsage[poolTask.id]}/${poolTask.weeklyLimit})</div>`;
+                    canSelect = false;
+                }
+                // 检查是否已在其他位置选择
+                else if (isSelected && !isCurrentSlot) {
                     className += ' disabled';
                     clickHandler = '';
                     statusText = '<div class="task-unavailable-reason">已在其他位置选择</div>';
+                    canSelect = false;
                 } else if (isCurrentSlot) {
                     statusText = '<div style="color: #28a745; font-size: 0.9em; margin-top: 5px;">✓ 当前选择</div>';
                 }
@@ -5441,6 +5849,7 @@
                                 <span>${poolTask.name}</span>
                                 ${poolTask.description ? `<span class="available-task-expand" onclick="event.stopPropagation(); toggleTaskDetails('available-${poolTask.id}')" style="cursor: pointer; color: #007bff; font-size: 0.8em; margin-left: 8px;">▼</span>` : ''}
                             </div>
+                            ${getTaskSpecialAttributes(poolTask)}
                             ${statusText}
                         </div>
                         ${poolTask.description ? `
@@ -5491,30 +5900,137 @@
             });
         }
 
+        // 获取用户本周任务使用次数统计
+        function getWeeklyTaskUsage(user) {
+            const usage = {};
+            
+            // 获取本周的开始日期（周一）
+            const now = new Date();
+            const currentDay = now.getDay(); // 0=周日, 1=周一, ..., 6=周六
+            const daysSinceMonday = currentDay === 0 ? 6 : currentDay - 1; // 计算从周一开始的天数
+            const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - daysSinceMonday);
+            
+            // 遍历历史记录，统计本周完成的任务
+            historyData.forEach(record => {
+                if (record.type === '每日任务完成' && record.details && record.details.user === user) {
+                    const recordDate = new Date(record.time);
+                    if (recordDate >= weekStart) {
+                        const poolTaskId = record.details.poolTaskId;
+                        if (poolTaskId) {
+                            usage[poolTaskId] = (usage[poolTaskId] || 0) + 1;
+                        }
+                    }
+                }
+            });
+            
+            return usage;
+        }
+
         // 完成每日任务
         function completeDailyTask(user, slotIndex, multiplier) {
             requireAuth(() => {
                 const task = dailyTasks[user][slotIndex];
                 if (!task || task.completed) return;
 
-                const points = multiplier;
+                const poolTask = taskPool.find(pt => pt.id === task.poolTaskId);
+                let points = multiplier;
+                let bonusPoints = 0;
+                let actualTaskCount = 1;
+                
+                // 处理以一抵二属性
+                if (poolTask && poolTask.doubleValue) {
+                    actualTaskCount = 2;
+                }
+                
+                // 处理连胜奖励
+                if (poolTask && poolTask.streakBonus) {
+                    const streakDays = getTaskStreakDays(user, task.poolTaskId);
+                    if (streakDays >= 6) { // 连续7天（包括今天）
+                        bonusPoints = 5;
+                    }
+                }
+                
+                const totalPoints = points + bonusPoints;
+                
                 task.completed = true;
                 task.multiplier = multiplier;
                 task.completedAt = new Date().toISOString();
+                task.actualTaskCount = actualTaskCount;
+                task.bonusPoints = bonusPoints;
                 
-                bankData[user].dailyIncome += points;
-                addWeeklyPoints(user, points);
+                bankData[user].dailyIncome += totalPoints;
+                addWeeklyPoints(user, totalPoints);
                 
-                dailyTasks.progress[user] = dailyTasks[user].filter(t => t && t.completed).length;
+                // 更新进度（考虑以一抵二）
+                dailyTasks.progress[user] = dailyTasks[user].reduce((total, t) => {
+                    if (t && t.completed) {
+                        return total + (t.actualTaskCount || 1);
+                    }
+                    return total;
+                }, 0);
 
+                // 生成历史记录
                 const multiplierText = multiplier === 1 ? '' : multiplier === 2 ? '(加倍)' : '(超级加倍)';
-                addHistory(`${user === 'qiqi' ? '七七' : '一一'}完成每日任务"${task.name}"${multiplierText} +${points}积分`, 'system');
+                const specialText = [];
+                if (actualTaskCount === 2) specialText.push('以一抵二');
+                if (bonusPoints > 0) specialText.push(`连胜奖励+${bonusPoints}分`);
+                const specialInfo = specialText.length > 0 ? `(${specialText.join(', ')})` : '';
+                
+                addHistory(`${user === 'qiqi' ? '七七' : '一一'}完成每日任务"${task.name}"${multiplierText}${specialInfo} +${totalPoints}积分`, 'system', {
+                    user: user,
+                    poolTaskId: task.poolTaskId,
+                    taskName: task.name,
+                    basePoints: points,
+                    bonusPoints: bonusPoints,
+                    totalPoints: totalPoints,
+                    actualTaskCount: actualTaskCount
+                });
 
                 saveData();
                 refreshDailyTasks();
                 refreshBankPage();
+                
+                // 特殊属性提示
+                let completionMessage = `任务完成！+${totalPoints}积分`;
+                if (actualTaskCount === 2) completionMessage += '\n💪 以一抵二效果生效！';
+                if (bonusPoints > 0) completionMessage += `\n🔥 连胜奖励+${bonusPoints}分！`;
+                
+                alert(completionMessage);
             });
         }
+
+        // 获取任务连胜天数
+        function getTaskStreakDays(user, poolTaskId) {
+            const now = new Date();
+            let streakDays = 0;
+            
+            // 从今天往前检查连续完成天数
+            for (let i = 0; i < 7; i++) {
+                const checkDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+                const dayStart = new Date(checkDate.getFullYear(), checkDate.getMonth(), checkDate.getDate());
+                const dayEnd = new Date(checkDate.getFullYear(), checkDate.getMonth(), checkDate.getDate() + 1);
+                
+                // 检查这一天是否完成了此任务
+                const completed = historyData.some(record => {
+                    if (record.type === '每日任务完成' && record.details && 
+                        record.details.user === user && record.details.poolTaskId === poolTaskId) {
+                        const recordDate = new Date(record.time);
+                        return recordDate >= dayStart && recordDate < dayEnd;
+                    }
+                    return false;
+                });
+                
+                if (completed) {
+                    streakDays++;
+                } else {
+                    break; // 连续中断
+                }
+            }
+            
+            return streakDays;
+        }
+
+        // 完成每日任务
 
         function clearDailyTaskSlot(user, slotIndex) {
             requireAuth(() => {
@@ -5747,6 +6263,7 @@
                                     <span class="task-name">${task.name}</span>
                                     ${hasDescription ? '<span class="daily-task-expand" style="color: #28a745; font-size: 0.8em; margin-left: 8px;">▼</span>' : ''}
                                 </div>
+                                ${getTaskSpecialAttributes(poolTask)}
                                 <div class="task-multiplier">✅ 已完成 (+${task.multiplier}分)</div>
                             </div>
                             ${hasDescription ? `
@@ -5771,6 +6288,7 @@
                                     <span class="task-name">${task.name}</span>
                                     ${hasDescription ? '<span class="daily-task-expand" style="color: #007bff; font-size: 0.8em; margin-left: 8px;">▼</span>' : ''}
                                 </div>
+                                ${getTaskSpecialAttributes(poolTask)}
                                 <div class="task-multiplier">选择完成方式：</div>
                             </div>
                             ${hasDescription ? `
@@ -5815,6 +6333,7 @@
                                     <span class="task-name">${task.name}</span>
                                     ${hasDescription ? '<span class="daily-task-expand" style="color: #28a745; font-size: 0.8em; margin-left: 8px;">▼</span>' : ''}
                                 </div>
+                                ${getTaskSpecialAttributes(poolTask)}
                                 <div class="task-multiplier">✅ 已完成 (+${task.multiplier}分)</div>
                             </div>
                             ${hasDescription ? `
@@ -5839,6 +6358,7 @@
                                     <span class="task-name">${task.name}</span>
                                     ${hasDescription ? '<span class="daily-task-expand" style="color: #007bff; font-size: 0.8em; margin-left: 8px;">▼</span>' : ''}
                                 </div>
+                                ${getTaskSpecialAttributes(poolTask)}
                                 <div class="task-multiplier">选择完成方式：</div>
                             </div>
                             ${hasDescription ? `
@@ -5961,22 +6481,35 @@
             users.forEach(user => {
                 const userTasks = dailyTasks[user];
                 const selectedTasks = userTasks.filter(task => task !== null);
-                const completedTasks = userTasks.filter(task => task && task.completed);
-                const incompleteTasks = selectedTasks.length - completedTasks.length;
+                
+                // 计算实际任务数量（考虑以一抵二）
+                let totalTaskCount = 0;
+                selectedTasks.forEach(task => {
+                    const poolTask = taskPool.find(pt => pt.id === task.poolTaskId);
+                    if (poolTask && poolTask.doubleValue) {
+                        totalTaskCount += 2; // 以一抵二
+                    } else {
+                        totalTaskCount += 1;
+                    }
+                });
                 
                 let expectedPoints = 0;
-                let color = '#28a745'; // 绿色，正数
+                let color = '#28a745';
                 let text = '';
                 
-                if (selectedTasks.length === 3) {
-                    // 接了三个任务，按最低分计算（每个任务最少1分）
-                    expectedPoints = selectedTasks.length * 1;
-                    text = `预计获得积分: +${expectedPoints}分（最低）`;
+                if (totalTaskCount >= 3) {
+                    // 达到或超过三个任务数量
+                    expectedPoints = Math.min(totalTaskCount, 3) * 1;
+                    if (totalTaskCount > 3) {
+                        text = `预计获得积分: +${expectedPoints}分以上（超额）`;
+                    } else {
+                        text = `预计获得积分: +${expectedPoints}分（最低）`;
+                    }
                 } else {
-                    // 没接满三个任务，会扣分
-                    const missingTasks = 3 - selectedTasks.length;
-                    expectedPoints = -(missingTasks * 3); // 每少一个任务扣3分
-                    color = '#dc3545'; // 红色，负数
+                    // 未达到三个任务数量
+                    const missingTasks = 3 - totalTaskCount;
+                    expectedPoints = -(missingTasks * 3);
+                    color = '#dc3545';
                     
                     if (missingTasks === 3) {
                         text = `预计扣除积分: ${expectedPoints}分（未接任务）`;
@@ -6142,23 +6675,34 @@
             ['qiqi', 'yiyi'].forEach(user => {
                 if (!dailyTasks[user]) return;
                 
-                // 计算未完成的任务数量
-                const incompleteTasks = dailyTasks[user].filter(task => task && !task.completed).length;
+                // 计算实际缺少的任务数量（考虑以一抵二）
+                let completedTaskCount = 0;
+                dailyTasks[user].forEach(task => {
+                    if (task && task.completed) {
+                        const poolTask = taskPool.find(pt => pt.id === task.poolTaskId);
+                        if (poolTask && poolTask.doubleValue) {
+                            completedTaskCount += 2; // 以一抵二
+                        } else {
+                            completedTaskCount += 1;
+                        }
+                    }
+                });
                 
-                if (incompleteTasks > 0) {
+                const missingTaskCount = Math.max(0, 3 - completedTaskCount);
+                
+                if (missingTaskCount > 0) {
                     hasPenalties = true;
-                    let penaltyPoints = 0;
                     
-                    // 根据未完成任务数量计算惩罚（每个任务3分）
-                    penaltyPoints = incompleteTasks * 3;
+                    // 根据缺少的任务数量计算惩罚（每个任务3分）
+                    const penaltyPoints = missingTaskCount * 3;
                     
                     // 应用每日任务惩罚
                     bankData[user].dailyPenalty -= penaltyPoints;
                     
                     const userName = user === 'qiqi' ? '七七' : '一一';
-                    addHistory(`${userName}未完成${incompleteTasks}个每日任务，扣除${penaltyPoints}分`, 'system');
+                    addHistory(`${userName}少完成${missingTaskCount}个任务数，扣除${penaltyPoints}分`, 'system');
                     
-                    console.log(`${userName} 未完成 ${incompleteTasks} 个每日任务，扣除 ${penaltyPoints} 分`);
+                    console.log(`${userName} 少完成 ${missingTaskCount} 个任务数，扣除 ${penaltyPoints} 分`);
                 }
             });
             
@@ -7059,14 +7603,32 @@
                     
                     // 比较本地和云端数据的更新时间
                     let shouldUpdate = true;
+                    let forceUpdateTaskPool = false;
+                    
                     if (localData) {
                         try {
                             const parsedLocal = JSON.parse(localData);
                             const localTime = parsedLocal.lastUpdated ? new Date(parsedLocal.lastUpdated) : new Date(0);
                             const cloudTime = cloudData.lastUpdated ? new Date(cloudData.lastUpdated) : new Date(0);
                             
-                            // 如果本地数据比云端数据更新，则不覆盖
-                            shouldUpdate = cloudTime > localTime;
+                            // 检查任务池数据是否不同
+                            const localTaskPool = parsedLocal.taskPool || [];
+                            const cloudTaskPool = cloudData.taskPool || [];
+                            const taskPoolDifferent = localTaskPool.length !== cloudTaskPool.length || 
+                                JSON.stringify(localTaskPool) !== JSON.stringify(cloudTaskPool);
+                            
+                            // 如果任务池数据不同且云端数据不为空，则强制更新任务池
+                            if (taskPoolDifferent && cloudTaskPool.length > 0) {
+                                forceUpdateTaskPool = true;
+                                console.log('检测到任务池数据不同，将强制更新');
+                            }
+                            
+                            // 如果本地数据比云端数据更新，则不覆盖（除非需要强制更新任务池）
+                            shouldUpdate = cloudTime > localTime || forceUpdateTaskPool;
+                            
+                            if (forceUpdateTaskPool && cloudTime <= localTime) {
+                                console.log('由于任务池数据不同，强制同步云端数据');
+                            }
                         } catch (e) {
                             console.log('本地数据解析失败，使用云端数据');
                         }
@@ -7182,13 +7744,16 @@
                         refreshBountyList();
                         refreshDailyTasks();
                         updateTaskPoolPreview();
+                        refreshTaskPoolDisplay(); // 添加任务池管理界面刷新
+                        
+                        console.log('任务池同步状态:', taskPool.length, '个任务:', taskPool.map(t => t.name));
                         
                         updateLastSyncTime();
                         updateConnectionStatus(true, '数据同步完成');
                         console.log('自动同步云端数据成功');
                     } else {
                         updateConnectionStatus(true, '本地数据为最新版本');
-                        console.log('本地数据较新，跳过同步');
+                        console.log('本地数据较新，跳过同步，当前任务池:', taskPool.length, '个任务');
                     }
                 } else {
                     updateConnectionStatus(true, '云端暂无数据');
@@ -7352,6 +7917,7 @@
                     checkDailyReset();
                     
                     console.log('本地数据加载完成, dailyTasks:', JSON.stringify(dailyTasks));
+                    console.log('任务池加载状态:', taskPool.length, '个任务:', taskPool.map(t => t.name));
                     
                     if (dailyTasksContent) {
                         const contentElement = document.getElementById('daily-tasks-content');
@@ -7359,6 +7925,13 @@
                             contentElement.innerHTML = dailyTasksContent;
                         }
                     }
+                    
+                    // 刷新界面显示
+                    setTimeout(() => {
+                        updateTaskPoolPreview();
+                        refreshTaskPoolDisplay();
+                        refreshDailyTasks();
+                    }, 100);
                 } catch (e) {
                     console.error('数据加载失败:', e);
                 }
@@ -7592,6 +8165,10 @@
             refreshBountyList();
             refreshDailyTasks(); // 初始化每日任务显示
             updateTaskPoolPreview(); // 初始化任务池预览
+            refreshTaskPoolDisplay(); // 初始化任务池管理显示
+            
+            // 调试信息
+            console.log('页面初始化完成，任务池状态:', taskPool.length, '个任务');
             startDailyCountdownTimer(); // 启动倒计时定时器
             
             // 每分钟检查一次认证状态
@@ -7877,8 +8454,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
