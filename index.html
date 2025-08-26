@@ -2638,6 +2638,24 @@
             background: linear-gradient(135deg, #c82333, #a71e2a);
         }
 
+        .pool-task-actions .btn-primary {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+        }
+
+        .pool-task-actions .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+            background: linear-gradient(135deg, #0056b3, #003d82);
+        }
+
         .task-pool-list {
             margin: 30px 0;
             max-height: 500px;
@@ -2703,6 +2721,9 @@
             background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
             border: 2px solid rgba(40, 167, 69, 0.2);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            display: flex !important;
+            flex-direction: column !important;
+            overflow: hidden !important;
         }
 
         .task-pool-modal-box .modal-header {
@@ -2740,13 +2761,14 @@
 
         .task-pool-modal-box .modal-header h3 {
             margin: 0;
-            font-size: 1.4em;
+            font-size: 1.1em;
             font-weight: 600;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .task-pool-modal-box .form-group {
             margin-bottom: 25px;
+            flex-shrink: 0;
         }
 
         .task-pool-modal-box .form-group label {
@@ -2809,6 +2831,48 @@
             text-align: center;
             padding-top: 20px;
             border-top: 1px solid #dee2e6;
+            flex-shrink: 0;
+        }
+
+        /* 任务池模态框的任务列表区域 */
+        .task-pool-modal-box .task-pool-list {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            margin: 20px 0 0 0;
+        }
+
+        .task-pool-modal-box .task-pool-list h4 {
+            flex-shrink: 0;
+            margin: 0 0 15px 0;
+        }
+
+        .task-pool-modal-box #pool-tasks-list {
+            flex: 1;
+            overflow-y: auto;
+            min-height: 0;
+            padding-right: 5px;
+        }
+
+        /* 为滚动条美化 */
+        .task-pool-modal-box #pool-tasks-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .task-pool-modal-box #pool-tasks-list::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+        }
+
+        .task-pool-modal-box #pool-tasks-list::-webkit-scrollbar-thumb {
+            background: rgba(40, 167, 69, 0.6);
+            border-radius: 3px;
+        }
+
+        .task-pool-modal-box #pool-tasks-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(40, 167, 69, 0.8);
         }
 
         /* 每日任务选择模态框专用样式 */
@@ -3631,15 +3695,17 @@
                             <th>用户</th>
                             <th>奖</th>
                             <th>罚</th>
-                            <th>悬赏</th>
+                            <th>发布</th>
+                            <th>获取</th>
                             <th>交易</th>
-                            <th>每日任务</th>
+                            <th>日收入</th>
+                            <th>日惩罚</th>
                             <th>星星收入</th>
                         </tr>
                     </thead>
                     <tbody id="bank-table-body">
                         <tr>
-                            <td colspan="7" style="text-align: center; color: #666; padding: 20px;">暂无数据</td>
+                            <td colspan="9" style="text-align: center; color: #666; padding: 20px;">暂无数据</td>
                         </tr>
                     </tbody>
                 </table>
@@ -3649,11 +3715,13 @@
                     <ul style="color: #555; padding-left: 20px;">
                         <li><strong>奖励积分：</strong>通过奖励系统获得的正向积分</li>
                         <li><strong>罚分：</strong>通过扣分系统产生的负向积分</li>
-                        <li><strong>悬赏：</strong>发布悬赏任务的支出（显示为负数）</li>
-                        <li><strong>交易：</strong>积分转账收支和完成悬赏的收入</li>
-                        <li><strong>每日任务：</strong>完成每日任务获得的积分</li>
+                        <li><strong>发布：</strong>发布悬赏任务的成本支出（显示为负数）</li>
+                        <li><strong>获取：</strong>完成悬赏任务的收益获得（显示为正数）</li>
+                        <li><strong>交易：</strong>积分转账收支和其他交易</li>
+                        <li><strong>日收入：</strong>完成每日任务获得的积分</li>
+                        <li><strong>日惩罚：</strong>未完成每日任务被扭除的积分（显示为负数）</li>
                         <li><strong>星星收入：</strong>基于总积分每月可获得的星星奖励</li>
-                        <li><strong>总积分在上方卡片显示 = 奖 + 罚 + 悬赏 + 交易 + 每日任务</strong></li>
+                        <li><strong>总积分在上方卡片显示 = 奖 + 罚 + 发布 + 获取 + 交易 + 日收入 + 日惩罚</strong></li>
                     </ul>
                 </div>
             </div>
@@ -3930,7 +3998,7 @@
     <script>
         // 全局变量
         let bountyData = [];
-        let bankData = { qiqi: { reward: 0, penalty: 0, bounty: 0, trade: 0, daily: 0 }, yiyi: { reward: 0, penalty: 0, bounty: 0, trade: 0, daily: 0 } };
+        let bankData = { qiqi: { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0 }, yiyi: { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0 } };
         let historyData = [];
         let bountyCounter = 1;
         let dailyTasksContent = '';
@@ -4297,7 +4365,7 @@
                 case 'taken':
                     return `<button class="bounty-btn btn-complete" onclick="completeBounty('${bounty.id}')">完成</button>`;
                 case 'done':
-                    return `<button class="bounty-btn btn-settle" onclick="settleBounty('${bounty.id}')">结算</button>`;
+                    return '<span style="color: #28a745; font-weight: bold;">✅ 已完成</span>';
                 case 'settled':
                     return '<span style="color: #28a745; font-weight: bold;">✅ 已结算</span>';
                 default:
@@ -4383,12 +4451,40 @@
                         alert('系统任务完成，积分已发放！');
                     }
                 } else {
-                    // 普通悬赏任务
-                    if (confirm('确认完成此悬赏任务？')) {
-                        bounty.status = 'done';
+                    // 普通悬赏任务 - 直接完成并结算
+                    if (confirm(`确认完成并结算悬赏？\n${getPlayerName(bounty.publisher)} 将扭除 ${bounty.points} 积分（发布成本）\n${getPlayerName(bounty.assignee)} 将获得 ${bounty.points} 积分（获取收益）`)) {
+                        // 执行记账 - 发布者扭除积分，承接者获得积分
+                        bankData[bounty.publisher].publish -= bounty.points; // 发布成本（负数）
+                        bankData[bounty.assignee].obtain += bounty.points;   // 获取收益（正数）
+                        addWeeklyPoints(bounty.assignee, bounty.points);
+
+                        // 添加历史记录
+                        const historyEntry = {
+                            id: `history_${Date.now()}`,
+                            type: '悬赏结算',
+                            time: new Date().toLocaleString(),
+                            description: `悬赏“${bounty.title}”完成并结算`,
+                            details: {
+                                publisher: bounty.publisher,
+                                assignee: bounty.assignee,
+                                points: bounty.points,
+                                changes: [
+                                    `${getPlayerName(bounty.publisher)} 发布 -${bounty.points}`,
+                                    `${getPlayerName(bounty.assignee)} 获取 +${bounty.points}`
+                                ]
+                            }
+                        };
+                        historyData.unshift(historyEntry);
+
+                        bounty.status = 'settled';
                         bounty.completedAt = new Date().toISOString();
+                        bounty.settledAt = new Date().toISOString();
+
                         saveData();
                         refreshBountyList();
+                        refreshBankPage();
+                        
+                        alert(`悬赏完成：${getPlayerName(bounty.publisher)} -发布 ${bounty.points} 分；${getPlayerName(bounty.assignee)} +获取 ${bounty.points} 分。`);
                     }
                 }
             });
@@ -4399,10 +4495,10 @@
                 const bounty = bountyData.find(b => b.id === bountyId);
                 if (!bounty || bounty.status === 'settled') return;
 
-                if (confirm(`确认结算悬赏？\n${getPlayerName(bounty.publisher)} 将扣除 ${bounty.points} 悬赏积分\n${getPlayerName(bounty.assignee)} 将获得 ${bounty.points} 交易积分`)) {
-                // 执行记账
-                bankData[bounty.publisher].bounty += bounty.points;
-                bankData[bounty.assignee].trade += bounty.points;
+                if (confirm(`确认结算悬赏？\n${getPlayerName(bounty.publisher)} 将扣除 ${bounty.points} 积分（发布成本）\n${getPlayerName(bounty.assignee)} 将获得 ${bounty.points} 积分（获取收益）`)) {
+                // 执行记账 - 发布者扭除积分，承接者获得积分
+                bankData[bounty.publisher].publish -= bounty.points; // 发布成本（负数）
+                bankData[bounty.assignee].obtain += bounty.points;   // 获取收益（正数）
                 addWeeklyPoints(bounty.assignee, bounty.points);
 
                 // 添加历史记录
@@ -4416,8 +4512,8 @@
                         assignee: bounty.assignee,
                         points: bounty.points,
                         changes: [
-                            `${getPlayerName(bounty.publisher)} 悬赏 -${bounty.points}`,
-                            `${getPlayerName(bounty.assignee)} 交易 +${bounty.points}`
+                            `${getPlayerName(bounty.publisher)} 发布 -${bounty.points}`,
+                            `${getPlayerName(bounty.assignee)} 获取 +${bounty.points}`
                         ]
                     }
                 };
@@ -4429,7 +4525,7 @@
                 saveData();
                 refreshBountyList();
                 
-                alert(`结算完成：${getPlayerName(bounty.publisher)} -悬赏 ${bounty.points} 分；${getPlayerName(bounty.assignee)} +交易 ${bounty.points} 分。`);
+                alert(`结算完成：${getPlayerName(bounty.publisher)} -发布 ${bounty.points} 分；${getPlayerName(bounty.assignee)} +获取 ${bounty.points} 分。`);
                 }
             });
         }
@@ -4805,8 +4901,8 @@
             
             // 检查是否需要发放月度奖励（跨月了）
             if (currentMonthStart > lastBonusDate) {
-                const qiqiTotal = bankData.qiqi.reward + bankData.qiqi.penalty + bankData.qiqi.bounty + bankData.qiqi.trade + bankData.qiqi.daily;
-                const yiyiTotal = bankData.yiyi.reward + bankData.yiyi.penalty + bankData.yiyi.bounty + bankData.yiyi.trade + bankData.yiyi.daily;
+                const qiqiTotal = bankData.qiqi.reward + bankData.qiqi.penalty + bankData.qiqi.publish + bankData.qiqi.obtain + bankData.qiqi.trade + bankData.qiqi.daily;
+                const yiyiTotal = bankData.yiyi.reward + bankData.yiyi.penalty + bankData.yiyi.publish + bankData.yiyi.obtain + bankData.yiyi.trade + bankData.yiyi.daily;
                 
                 const qiqiBonus = calculateMonthlyBonus(qiqiTotal);
                 const yiyiBonus = calculateMonthlyBonus(yiyiTotal);
@@ -4838,8 +4934,8 @@
         }
 
         function updateStarBonusDisplay() {
-            const qiqiTotal = bankData.qiqi.reward + bankData.qiqi.penalty + bankData.qiqi.bounty + bankData.qiqi.trade + bankData.qiqi.daily;
-            const yiyiTotal = bankData.yiyi.reward + bankData.yiyi.penalty + bankData.yiyi.bounty + bankData.yiyi.trade + bankData.yiyi.daily;
+            const qiqiTotal = bankData.qiqi.reward + bankData.qiqi.penalty + bankData.qiqi.publish + bankData.qiqi.obtain + bankData.qiqi.trade + bankData.qiqi.dailyIncome + bankData.qiqi.dailyPenalty;
+            const yiyiTotal = bankData.yiyi.reward + bankData.yiyi.penalty + bankData.yiyi.publish + bankData.yiyi.obtain + bankData.yiyi.trade + bankData.yiyi.dailyIncome + bankData.yiyi.dailyPenalty;
             
             const qiqiStars = calculateStarCounts(qiqiTotal);
             const yiyiStars = calculateStarCounts(yiyiTotal);
@@ -4886,7 +4982,7 @@
             ];
 
             tbody.innerHTML = rows.map(row => {
-                const total = row.data.reward + row.data.penalty + row.data.bounty + row.data.trade + row.data.daily;
+                const total = row.data.reward + row.data.penalty + row.data.publish + row.data.obtain + row.data.trade + row.data.dailyIncome + row.data.dailyPenalty;
                 const starEarnings = calculateStarEarnings(total);
                 
                 return `
@@ -4894,9 +4990,11 @@
                         <td style="font-weight: bold;">${row.name}</td>
                         <td style="color: ${row.data.reward >= 0 ? '#28a745' : '#dc3545'};">${row.data.reward}</td>
                         <td style="color: ${row.data.penalty >= 0 ? '#28a745' : '#dc3545'};">${row.data.penalty}</td>
-                        <td style="color: ${row.data.bounty >= 0 ? '#28a745' : '#dc3545'};">${row.data.bounty}</td>
+                        <td style="color: ${row.data.publish >= 0 ? '#28a745' : '#dc3545'};">${row.data.publish}</td>
+                        <td style="color: ${row.data.obtain >= 0 ? '#28a745' : '#dc3545'};">${row.data.obtain}</td>
                         <td style="color: ${row.data.trade >= 0 ? '#28a745' : '#dc3545'};">${row.data.trade}</td>
-                        <td style="color: ${row.data.daily >= 0 ? '#28a745' : '#dc3545'};">${row.data.daily}</td>
+                        <td style="color: ${row.data.dailyIncome >= 0 ? '#28a745' : '#dc3545'};">${row.data.dailyIncome}</td>
+                        <td style="color: ${row.data.dailyPenalty >= 0 ? '#28a745' : '#dc3545'};">${row.data.dailyPenalty}</td>
                         <td style="text-align: center; color: #ffc107; font-weight: bold;">${starEarnings}</td>
                     </tr>
                 `;
@@ -4913,8 +5011,8 @@
             }
 
             // 更新总积分显示卡片
-            const qiqiTotal = bankData.qiqi.reward + bankData.qiqi.penalty + bankData.qiqi.bounty + bankData.qiqi.trade + bankData.qiqi.daily;
-            const yiyiTotal = bankData.yiyi.reward + bankData.yiyi.penalty + bankData.yiyi.bounty + bankData.yiyi.trade + bankData.yiyi.daily;
+            const qiqiTotal = bankData.qiqi.reward + bankData.qiqi.penalty + bankData.qiqi.publish + bankData.qiqi.obtain + bankData.qiqi.trade + bankData.qiqi.dailyIncome + bankData.qiqi.dailyPenalty;
+            const yiyiTotal = bankData.yiyi.reward + bankData.yiyi.penalty + bankData.yiyi.publish + bankData.yiyi.obtain + bankData.yiyi.trade + bankData.yiyi.dailyIncome + bankData.yiyi.dailyPenalty;
             
             document.getElementById('qiqi-total-score').textContent = qiqiTotal;
             document.getElementById('yiyi-total-score').textContent = yiyiTotal;
@@ -4979,23 +5077,27 @@
         function clearAllPoints() {
             requireAuth(() => {
                 // 获取当前积分状态用于确认和记录
-                const qiqiTotal = bankData.qiqi.reward + bankData.qiqi.penalty + bankData.qiqi.bounty + bankData.qiqi.trade + bankData.qiqi.daily;
-                const yiyiTotal = bankData.yiyi.reward + bankData.yiyi.penalty + bankData.yiyi.bounty + bankData.yiyi.trade + bankData.yiyi.daily;
+                const qiqiTotal = bankData.qiqi.reward + bankData.qiqi.penalty + bankData.qiqi.publish + bankData.qiqi.obtain + bankData.qiqi.trade + bankData.qiqi.daily;
+                const yiyiTotal = bankData.yiyi.reward + bankData.yiyi.penalty + bankData.yiyi.publish + bankData.yiyi.obtain + bankData.yiyi.trade + bankData.yiyi.daily;
                 
                 const confirmMessage = `⚠️ 危险操作确认 ⚠️\n\n` +
                     `即将清零所有用户的积分数据：\n\n` +
                     `七七当前总积分：${qiqiTotal}\n` +
                     `• 奖励：${bankData.qiqi.reward}\n` +
                     `• 罚分：${bankData.qiqi.penalty}\n` +
-                    `• 悬赏：${bankData.qiqi.bounty}\n` +
+                    `• 发布：${bankData.qiqi.publish}\n` +
+                    `• 获取：${bankData.qiqi.obtain}\n` +
                     `• 交易：${bankData.qiqi.trade}\n` +
-                    `• 每日任务：${bankData.qiqi.daily}\n\n` +
+                    `• 日收入：${bankData.qiqi.dailyIncome}\n` +
+                    `• 日惩罚：${bankData.qiqi.dailyPenalty}\n\n` +
                     `一一当前总积分：${yiyiTotal}\n` +
                     `• 奖励：${bankData.yiyi.reward}\n` +
                     `• 罚分：${bankData.yiyi.penalty}\n` +
-                    `• 悬赏：${bankData.yiyi.bounty}\n` +
+                    `• 发布：${bankData.yiyi.publish}\n` +
+                    `• 获取：${bankData.yiyi.obtain}\n` +
                     `• 交易：${bankData.yiyi.trade}\n` +
-                    `• 每日任务：${bankData.yiyi.daily}\n\n` +
+                    `• 日收入：${bankData.yiyi.dailyIncome}\n` +
+                    `• 日惩罚：${bankData.yiyi.dailyPenalty}\n\n` +
                     `此操作将清零所有积分数据，无法撤销！\n` +
                     `确定要继续吗？`;
 
@@ -5007,8 +5109,8 @@
                     };
 
                     // 清零所有积分
-                    bankData.qiqi = { reward: 0, penalty: 0, bounty: 0, trade: 0, daily: 0 };
-                    bankData.yiyi = { reward: 0, penalty: 0, bounty: 0, trade: 0, daily: 0 };
+                    bankData.qiqi = { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0 };
+                    bankData.yiyi = { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0 };
 
                     // 添加历史记录
                     const historyEntry = {
@@ -5019,8 +5121,8 @@
                         details: {
                             beforeClear: beforeClearData,
                             changes: [
-                                `七七：总分 ${qiqiTotal} → 0（奖:${beforeClearData.qiqi.reward}→0, 罚:${beforeClearData.qiqi.penalty}→0, 悬赏:${beforeClearData.qiqi.bounty}→0, 交易:${beforeClearData.qiqi.trade}→0, 每日任务:${beforeClearData.qiqi.daily}→0）`,
-                                `一一：总分 ${yiyiTotal} → 0（奖:${beforeClearData.yiyi.reward}→0, 罚:${beforeClearData.yiyi.penalty}→0, 悬赏:${beforeClearData.yiyi.bounty}→0, 交易:${beforeClearData.yiyi.trade}→0, 每日任务:${beforeClearData.yiyi.daily}→0）`
+                                `七七：总分 ${qiqiTotal} → 0（奖:${beforeClearData.qiqi.reward}→0, 罚:${beforeClearData.qiqi.penalty}→0, 发布:${beforeClearData.qiqi.publish || 0}→0, 获取:${beforeClearData.qiqi.obtain || 0}→0, 交易:${beforeClearData.qiqi.trade}→0, 日收入:${beforeClearData.qiqi.dailyIncome || 0}→0, 日惩罚:${beforeClearData.qiqi.dailyPenalty || 0}→0）`,
+                                `一一：总分 ${yiyiTotal} → 0（奖:${beforeClearData.yiyi.reward}→0, 罚:${beforeClearData.yiyi.penalty}→0, 发布:${beforeClearData.yiyi.publish || 0}→0, 获取:${beforeClearData.yiyi.obtain || 0}→0, 交易:${beforeClearData.yiyi.trade}→0, 日收入:${beforeClearData.yiyi.dailyIncome || 0}→0, 日惩罚:${beforeClearData.yiyi.dailyPenalty || 0}→0）`
                             ]
                         }
                     };
@@ -5047,8 +5149,7 @@
 
         function closeTaskPoolModal() {
             document.getElementById('task-pool-modal').style.display = 'none';
-            document.getElementById('pool-task-name').value = '';
-            document.getElementById('pool-task-description').value = '';
+            cancelEditPoolTask(); // 关闭时取消编辑状态
         }
 
         function closeTaskPoolModalIfClickedOutside(event) {
@@ -5119,6 +5220,89 @@
             refreshDailyTasks();
         }
 
+        function editPoolTask(taskId) {
+            requireAuth(() => {
+                const task = taskPool.find(t => t.id === taskId);
+                if (!task) return;
+
+                // 填入当前任务的信息到表单中
+                document.getElementById('pool-task-name').value = task.name;
+                document.getElementById('pool-task-description').value = task.description || '';
+                
+                // 修改按钮文字和事件
+                const addButton = document.querySelector('.task-pool-modal-box .btn-primary');
+                addButton.textContent = '更新任务';
+                addButton.onclick = () => updatePoolTask(taskId);
+                
+                // 添加取消编辑按钮
+                if (!document.getElementById('cancel-edit-btn')) {
+                    const cancelBtn = document.createElement('button');
+                    cancelBtn.id = 'cancel-edit-btn';
+                    cancelBtn.className = 'modal-btn btn-secondary';
+                    cancelBtn.textContent = '取消编辑';
+                    cancelBtn.style.width = '100%';
+                    cancelBtn.style.marginTop = '10px';
+                    cancelBtn.onclick = cancelEditPoolTask;
+                    addButton.parentNode.appendChild(cancelBtn);
+                }
+            });
+        }
+
+        function updatePoolTask(taskId) {
+            const name = document.getElementById('pool-task-name').value.trim();
+            const description = document.getElementById('pool-task-description').value.trim();
+
+            if (!name) {
+                alert('请输入任务名称');
+                return;
+            }
+
+            // 查找并更新任务
+            const taskIndex = taskPool.findIndex(t => t.id === taskId);
+            if (taskIndex === -1) return;
+
+            taskPool[taskIndex] = {
+                ...taskPool[taskIndex],
+                name: name,
+                description: description,
+                updatedAt: new Date().toISOString()
+            };
+
+            // 更新已选择此任务的用户的任务信息
+            ['qiqi', 'yiyi'].forEach(user => {
+                for (let i = 0; i < 3; i++) {
+                    if (dailyTasks[user][i] && dailyTasks[user][i].poolTaskId === taskId) {
+                        dailyTasks[user][i].name = name;
+                        dailyTasks[user][i].description = description;
+                    }
+                }
+            });
+
+            saveData();
+            refreshTaskPoolDisplay();
+            refreshDailyTasks();
+            cancelEditPoolTask();
+            
+            alert('任务更新成功！');
+        }
+
+        function cancelEditPoolTask() {
+            // 清空表单
+            document.getElementById('pool-task-name').value = '';
+            document.getElementById('pool-task-description').value = '';
+            
+            // 恢复按钮状态
+            const addButton = document.querySelector('.task-pool-modal-box .btn-primary');
+            addButton.textContent = '添加到任务池';
+            addButton.onclick = addPoolTask;
+            
+            // 移除取消按钮
+            const cancelBtn = document.getElementById('cancel-edit-btn');
+            if (cancelBtn) {
+                cancelBtn.remove();
+            }
+        }
+
         function refreshTaskPoolDisplay() {
             const poolList = document.getElementById('pool-tasks-list');
             const poolCount = document.getElementById('pool-count');
@@ -5140,6 +5324,7 @@
                                     ${task.description ? `<div class="pool-task-description">${task.description}</div>` : ''}
                                 </div>
                                 <div class="pool-task-actions">
+                                    <button class="modal-btn btn-primary" onclick="editPoolTask('${task.id}')" style="font-size: 0.8em; padding: 6px 12px; margin-right: 8px;">编辑</button>
                                     <button class="modal-btn btn-danger" onclick="removePoolTask('${task.id}')" style="font-size: 0.8em; padding: 6px 12px;">删除</button>
                                 </div>
                             </div>
@@ -5317,7 +5502,7 @@
                 task.multiplier = multiplier;
                 task.completedAt = new Date().toISOString();
                 
-                bankData[user].daily += points;
+                bankData[user].dailyIncome += points;
                 addWeeklyPoints(user, points);
                 
                 dailyTasks.progress[user] = dailyTasks[user].filter(t => t && t.completed).length;
@@ -5967,8 +6152,8 @@
                     // 根据未完成任务数量计算惩罚（每个任务3分）
                     penaltyPoints = incompleteTasks * 3;
                     
-                    // 应用惩罚
-                    bankData[user].penalty -= penaltyPoints;
+                    // 应用每日任务惩罚
+                    bankData[user].dailyPenalty -= penaltyPoints;
                     
                     const userName = user === 'qiqi' ? '七七' : '一一';
                     addHistory(`${userName}未完成${incompleteTasks}个每日任务，扣除${penaltyPoints}分`, 'system');
@@ -6890,10 +7075,41 @@
                     if (shouldUpdate) {
                         // 恢复云端数据
                         bountyData = cloudData.bountyData || [];
-                        bankData = cloudData.bankData || { qiqi: { reward: 0, penalty: 0, bounty: 0, trade: 0, daily: 0 }, yiyi: { reward: 0, penalty: 0, bounty: 0, trade: 0, daily: 0 } };
-                        // 为现有云端数据添加每日任务字段兼容性
-                        if (!bankData.qiqi.daily) bankData.qiqi.daily = 0;
-                        if (!bankData.yiyi.daily) bankData.yiyi.daily = 0;
+                        bankData = cloudData.bankData || { qiqi: { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0 }, yiyi: { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0 } };
+                        // 为现有云端数据添加新字段兼容性
+                        // 处理旧的daily字段
+                        if (bankData.qiqi.daily !== undefined && bankData.qiqi.dailyIncome === undefined) {
+                            // 旧数据迁移：将daily分为dailyIncome和dailyPenalty
+                            bankData.qiqi.dailyIncome = Math.max(0, bankData.qiqi.daily);
+                            bankData.qiqi.dailyPenalty = Math.min(0, bankData.qiqi.daily);
+                            delete bankData.qiqi.daily;
+                        }
+                        if (bankData.yiyi.daily !== undefined && bankData.yiyi.dailyIncome === undefined) {
+                            bankData.yiyi.dailyIncome = Math.max(0, bankData.yiyi.daily);
+                            bankData.yiyi.dailyPenalty = Math.min(0, bankData.yiyi.daily);
+                            delete bankData.yiyi.daily;
+                        }
+                        // 添加发布/获取字段兼容性
+                        if (bankData.qiqi.bounty !== undefined && bankData.qiqi.publish === undefined) {
+                            // 旧数据迁移：将bounty分为publish和obtain
+                            bankData.qiqi.publish = Math.min(0, bankData.qiqi.bounty); // 负数部分作为发布成本
+                            bankData.qiqi.obtain = Math.max(0, bankData.qiqi.bounty);  // 正数部分作为获得收益
+                            delete bankData.qiqi.bounty;
+                        }
+                        if (bankData.yiyi.bounty !== undefined && bankData.yiyi.publish === undefined) {
+                            bankData.yiyi.publish = Math.min(0, bankData.yiyi.bounty);
+                            bankData.yiyi.obtain = Math.max(0, bankData.yiyi.bounty);
+                            delete bankData.yiyi.bounty;
+                        }
+                        // 确保新字段存在
+                        if (!bankData.qiqi.publish) bankData.qiqi.publish = 0;
+                        if (!bankData.qiqi.obtain) bankData.qiqi.obtain = 0;
+                        if (!bankData.yiyi.publish) bankData.yiyi.publish = 0;
+                        if (!bankData.yiyi.obtain) bankData.yiyi.obtain = 0;
+                        if (!bankData.qiqi.dailyIncome) bankData.qiqi.dailyIncome = 0;
+                        if (!bankData.qiqi.dailyPenalty) bankData.qiqi.dailyPenalty = 0;
+                        if (!bankData.yiyi.dailyIncome) bankData.yiyi.dailyIncome = 0;
+                        if (!bankData.yiyi.dailyPenalty) bankData.yiyi.dailyPenalty = 0;
                         historyData = cloudData.historyData || [];
                         bountyCounter = cloudData.bountyCounter || 1;
                         dailyTasksContent = cloudData.dailyTasksContent || '';
@@ -7056,10 +7272,41 @@
                 try {
                     const data = JSON.parse(saved);
                     bountyData = data.bountyData || [];
-                    bankData = data.bankData || { qiqi: { reward: 0, penalty: 0, bounty: 0, trade: 0, daily: 0 }, yiyi: { reward: 0, penalty: 0, bounty: 0, trade: 0, daily: 0 } };
-                    // 为现有数据添加每日任务字段兼容性
-                    if (!bankData.qiqi.daily) bankData.qiqi.daily = 0;
-                    if (!bankData.yiyi.daily) bankData.yiyi.daily = 0;
+                    bankData = data.bankData || { qiqi: { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0 }, yiyi: { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0 } };
+                    // 为现有数据添加新字段兼容性
+                    // 处理旧的daily字段
+                    if (bankData.qiqi.daily !== undefined && bankData.qiqi.dailyIncome === undefined) {
+                        // 旧数据迁移：将daily分为dailyIncome和dailyPenalty
+                        bankData.qiqi.dailyIncome = Math.max(0, bankData.qiqi.daily);
+                        bankData.qiqi.dailyPenalty = Math.min(0, bankData.qiqi.daily);
+                        delete bankData.qiqi.daily;
+                    }
+                    if (bankData.yiyi.daily !== undefined && bankData.yiyi.dailyIncome === undefined) {
+                        bankData.yiyi.dailyIncome = Math.max(0, bankData.yiyi.daily);
+                        bankData.yiyi.dailyPenalty = Math.min(0, bankData.yiyi.daily);
+                        delete bankData.yiyi.daily;
+                    }
+                    // 添加发布/获取字段兼容性
+                    if (bankData.qiqi.bounty !== undefined && bankData.qiqi.publish === undefined) {
+                        // 旧数据迁移：将bounty分为publish和obtain
+                        bankData.qiqi.publish = Math.min(0, bankData.qiqi.bounty); // 负数部分作为发布成本
+                        bankData.qiqi.obtain = Math.max(0, bankData.qiqi.bounty);  // 正数部分作为获得收益
+                        delete bankData.qiqi.bounty;
+                    }
+                    if (bankData.yiyi.bounty !== undefined && bankData.yiyi.publish === undefined) {
+                        bankData.yiyi.publish = Math.min(0, bankData.yiyi.bounty);
+                        bankData.yiyi.obtain = Math.max(0, bankData.yiyi.bounty);
+                        delete bankData.yiyi.bounty;
+                    }
+                    // 确保新字段存在
+                    if (!bankData.qiqi.publish) bankData.qiqi.publish = 0;
+                    if (!bankData.qiqi.obtain) bankData.qiqi.obtain = 0;
+                    if (!bankData.yiyi.publish) bankData.yiyi.publish = 0;
+                    if (!bankData.yiyi.obtain) bankData.yiyi.obtain = 0;
+                    if (!bankData.qiqi.dailyIncome) bankData.qiqi.dailyIncome = 0;
+                    if (!bankData.qiqi.dailyPenalty) bankData.qiqi.dailyPenalty = 0;
+                    if (!bankData.yiyi.dailyIncome) bankData.yiyi.dailyIncome = 0;
+                    if (!bankData.yiyi.dailyPenalty) bankData.yiyi.dailyPenalty = 0;
                     historyData = data.historyData || [];
                     bountyCounter = data.bountyCounter || 1;
                     dailyTasksContent = data.dailyTasksContent || '';
@@ -7630,3 +7877,8 @@
     </script>
 </body>
 </html>
+
+
+
+
+
