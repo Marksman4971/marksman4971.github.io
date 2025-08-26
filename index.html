@@ -242,6 +242,12 @@
             align-items: center;
             margin-bottom: 20px;
         }
+        
+        .bounty-header-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
 
         .bounty-title {
             font-size: 1.5em;
@@ -551,6 +557,13 @@
             from { transform: translateY(-50px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
 
 
         .modal-input {
@@ -684,6 +697,12 @@
             z-index: 1000;
             transition: all 0.3s ease;
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+
+        .connection-status:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
         }
 
         .status-online {
@@ -934,6 +953,86 @@
             .modal-header h3 {
                 font-size: 1em;
             }
+            
+            /* 密码模态框移动端优化 */
+            #password-modal .modal-box {
+                max-width: calc(100% - 32px);
+                margin: 16px;
+            }
+            
+            #password-modal .form-group {
+                padding: 0 25px;
+            }
+            
+            #password-modal .form-group:first-of-type {
+                padding: 25px 25px 0 25px;
+            }
+            
+            #password-modal .modal-actions {
+                padding: 20px 25px 25px 25px;
+            }
+            
+            #admin-password {
+                font-size: 16px; /* 防止iOS缩放 */
+            }
+            
+            /* 用户选择模态框移动端优化 */
+            #user-select-modal .modal-box {
+                max-width: calc(100% - 32px);
+                margin: 16px;
+            }
+            
+            #user-select-modal .form-group {
+                padding: 0 25px;
+            }
+            
+            #user-select-modal .form-group:first-of-type {
+                padding: 25px 25px 0 25px;
+            }
+            
+            #user-select-modal .modal-actions {
+                padding: 20px 25px 25px 25px;
+            }
+            
+            .user-select-option {
+                font-size: 0.95em !important;
+                padding: 12px 18px !important;
+                min-height: 44px; /* Apple推荐的最小触摸目标 */
+            }
+            
+            #user-select-options {
+                grid-template-columns: 1fr !important;
+                gap: 10px !important;
+            }
+            
+            /* 批量导入模态框移动端优化 */
+            #batch-import-modal .modal-box {
+                max-width: calc(100% - 32px);
+                margin: 16px;
+            }
+            
+            #batch-import-modal .form-group {
+                padding: 0 25px;
+            }
+            
+            #batch-import-modal .form-group:first-of-type {
+                padding: 25px 25px 0 25px;
+            }
+            
+            #batch-import-modal .modal-actions {
+                padding: 20px 25px 25px 25px;
+            }
+            
+            #batch-import-text {
+                font-size: 14px !important;
+                min-height: 120px;
+            }
+            
+            #batch-preview {
+                font-size: 0.8em !important;
+                max-height: 200px !important;
+            }
+            
 
             /* 同步信息面板优化 */
             .sync-info {
@@ -1243,8 +1342,21 @@
             
             .bounty-header {
                 flex-direction: column;
-                gap: 10px;
+                gap: 15px;
                 align-items: stretch;
+            }
+            
+            .bounty-header-buttons {
+                flex-direction: column;
+                gap: 8px;
+                width: 100%;
+            }
+            
+            .bounty-header-buttons .create-bounty-btn {
+                width: 100%;
+                margin: 0 !important;
+                font-size: 0.9em;
+                padding: 12px 20px;
             }
             
             .bounty-title {
@@ -1363,6 +1475,76 @@
             .modal-header h3 {
                 font-size: 0.9em;
             }
+            
+            /* 密码模态框超小屏幕优化 */
+            #password-modal .modal-box {
+                max-width: calc(100% - 16px);
+                margin: 8px;
+            }
+            
+            #password-modal .form-group {
+                padding: 0 20px;
+            }
+            
+            #password-modal .form-group:first-of-type {
+                padding: 20px 20px 0 20px;
+            }
+            
+            #password-modal .modal-actions {
+                padding: 15px 20px 20px 20px;
+            }
+            
+            /* 用户选择模态框超小屏幕优化 */
+            #user-select-modal .modal-box {
+                max-width: calc(100% - 16px);
+                margin: 8px;
+            }
+            
+            #user-select-modal .form-group {
+                padding: 0 20px;
+            }
+            
+            #user-select-modal .form-group:first-of-type {
+                padding: 20px 20px 0 20px;
+            }
+            
+            #user-select-modal .modal-actions {
+                padding: 15px 20px 20px 20px;
+            }
+            
+            .user-select-option {
+                font-size: 0.9em !important;
+                padding: 10px 15px !important;
+            }
+            
+            /* 批量导入模态框超小屏幕优化 */
+            #batch-import-modal .modal-box {
+                max-width: calc(100% - 16px);
+                margin: 8px;
+            }
+            
+            #batch-import-modal .form-group {
+                padding: 0 20px;
+            }
+            
+            #batch-import-modal .form-group:first-of-type {
+                padding: 20px 20px 0 20px;
+            }
+            
+            #batch-import-modal .modal-actions {
+                padding: 15px 20px 20px 20px;
+            }
+            
+            #batch-import-text {
+                font-size: 13px !important;
+                min-height: 100px;
+            }
+            
+            #batch-preview {
+                font-size: 0.75em !important;
+                max-height: 150px !important;
+            }
+            
             
             .connection-status {
                 width: 35px;
@@ -1761,11 +1943,1293 @@
             border-color: #c3e6cb !important;
             color: #155724 !important;
         }
+
+        /* 积分展示卡片样式 - 星星主题 - 左右布局 */
+        .score-dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .user-score-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .user-header {
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 15px 20px;
+            border-radius: 15px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .qiqi-section .user-header {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border: 2px solid rgba(33, 150, 243, 0.2);
+        }
+
+        .qiqi-section .user-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #1976d2;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .yiyi-section .user-header {
+            background: linear-gradient(135deg, #fff9c4 0%, #ffeb3b 100%);
+            border: 2px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .yiyi-section .user-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #f57f17;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .score-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .score-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        .score-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+            opacity: 0.08;
+            border-radius: 16px;
+        }
+
+        .score-card.total-score {
+            border-image: linear-gradient(135deg, #ffd700, #ffb347) 1;
+        }
+
+        .score-card.weekly-score {
+            border-image: linear-gradient(135deg, #ff69b4, #ffd700) 1;
+        }
+
+        .score-header {
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+        }
+
+        .qiqi-section .score-header {
+            border-bottom: 2px solid rgba(33, 150, 243, 0.2);
+        }
+
+        .yiyi-section .score-header {
+            border-bottom: 2px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .qiqi-section .score-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #1976d2;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .yiyi-section .score-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #f57f17;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .score-content {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .qiqi-section .score-value {
+            font-size: 2.8em;
+            font-weight: bold;
+            color: #1976d2;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .yiyi-section .score-value {
+            font-size: 2.8em;
+            font-weight: bold;
+            color: #f57f17;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .star-display {
+            padding: 12px;
+            border-radius: 10px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qiqi-section .star-display {
+            background: rgba(33, 150, 243, 0.05);
+            border: 1px solid rgba(33, 150, 243, 0.1);
+        }
+
+        .yiyi-section .star-display {
+            background: rgba(255, 193, 7, 0.05);
+            border: 1px solid rgba(255, 193, 7, 0.2);
+        }
+
+        .score-stars {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 3px;
+            line-height: 1;
+        }
+
+        /* 星星等级样式 */
+        .star-small {
+            font-size: 1.2em;
+            color: #ffd700;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+        }
+
+        .star-half {
+            font-size: 1.2em;
+            background: linear-gradient(90deg, #ffd700 50%, #ccc 50%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+        }
+
+        .star-big {
+            font-size: 1.8em;
+            color: #ff6b35;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+            animation: bigStarGlow 2s infinite alternate;
+        }
+
+        .star-rainbow {
+            font-size: 2.2em;
+            background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+            animation: rainbowStarGlow 2s infinite alternate;
+        }
+
+        .weekly-reset-info {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 237, 78, 0.05));
+            border-radius: 12px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .weekly-reset-info small {
+            color: #666;
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        /* 星星积分池样式 */
+        .star-bonus-pool {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid rgba(255, 193, 7, 0.2);
+            box-shadow: 0 6px 25px rgba(255, 152, 0, 0.15);
+        }
+
+        .star-bonus-pool h4 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #e65100;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .bonus-description {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .bonus-description p {
+            margin: 0 0 8px 0;
+            color: #bf360c;
+            font-weight: 600;
+        }
+
+        .bonus-description ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #d84315;
+        }
+
+        .bonus-description li {
+            margin: 4px 0;
+            font-size: 0.9em;
+        }
+
+        .bonus-dashboard {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .user-bonus-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .user-bonus-card {
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .qiqi-bonus {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border: 2px solid rgba(33, 150, 243, 0.2);
+        }
+
+        .yiyi-bonus {
+            background: linear-gradient(135deg, #fff9c4 0%, #ffeb3b 100%);
+            border: 2px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .user-bonus-card h5 {
+            margin: 0 0 8px 0;
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+        .qiqi-bonus h5 {
+            color: #1976d2;
+        }
+
+        .yiyi-bonus h5 {
+            color: #f57f17;
+        }
+
+        .star-count {
+            font-size: 0.85em;
+            margin-bottom: 5px;
+            opacity: 0.8;
+        }
+
+        .monthly-bonus {
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .qiqi-bonus .monthly-bonus {
+            color: #1976d2;
+        }
+
+        .yiyi-bonus .monthly-bonus {
+            color: #f57f17;
+        }
+
+        .next-bonus-date {
+            text-align: center;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 193, 7, 0.2);
+        }
+
+        .next-bonus-date small {
+            color: #bf360c;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        /* 新的每日任务系统样式 */
+        .task-pool-section {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0fff0 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid rgba(40, 167, 69, 0.2);
+        }
+
+        .task-pool-preview {
+            margin-top: 15px;
+        }
+
+        .pool-count-info {
+            margin-bottom: 15px;
+        }
+
+        .pool-count-badge {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            border: 1px solid rgba(40, 167, 69, 0.2);
+        }
+
+        .pool-tasks-preview {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid rgba(40, 167, 69, 0.2);
+        }
+
+        .empty-pool {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 10px;
+        }
+
+        .preview-task-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .preview-task-item {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.9em;
+            color: #495057;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .preview-task-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-color: #28a745;
+        }
+
+        .preview-task-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .preview-task-count {
+            font-size: 0.8em;
+            color: #6c757d;
+            text-align: right;
+        }
+
+        .preview-task-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .preview-task-expand {
+            color: #007bff;
+            cursor: pointer;
+            font-size: 0.8em;
+            margin-left: 8px;
+            transition: color 0.2s ease;
+            user-select: none;
+        }
+
+        .preview-task-expand:hover {
+            color: #0056b3;
+        }
+
+        .preview-task-details {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #eee;
+            font-size: 0.85em;
+            color: #666;
+            line-height: 1.4;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+            }
+            to {
+                opacity: 1;
+                max-height: 100px;
+            }
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .section-header h3 {
+            color: #155724;
+            margin: 0;
+        }
+
+        .task-pool-info {
+            text-align: center;
+            color: #28a745;
+            font-weight: 500;
+        }
+
+        .daily-task-section {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .daily-task-section.qiqi-section {
+            border-left: 4px solid #2196f3;
+        }
+
+        .daily-task-section.yiyi-section {
+            border-left: 4px solid #ffc107;
+        }
+
+        .daily-progress {
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .daily-progress h4 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.3s ease;
+        }
+
+        .daily-tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .task-slot {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .task-slot:hover {
+            border-color: #007bff;
+            background: #f0f8ff;
+        }
+
+        .task-slot.selected {
+            background: #e7f3ff;
+            border-color: #007bff;
+            border-style: solid;
+        }
+
+        .task-slot.completed {
+            background: #d4edda;
+            border-color: #28a745;
+            border-style: solid;
+        }
+
+        .slot-content {
+            font-weight: 500;
+            color: #6c757d;
+        }
+
+        .task-slot.selected .slot-content {
+            color: #007bff;
+        }
+
+        .task-slot.completed .slot-content {
+            color: #28a745;
+        }
+
+        .task-name {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .task-multiplier {
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+
+        .task-actions {
+            margin-top: 10px;
+        }
+
+        .multiplier-btn {
+            padding: 4px 8px;
+            margin: 0 2px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: all 0.2s ease;
+        }
+
+        .multiplier-btn.normal {
+            background: #28a745;
+            color: white;
+        }
+
+        .multiplier-btn.double {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .multiplier-btn.triple {
+            background: #dc3545;
+            color: white;
+        }
+
+        .multiplier-btn.abandon {
+            background: #6c757d;
+            color: white;
+            font-size: 0.85em;
+        }
+
+        .multiplier-btn.abandon:hover {
+            background: #5a6268;
+        }
+
+        .multiplier-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* 任务池管理样式 */
+        .task-pool-list {
+            margin: 20px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .task-pool-list h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 8px;
+        }
+
+        .pool-task-item {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 120px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pool-task-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .pool-task-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.15);
+            border-color: #28a745;
+        }
+
+        .pool-task-item:hover::before {
+            opacity: 1;
+        }
+
+        .pool-task-content {
+            flex-grow: 1;
+            margin-bottom: 15px;
+        }
+
+        .pool-task-name {
+            font-weight: 700;
+            font-size: 1.15em;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .pool-task-description {
+            font-size: 0.95em;
+            color: #6c757d;
+            line-height: 1.5;
+            margin-bottom: 0;
+        }
+
+        .pool-task-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: auto;
+        }
+
+        .pool-task-actions .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+        }
+
+        .pool-task-actions .btn-danger:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+            background: linear-gradient(135deg, #c82333, #a71e2a);
+        }
+
+        .task-pool-list {
+            margin: 30px 0;
+            max-height: 500px;
+            overflow-y: auto;
+            background: rgba(248, 249, 250, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(40, 167, 69, 0.1);
+        }
+
+        .task-pool-list h4 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            border-bottom: 3px solid #28a745;
+            padding-bottom: 12px;
+            font-size: 1.3em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        .task-pool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .task-pool-modal-box {
+                width: 98vw !important;
+                margin: 10px;
+            }
+            
+            .task-pool-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .pool-task-item {
+                min-height: 100px;
+                padding: 15px;
+            }
+        }
+
+        .pool-empty-message {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 30px;
+            background: rgba(248, 249, 250, 0.5);
+            border-radius: 12px;
+            border: 2px dashed #dee2e6;
+        }
+
+        /* 任务池管理模态框专用样式 */
+        .task-pool-modal-box {
+            max-width: 900px !important;
+            width: 95vw !important;
+            max-height: 85vh !important;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: 2px solid rgba(40, 167, 69, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .task-pool-modal-box .modal-header {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            padding: 20px 30px;
+            margin: -20px -30px 25px -30px;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .task-pool-modal-box .modal-close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .task-pool-modal-box .modal-close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .task-pool-modal-box .modal-header h3 {
+            margin: 0;
+            font-size: 1.4em;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-pool-modal-box .form-group {
+            margin-bottom: 25px;
+        }
+
+        .task-pool-modal-box .form-group label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            display: block;
+            font-size: 1.1em;
+        }
+
+        .task-pool-modal-box .modal-input {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: #ffffff;
+        }
+
+        .task-pool-modal-box .modal-input:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+            background: #ffffff;
+        }
+
+        .task-pool-modal-box .modal-btn {
+            border-radius: 10px;
+            padding: 12px 24px;
+            font-weight: 600;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .task-pool-modal-box .btn-primary {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border: none;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+
+        .task-pool-modal-box .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+        }
+
+        .task-pool-modal-box .btn-secondary {
+            background: #6c757d;
+            border: none;
+            color: white;
+            box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+        }
+
+        .task-pool-modal-box .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
+        }
+
+        .task-pool-modal-box .modal-actions {
+            margin-top: 20px;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        /* 每日任务选择模态框专用样式 */
+        .daily-task-select-modal-box {
+            max-width: 800px !important;
+            width: 90vw !important;
+            max-height: 80vh !important;
+        }
+
+        .daily-task-select-modal-box .available-tasks {
+            margin: 25px 0;
+            max-height: 500px;
+            overflow-y: auto;
+            background: rgba(248, 249, 250, 0.5);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #dee2e6;
+        }
+
+        .daily-task-select-modal-box .available-tasks h4 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .daily-task-select-modal-box .available-task-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .daily-task-select-modal-box .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            padding: 20px 30px;
+            margin: -20px -30px 25px -30px;
+        }
+
+        .daily-task-select-modal-box .modal-close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .daily-task-select-modal-box .modal-close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .daily-task-select-modal-box {
+                width: 95vw !important;
+                margin: 10px;
+            }
+            
+            .daily-task-select-modal-box .available-task-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+        }
+
+        .available-tasks {
+            margin: 20px 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .available-task-item {
+            padding: 18px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .available-task-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .available-task-item:hover {
+            background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%);
+            border-color: #007bff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+        }
+
+        .available-task-item:hover::before {
+            opacity: 1;
+        }
+
+        .available-task-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .available-task-item.disabled:hover {
+            background: #f8f9fa;
+            border-color: transparent;
+        }
+
+        .available-task-header {
+            cursor: pointer;
+        }
+
+        .available-task-expand {
+            color: #007bff;
+            cursor: pointer;
+            font-size: 0.8em;
+            margin-left: 8px;
+            transition: color 0.2s ease;
+            user-select: none;
+        }
+
+        .available-task-expand:hover {
+            color: #0056b3;
+        }
+
+        .available-task-details {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #eee;
+            font-size: 0.85em;
+            color: #666;
+            line-height: 1.4;
+            animation: slideDown 0.3s ease;
+        }
+
+        .task-name-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .daily-task-expand {
+            color: #007bff;
+            cursor: pointer;
+            font-size: 0.8em;
+            margin-left: 8px;
+            transition: color 0.2s ease;
+            user-select: none;
+        }
+
+        .daily-task-expand:hover {
+            color: #0056b3;
+        }
+
+        .daily-task-details {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #eee;
+            font-size: 0.85em;
+            color: #666;
+            line-height: 1.4;
+            animation: slideDown 0.3s ease;
+        }
+
+        .task-unavailable-reason {
+            font-size: 0.8em;
+            color: #dc3545;
+            margin-top: 5px;
+        }
+
+        /* 星星等级说明样式 */
+        .star-legend {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid rgba(108, 117, 125, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .star-legend h4 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #495057;
+            font-size: 1.2em;
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .legend-text {
+            font-size: 0.9em;
+            color: #495057;
+            font-weight: 500;
+        }
+
+        @keyframes starTwinkle {
+            0% { 
+                transform: scale(1) rotate(0deg);
+                filter: brightness(1);
+            }
+            100% { 
+                transform: scale(1.1) rotate(5deg);
+                filter: brightness(1.2);
+            }
+        }
+
+        @keyframes bigStarGlow {
+            0% { 
+                filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)) brightness(1);
+                transform: scale(1);
+            }
+            100% { 
+                filter: drop-shadow(0 4px 8px rgba(255,107,53,0.6)) brightness(1.3);
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes rainbowStarGlow {
+            0% { 
+                filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5)) brightness(1);
+                transform: scale(1);
+            }
+            100% { 
+                filter: drop-shadow(0 4px 12px rgba(255,0,255,0.8)) brightness(1.3);
+                transform: scale(1.1);
+            }
+        }
+
+        /* 移动端积分卡片适配 */
+        @media (max-width: 768px) {
+            .score-dashboard {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                margin: 15px 0;
+            }
+
+            .user-score-section {
+                gap: 12px;
+            }
+
+            .user-header {
+                padding: 12px 15px;
+                margin-bottom: 10px;
+            }
+
+            .user-title {
+                font-size: 1.2em;
+            }
+
+            .score-card {
+                padding: 15px;
+            }
+
+            .score-title {
+                font-size: 1em;
+            }
+
+            .score-value {
+                font-size: 2.2em;
+            }
+
+            .star-display {
+                padding: 10px;
+                min-height: 40px;
+            }
+
+            .star-small {
+                font-size: 1em;
+            }
+
+            .star-half {
+                font-size: 1em;
+            }
+
+            .star-big {
+                font-size: 1.5em;
+            }
+
+            .star-rainbow {
+                font-size: 1.8em;
+            }
+
+            .weekly-reset-info {
+                margin: 15px 0;
+                padding: 12px;
+            }
+
+            .star-bonus-pool {
+                padding: 15px;
+                margin: 15px 0;
+            }
+
+            .star-bonus-pool h4 {
+                font-size: 1.1em;
+            }
+
+            .bonus-description {
+                padding: 12px;
+            }
+
+            .bonus-description p {
+                font-size: 0.9em;
+            }
+
+            .bonus-description li {
+                font-size: 0.8em;
+            }
+
+            .bonus-dashboard {
+                padding: 12px;
+            }
+
+            .user-bonus-section {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .user-bonus-card {
+                padding: 10px;
+            }
+
+            .user-bonus-card h5 {
+                font-size: 0.9em;
+            }
+
+            .star-count {
+                font-size: 0.75em;
+            }
+
+            .monthly-bonus {
+                font-size: 0.8em;
+            }
+
+            .star-legend {
+                padding: 15px;
+                margin: 15px 0;
+            }
+
+            .star-legend h4 {
+                font-size: 1.1em;
+                margin-bottom: 12px;
+            }
+
+            .legend-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .legend-item {
+                padding: 6px 10px;
+            }
+
+            .legend-text {
+                font-size: 0.85em;
+            }
+
+            /* 每日任务移动端适配 */
+            .task-pool-section {
+                padding: 15px;
+            }
+
+            .section-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .daily-task-section {
+                padding: 15px;
+                margin: 15px 0;
+            }
+
+            .daily-tasks-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .task-slot {
+                padding: 15px;
+                min-height: 100px;
+            }
+        }
     </style>
 </head>
 <body>
     <!-- 连接状态指示器 -->
-    <div id="connection-status" class="connection-status status-offline">
+    <div id="connection-status" class="connection-status status-offline" onclick="showSyncDebugInfo()">
         🔴<span class="status-text"> 离线</span>
     </div>
 
@@ -1793,42 +3257,110 @@
             <div id="daily" class="page active">
                 <h2>📅 每日任务</h2>
                 
-                <!-- 七七的任务区域 -->
-                <div class="user-task-section" id="qiqi-section">
-                    <div class="user-task-header">
-                        <h3>🌸 七七的任务</h3>
-                        <div class="task-header-controls">
-                            <button class="btn-primary" onclick="openTaskModal('qiqi')">+ 新建任务</button>
-                            <button class="btn-secondary" onclick="openTaskManageModal('qiqi')">管理任务</button>
-                        </div>
+                <!-- 任务池管理 -->
+                <div class="task-pool-section">
+                    <div class="section-header">
+                        <h3>🎯 每日任务池</h3>
+                        <button class="btn-primary" onclick="openTaskPoolModal()">+ 管理任务池</button>
                     </div>
-                    <div class="task-grid" id="qiqi-tasks">
-                        <div class="no-tasks">暂无任务</div>
+                    <div class="task-pool-preview">
+                        <div class="pool-count-info">
+                            <span class="pool-count-badge">共有 <span id="task-pool-count">0</span> 个任务</span>
+                        </div>
+                        <div class="pool-tasks-preview" id="pool-tasks-preview">
+                            <div class="empty-pool">暂无任务，点击上方按钮添加任务</div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 一一的任务区域 -->
-                <div class="user-task-section" id="yiyi-section">
-                    <div class="user-task-header">
-                        <h3>⭐ 一一的任务</h3>
-                        <div class="task-header-controls">
-                            <button class="btn-primary" onclick="openTaskModal('yiyi')">+ 新建任务</button>
-                            <button class="btn-secondary" onclick="openTaskManageModal('yiyi')">管理任务</button>
+                <!-- 七七的每日任务 -->
+                <div class="daily-task-section qiqi-section">
+                    <div class="user-header">
+                        <div class="user-title">七七</div>
+                    </div>
+                    <div class="daily-progress">
+                        <h4>今日进度: <span id="qiqi-progress">0/3</span></h4>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="qiqi-progress-fill" style="width: 0%"></div>
+                        </div>
+                        <!-- 预计积分和倒计时 -->
+                        <div class="daily-stats" style="margin-top: 12px; font-size: 0.9em;">
+                            <div class="expected-points" id="qiqi-expected-points" style="color: #28a745; font-weight: bold; margin-bottom: 5px;">
+                                预计获得积分: +0分
+                            </div>
+                            <div class="daily-countdown" id="daily-countdown" style="color: #dc3545; font-weight: bold;">
+                                任务截止: 23:30:00
+                            </div>
                         </div>
                     </div>
-                    <div class="task-grid" id="yiyi-tasks">
-                        <div class="no-tasks">暂无任务</div>
+                    <div class="daily-tasks-grid" id="qiqi-daily-tasks">
+                        <div class="task-slot empty" onclick="selectDailyTask('qiqi', 0)">
+                            <div class="slot-content">点击选择任务</div>
+                        </div>
+                        <div class="task-slot empty" onclick="selectDailyTask('qiqi', 1)">
+                            <div class="slot-content">点击选择任务</div>
+                        </div>
+                        <div class="task-slot empty" onclick="selectDailyTask('qiqi', 2)">
+                            <div class="slot-content">点击选择任务</div>
+                        </div>
+                    </div>
+                    <!-- 任务承接详细信息 -->
+                    <div class="task-acceptance-info" id="qiqi-task-info" style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #007bff;">
+                        <div style="font-weight: bold; color: #007bff; margin-bottom: 8px;">📋 任务承接情况</div>
+                        <div id="qiqi-acceptance-details" style="font-size: 0.9em; color: #666;">
+                            暂无承接的悬赏任务
+                        </div>
                     </div>
                 </div>
 
-                <!-- 重置提示信息 -->
+                <!-- 一一的每日任务 -->
+                <div class="daily-task-section yiyi-section">
+                    <div class="user-header">
+                        <div class="user-title">一一</div>
+                    </div>
+                    <div class="daily-progress">
+                        <h4>今日进度: <span id="yiyi-progress">0/3</span></h4>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="yiyi-progress-fill" style="width: 0%"></div>
+                        </div>
+                        <!-- 预计积分和倒计时 -->
+                        <div class="daily-stats" style="margin-top: 12px; font-size: 0.9em;">
+                            <div class="expected-points" id="yiyi-expected-points" style="color: #28a745; font-weight: bold; margin-bottom: 5px;">
+                                预计获得积分: +0分
+                            </div>
+                            <div class="daily-countdown-duplicate" style="color: #dc3545; font-weight: bold;">
+                                任务截止: 23:30:00
+                            </div>
+                        </div>
+                    </div>
+                    <div class="daily-tasks-grid" id="yiyi-daily-tasks">
+                        <div class="task-slot empty" onclick="selectDailyTask('yiyi', 0)">
+                            <div class="slot-content">点击选择任务</div>
+                        </div>
+                        <div class="task-slot empty" onclick="selectDailyTask('yiyi', 1)">
+                            <div class="slot-content">点击选择任务</div>
+                        </div>
+                        <div class="task-slot empty" onclick="selectDailyTask('yiyi', 2)">
+                            <div class="slot-content">点击选择任务</div>
+                        </div>
+                    </div>
+                    <!-- 任务承接详细信息 -->
+                    <div class="task-acceptance-info" id="yiyi-task-info" style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #28a745;">
+                        <div style="font-weight: bold; color: #28a745; margin-bottom: 8px;">📋 任务承接情况</div>
+                        <div id="yiyi-acceptance-details" style="font-size: 0.9em; color: #666;">
+                            暂无承接的悬赏任务
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 系统说明 -->
                 <div class="daily-info">
                     <h4>💡 每日任务说明</h4>
                     <ul>
+                        <li>每天需要完成3个不同的每日任务</li>
+                        <li>每个任务基础奖励1分，加倍2分，超级加倍3分</li>
                         <li>任务状态每日 6:00 AM 自动重置</li>
-                        <li>已获得的积分保留，任务完成状态重置</li>
-                        <li>系统提供积分奖励，不从其他用户扣除</li>
-                        <li>可以随时创建、编辑和删除任务</li>
+                        <li>可以从任务池中选择当天要完成的任务</li>
                     </ul>
                 </div>
             </div>
@@ -1841,7 +3373,11 @@
                 <div class="bounty-section">
                     <div class="bounty-header">
                         <h3 class="bounty-title">🎯 悬赏任务</h3>
-                        <button class="create-bounty-btn" onclick="openBountyModal()">+ 新建悬赏</button>
+                        <div class="bounty-header-buttons">
+                            <button class="create-bounty-btn" onclick="openBountyModal()">+ 新建悬赏</button>
+                            <button class="create-bounty-btn" onclick="console.log('批量导入按钮被点击'); showBatchImportModal();" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">📥 批量导入</button>
+                            <button class="create-bounty-btn" onclick="clearAllBounties()" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">🗑️ 清空悬赏</button>
+                        </div>
                     </div>
                     
                     <!-- 正在进行的悬赏 -->
@@ -1962,6 +3498,109 @@
             <div id="bank" class="page">
                 <h2>🏦 积分统计</h2>
                 
+                <!-- 积分展示区 - 左右布局 -->
+                <div class="score-dashboard">
+                    <!-- 七七的积分展示（左侧） -->
+                    <div class="user-score-section qiqi-section">
+                        <div class="user-header">
+                            <div class="user-title">七七</div>
+                        </div>
+                        
+                        <!-- 总积分卡片 -->
+                        <div class="score-card total-score">
+                            <div class="score-header">
+                                <div class="score-title">总积分</div>
+                            </div>
+                            <div class="score-content">
+                                <div class="score-value" id="qiqi-total-score">0</div>
+                            </div>
+                            <div class="star-display">
+                                <div class="score-stars" id="qiqi-total-stars"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 一一的积分展示（右侧） -->
+                    <div class="user-score-section yiyi-section">
+                        <div class="user-header">
+                            <div class="user-title">一一</div>
+                        </div>
+                        
+                        <!-- 总积分卡片 -->
+                        <div class="score-card total-score">
+                            <div class="score-header">
+                                <div class="score-title">总积分</div>
+                            </div>
+                            <div class="score-content">
+                                <div class="score-value" id="yiyi-total-score">0</div>
+                            </div>
+                            <div class="star-display">
+                                <div class="score-stars" id="yiyi-total-stars"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 重置信息 -->
+                <div class="weekly-reset-info">
+                    <small>📅 每周一自动重置本周积分</small>
+                </div>
+
+                <!-- 星星积分池 -->
+                <div class="star-bonus-pool">
+                    <h4>✨ 星星积分池</h4>
+                    <div class="bonus-info">
+                        <div class="bonus-description">
+                            <p>每个月第一天，根据拥有的星星数量获得额外积分：</p>
+                            <ul>
+                                <li>每个小星星 +1分</li>
+                                <li>每个大星星 +10分</li>
+                                <li>每个彩色星星 +100分</li>
+                            </ul>
+                        </div>
+                        <div class="bonus-dashboard">
+                            <div class="user-bonus-section">
+                                <div class="user-bonus-card qiqi-bonus">
+                                    <h5>七七的星星积分</h5>
+                                    <div class="star-count" id="qiqi-star-count">计算中...</div>
+                                    <div class="monthly-bonus" id="qiqi-monthly-bonus">下次奖励: 计算中</div>
+                                </div>
+                                <div class="user-bonus-card yiyi-bonus">
+                                    <h5>一一的星星积分</h5>
+                                    <div class="star-count" id="yiyi-star-count">计算中...</div>
+                                    <div class="monthly-bonus" id="yiyi-monthly-bonus">下次奖励: 计算中</div>
+                                </div>
+                            </div>
+                            <div class="next-bonus-date">
+                                <small id="next-bonus-info">下次发放时间: 计算中</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 星星等级说明 -->
+                <div class="star-legend">
+                    <h4>⭐ 星星等级说明</h4>
+                    <div class="legend-grid">
+                        <div class="legend-item">
+                            <span class="star-half">★</span>
+                            <span class="legend-text">50分 = 半星</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="star-small">★</span>
+                            <span class="legend-text">100分 = 小星星</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="star-big">★</span>
+                            <span class="legend-text">1000分 = 大星星</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="star-rainbow">★</span>
+                            <span class="legend-text">10000分 = 彩色星星</span>
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- 自动同步状态面板 -->
                 <div class="sync-info">
                     <h4>☁️ 自动数据同步</h4>
@@ -1969,6 +3608,12 @@
                     <p id="last-sync">上次同步：未同步</p>
                     <p style="font-size: 0.85em; color: #666;">🔄 自动同步已启用：所有数据变更将实时同步到云端</p>
                     <p style="font-size: 0.8em; color: #888; margin-top: 8px;">📱 页面打开时自动下载最新数据 | 💾 数据修改时自动上传到云端</p>
+                    
+                    <!-- 手动同步控制 -->
+                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #dee2e6;">
+                        <button class="modal-btn btn-primary" onclick="manualSyncData()" style="margin-right: 10px;">🔄 立即同步</button>
+                        <button class="modal-btn btn-secondary" onclick="showSyncDebugInfo()">🔍 同步状态</button>
+                    </div>
                 </div>
                 
                 <!-- 积分管理操作 -->
@@ -1983,17 +3628,18 @@
                 <table class="stats-table">
                     <thead>
                         <tr>
-                            <th>日期</th>
+                            <th>用户</th>
                             <th>奖</th>
                             <th>罚</th>
                             <th>悬赏</th>
                             <th>交易</th>
-                            <th>总分</th>
+                            <th>每日任务</th>
+                            <th>星星收入</th>
                         </tr>
                     </thead>
                     <tbody id="bank-table-body">
                         <tr>
-                            <td colspan="6" style="text-align: center; color: #666; padding: 20px;">暂无数据</td>
+                            <td colspan="7" style="text-align: center; color: #666; padding: 20px;">暂无数据</td>
                         </tr>
                     </tbody>
                 </table>
@@ -2005,7 +3651,9 @@
                         <li><strong>罚分：</strong>通过扣分系统产生的负向积分</li>
                         <li><strong>悬赏：</strong>发布悬赏任务的支出（显示为负数）</li>
                         <li><strong>交易：</strong>积分转账收支和完成悬赏的收入</li>
-                        <li><strong>总分 = 奖 + 罚 + 悬赏 + 交易</strong></li>
+                        <li><strong>每日任务：</strong>完成每日任务获得的积分</li>
+                        <li><strong>星星收入：</strong>基于总积分每月可获得的星星奖励</li>
+                        <li><strong>总积分在上方卡片显示 = 奖 + 罚 + 悬赏 + 交易 + 每日任务</strong></li>
                     </ul>
                 </div>
             </div>
@@ -2092,11 +3740,6 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>
-                    <input type="checkbox" id="allow-self-assign"> 允许自接悬赏
-                </label>
-            </div>
 
             <div class="modal-actions">
                 <button class="modal-btn btn-secondary" onclick="closeBountyModal()">取消</button>
@@ -2105,32 +3748,56 @@
         </div>
     </div>
 
-    <!-- 每日任务模态框 -->
-    <div id="task-modal" class="modal-overlay">
-        <div class="modal-box">
+    <!-- 任务池管理模态框 -->
+    <div id="task-pool-modal" class="modal-overlay" onclick="closeTaskPoolModalIfClickedOutside(event)">
+        <div class="modal-box task-pool-modal-box" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <div class="modal-drag-handle"></div>
-                <h3 id="task-modal-title">📝 新建任务</h3>
+                <h3>🎯 任务池管理</h3>
+                <button class="modal-close-btn" onclick="closeTaskPoolModal()">×</button>
             </div>
             
             <div class="form-group">
-                <label for="task-title">任务名称</label>
-                <input type="text" id="task-title" class="modal-input" placeholder="请输入任务名称" maxlength="50">
+                <label for="pool-task-name">任务标题</label>
+                <input type="text" id="pool-task-name" class="modal-input" placeholder="输入任务标题" maxlength="50">
+            </div>
+            
+            <div class="form-group">
+                <label for="pool-task-description">详细说明</label>
+                <textarea id="pool-task-description" class="modal-input" placeholder="输入任务的详细说明" maxlength="200" rows="3"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <button class="modal-btn btn-primary" onclick="addPoolTask()" style="width: 100%;">添加到任务池</button>
             </div>
 
-            <div class="form-group">
-                <label for="task-description">任务说明（可选）</label>
-                <textarea id="task-description" class="modal-input" placeholder="请输入任务详细说明" maxlength="200" rows="3"></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="task-points">积分奖励</label>
-                <input type="number" id="task-points" class="modal-input" placeholder="请输入积分奖励" min="1" max="1000">
+            <div class="task-pool-list">
+                <h4>任务池 (<span id="pool-count">0</span>个任务)</h4>
+                <div id="pool-tasks-list"></div>
             </div>
 
             <div class="modal-actions">
-                <button class="modal-btn btn-secondary" onclick="closeTaskModal()">取消</button>
-                <button class="modal-btn btn-primary" onclick="saveTask()">保存任务</button>
+                <button class="modal-btn btn-secondary" onclick="closeTaskPoolModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 每日任务选择模态框 -->
+    <div id="daily-task-select-modal" class="modal-overlay" onclick="closeDailyTaskSelectModalIfClickedOutside(event)">
+        <div class="modal-box daily-task-select-modal-box" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-drag-handle"></div>
+                <h3 id="select-modal-title">选择每日任务</h3>
+                <button class="modal-close-btn" onclick="closeDailyTaskSelectModal()">×</button>
+            </div>
+            
+            <div class="available-tasks">
+                <h4>可选择的任务：</h4>
+                <div id="available-tasks-list"></div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-btn btn-secondary" onclick="closeDailyTaskSelectModal()">取消</button>
             </div>
         </div>
     </div>
@@ -2153,19 +3820,129 @@
         </div>
     </div>
 
+    <!-- 密码输入模态框 -->
+    <div id="password-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-box" style="max-width: 400px;">
+            <div class="modal-header">
+                <div class="modal-drag-handle"></div>
+                <h3>🔒 输入管理密码</h3>
+            </div>
+            
+            <div class="form-group" style="padding: 25px 40px 0 40px;">
+                <label for="admin-password">管理密码</label>
+                <input type="password" id="admin-password" class="modal-input" placeholder="请输入管理密码" autocomplete="current-password">
+                <small style="color: #666; font-size: 0.9em; margin-top: 8px; display: block;">密码用于保护数据修改操作</small>
+            </div>
+
+            <div class="modal-actions" style="padding: 20px 40px 40px 40px;">
+                <button class="modal-btn btn-secondary" onclick="cancelPasswordInput()">取消</button>
+                <button class="modal-btn btn-primary" onclick="confirmPasswordInput()">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 用户选择模态框 -->
+    <div id="user-select-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-box" style="max-width: 420px;">
+            <div class="modal-header">
+                <div class="modal-drag-handle"></div>
+                <h3 id="user-select-title">👥 选择用户</h3>
+            </div>
+            
+            <div class="form-group" style="padding: 25px 40px 0 40px;">
+                <label id="user-select-label">请选择用户</label>
+                <div id="user-select-options" style="display: grid; gap: 12px; margin-top: 15px;">
+                    <!-- 选项将通过JavaScript动态生成 -->
+                </div>
+            </div>
+
+            <div class="modal-actions" style="padding: 20px 40px 40px 40px;">
+                <button class="modal-btn btn-secondary" onclick="cancelUserSelect()">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 批量导入模态框 -->
+    <div id="batch-import-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-box" style="max-width: 600px;">
+            <div class="modal-header">
+                <div class="modal-drag-handle"></div>
+                <h3>📥 批量导入任务</h3>
+            </div>
+            
+            <div class="form-group" style="padding: 25px 40px 0 40px;">
+                <label for="batch-import-text">批量导入文本</label>
+                <div style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 15px; margin: 10px 0; font-size: 0.9em; color: #6c757d;">
+                    <div style="font-weight: bold; margin-bottom: 8px;">📋 格式说明：</div>
+                    <div style="margin-bottom: 6px;">• 使用全角逗号（，）作为分隔符</div>
+                    <div style="margin-bottom: 6px;">• 格式：发布者，悬赏标题，悬赏积分</div>
+                    <div style="margin-bottom: 6px;">• 发布者请填写：<code style="background:#fff;padding:2px 4px;border-radius:3px;">一一</code> 或 <code style="background:#fff;padding:2px 4px;border-radius:3px;">七七</code></div>
+                    <div style="margin-bottom: 6px;">• 积分支持：阿拉伯数字(1-1000)或中文数字(一、二、三、十、二十等)</div>
+                    <div style="margin-bottom: 10px;">• 支持序号：如 <code style="background:#fff;padding:2px 4px;border-radius:3px;">1. </code> 开头会自动忽略</div>
+                    <div style="background: white; border-radius: 4px; padding: 8px; font-family: 'Courier New', monospace;">
+                        1. 一一，看十章小说，三<br>
+                        2. 七七，扔垃圾，5<br>
+                        3. 七七，胡心怡游戏，十
+                    </div>
+                </div>
+                <textarea id="batch-import-text" class="modal-input" placeholder="请粘贴或输入批量任务数据..." rows="8" style="font-family: 'Courier New', monospace; font-size: 14px;"></textarea>
+            </div>
+
+            <div class="form-group" style="padding: 0 40px;">
+                <label>解析预览</label>
+                <div id="batch-preview" style="background: white; border: 1px solid #dee2e6; border-radius: 8px; padding: 15px; max-height: 300px; overflow-y: auto; font-size: 0.9em;">
+                    <div style="color: #6c757d; text-align: center; padding: 20px;">请在上方输入任务数据，将自动显示解析预览</div>
+                </div>
+            </div>
+
+            <div class="modal-actions" style="padding: 20px 40px 40px 40px;">
+                <button class="modal-btn btn-secondary" onclick="cancelBatchImport()">取消</button>
+                <button class="modal-btn btn-primary" id="batch-import-confirm" onclick="confirmBatchImport()" disabled>导入任务</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 确认输入模态框 -->
+    <div id="confirm-input-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-box" style="max-width: 500px;">
+            <div class="modal-header">
+                <div class="modal-drag-handle"></div>
+                <h3 id="confirm-input-title">⚠️ 危险操作确认</h3>
+            </div>
+            
+            <div class="form-group" style="padding: 25px 40px 0 40px;">
+                <div id="confirm-input-message" style="background: #fff3cd; border: 1px solid #ffeeba; border-radius: 8px; padding: 15px; margin-bottom: 15px; color: #856404;">
+                    <!-- 确认消息将在这里显示 -->
+                </div>
+                <label for="confirm-input-text">请输入确认文本：</label>
+                <input type="text" id="confirm-input-text" class="modal-input" placeholder="请输入确认文本">
+                <small style="color: #dc3545; font-size: 0.9em; margin-top: 8px; display: block;">此操作无法撤销，请谨慎操作</small>
+            </div>
+
+            <div class="modal-actions" style="padding: 20px 40px 40px 40px;">
+                <button class="modal-btn btn-secondary" onclick="cancelConfirmInput()">取消</button>
+                <button class="modal-btn btn-primary" id="confirm-input-submit" onclick="submitConfirmInput()" style="background: #dc3545; border-color: #dc3545;">确认</button>
+            </div>
+        </div>
+    </div>
+
     <!-- JavaScript代码 -->
     <script>
         // 全局变量
         let bountyData = [];
-        let bankData = { qiqi: { reward: 0, penalty: 0, bounty: 0, trade: 0 }, yiyi: { reward: 0, penalty: 0, bounty: 0, trade: 0 } };
+        let bankData = { qiqi: { reward: 0, penalty: 0, bounty: 0, trade: 0, daily: 0 }, yiyi: { reward: 0, penalty: 0, bounty: 0, trade: 0, daily: 0 } };
         let historyData = [];
         let bountyCounter = 1;
         let dailyTasksContent = '';
+        let weeklyData = { qiqi: 0, yiyi: 0, lastResetDate: new Date().toISOString() };
+        let monthlyStarBonus = { qiqi: 0, yiyi: 0, lastBonusDate: new Date().toISOString() };
         
-        // 每日任务数据
+        // 新的每日任务系统数据
+        let taskPool = []; // 任务池
         let dailyTasks = {
-            qiqi: [],
-            yiyi: []
+            qiqi: [null, null, null], // 三个每日任务槽
+            yiyi: [null, null, null],
+            progress: { qiqi: 0, yiyi: 0 } // 今日完成进度
         };
         let taskCounter = 1;
         let currentEditingTask = null;
@@ -2182,6 +3959,11 @@
         const PASSWORD_STORAGE_KEY = 'pointSystemAuthTime';
         const PASSWORD_VALID_HOURS = 15;
         let isAuthenticated = false;
+        let passwordCallback = null; // 存储密码验证成功后的回调函数
+        let userSelectCallback = null; // 存储用户选择的回调函数
+        let batchImportData = []; // 存储批量导入解析后的数据
+        let confirmInputCallback = null; // 存储确认输入的回调函数
+        let confirmInputExpectedText = ''; // 存储期望的确认文本
 
         // 页面切换功能
         function showPage(pageId) {
@@ -2221,7 +4003,6 @@
             document.getElementById('bounty-points').value = '';
             document.getElementById('bounty-time-value').value = '';
             document.getElementById('bounty-time-unit').value = 'hours';
-            document.getElementById('allow-self-assign').checked = false;
             
             // 重置系统任务相关显示
             handlePublisherChange();
@@ -2232,13 +4013,11 @@
             const assigneeSelect = document.getElementById('bounty-assignee');
             const systemNotice = document.getElementById('system-task-notice');
             const bothOption = assigneeSelect.querySelector('option[value="both"]');
-            const allowSelfAssign = document.getElementById('allow-self-assign');
             
             if (publisher === 'system') {
                 // 系统任务模式
                 systemNotice.style.display = 'block';
                 bothOption.style.display = 'block';
-                allowSelfAssign.parentElement.style.display = 'none'; // 隐藏自接选项
                 
                 // 更新承接者选项标签
                 assigneeSelect.parentElement.querySelector('label').textContent = '奖励对象（可选）';
@@ -2246,7 +4025,6 @@
                 // 普通悬赏模式
                 systemNotice.style.display = 'none';
                 bothOption.style.display = 'none';
-                allowSelfAssign.parentElement.style.display = 'block';
                 
                 // 重置承接者选项标签
                 assigneeSelect.parentElement.querySelector('label').textContent = '承接者（可选）';
@@ -2267,7 +4045,6 @@
             const points = parseInt(document.getElementById('bounty-points').value);
             const timeValue = parseInt(document.getElementById('bounty-time-value').value);
             const timeUnit = document.getElementById('bounty-time-unit').value;
-            const allowSelfAssign = document.getElementById('allow-self-assign').checked;
 
             // 验证表单
             if (!title) {
@@ -2283,9 +4060,9 @@
                 alert('时间限制必须大于0');
                 return;
             }
-            // 系统任务不需要检查自接限制
-            if (publisher !== 'system' && assignee && assignee === publisher && !allowSelfAssign) {
-                alert('不允许自接悬赏，请勾选"允许自接悬赏"或选择其他承接者');
+            // 检查是否为自接悬赏（系统任务除外）
+            if (publisher !== 'system' && assignee && assignee === publisher) {
+                alert('发布者不能承接自己的悬赏，请选择其他承接者或留空待接单');
                 return;
             }
 
@@ -2337,6 +4114,8 @@
                     // 同时给两人发放积分
                     bankData.qiqi.reward += points;
                     bankData.yiyi.reward += points;
+                    addWeeklyPoints('qiqi', points);
+                    addWeeklyPoints('yiyi', points);
                     bounty.status = 'settled';
                     bounty.completedAt = now.toISOString();
                     bounty.settledAt = now.toISOString();
@@ -2346,6 +4125,7 @@
                 } else if (assignee) {
                     // 直接给指定用户发放积分
                     bankData[assignee].reward += points;
+                    addWeeklyPoints(assignee, points);
                     bounty.status = 'settled';
                     bounty.completedAt = now.toISOString();
                     bounty.settledAt = now.toISOString();
@@ -2397,6 +4177,11 @@
                 settledListElement.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">暂无已结算的悬赏任务</p>';
             } else {
                 settledListElement.innerHTML = settledBounties.map(bounty => renderBountyItem(bounty)).join('');
+            }
+            
+            // 更新每日任务中的任务承接信息（如果当前在每日任务页面）
+            if (document.getElementById('qiqi-acceptance-details')) {
+                updateTaskAcceptanceInfo();
             }
         }
 
@@ -2523,52 +4308,46 @@
         function assignBounty(bountyId) {
             requireAuth(() => {
                 const bounty = bountyData.find(b => b.id === bountyId);
-            if (!bounty) return;
+                if (!bounty) return;
 
-            let assignee;
-            
-            if (bounty.publisher === 'system') {
-                // 系统任务：选择奖励对象
-                assignee = prompt('请选择奖励对象 (七七/一一/both):', '');
-                if (assignee === 'both') {
-                    if (confirm('确认同时给七七和一一发放积分？')) {
-                        bounty.assignee = 'both';
+                if (bounty.publisher === 'system') {
+                    // 系统任务：选择奖励对象
+                    selectRewardTarget((selectedValue) => {
+                        if (selectedValue === 'both') {
+                            if (confirm('确认同时给七七和一一发放积分？')) {
+                                bounty.assignee = 'both';
+                                bounty.status = 'taken';
+                                bounty.startedAt = new Date().toISOString();
+                                finalizeBountyAssignment();
+                            }
+                        } else {
+                            bounty.assignee = selectedValue === '七七' ? 'qiqi' : 'yiyi';
+                            bounty.status = 'taken';
+                            bounty.startedAt = new Date().toISOString();
+                            finalizeBountyAssignment();
+                        }
+                    });
+                } else {
+                    // 普通悬赏：选择承接者
+                    selectAssignee((selectedValue) => {
+                        const assigneeKey = selectedValue === '七七' ? 'qiqi' : 'yiyi';
+                        
+                        if (assigneeKey === bounty.publisher) {
+                            alert('发布者不能承接自己的悬赏！');
+                            return;
+                        }
+
+                        bounty.assignee = assigneeKey;
                         bounty.status = 'taken';
                         bounty.startedAt = new Date().toISOString();
-                    } else {
-                        return;
-                    }
-                } else if (assignee && ['七七', '一一'].includes(assignee)) {
-                    bounty.assignee = assignee === '七七' ? 'qiqi' : 'yiyi';
-                    bounty.status = 'taken';
-                    bounty.startedAt = new Date().toISOString();
-                } else {
-                    alert('请输入有效的奖励对象 (七七/一一/both)');
-                    return;
-                }
-            } else {
-                // 普通悬赏：选择承接者
-                assignee = prompt('请选择承接者 (七七/一一):', '');
-                if (!assignee || !['七七', '一一'].includes(assignee)) {
-                    alert('请输入有效的承接者 (七七 或 一一)');
-                    return;
+                        finalizeBountyAssignment();
+                    });
                 }
 
-                const assigneeKey = assignee === '七七' ? 'qiqi' : 'yiyi';
-                
-                if (assigneeKey === bounty.publisher) {
-                    if (!confirm('承接者与发布者相同，是否确认自接？')) {
-                        return;
-                    }
+                function finalizeBountyAssignment() {
+                    saveData();
+                    refreshBountyList();
                 }
-
-                bounty.assignee = assigneeKey;
-                bounty.status = 'taken';
-                bounty.startedAt = new Date().toISOString();
-            }
-
-            saveData();
-            refreshBountyList();
             });
         }
 
@@ -2588,9 +4367,12 @@
                         if (bounty.assignee === 'both') {
                             bankData.qiqi.reward += bounty.points;
                             bankData.yiyi.reward += bounty.points;
+                            addWeeklyPoints('qiqi', bounty.points);
+                            addWeeklyPoints('yiyi', bounty.points);
                             addHistory(`系统任务"${bounty.title}"完成，七七和一一各获得${bounty.points}积分`, 'system');
                         } else if (bounty.assignee) {
                             bankData[bounty.assignee].reward += bounty.points;
+                            addWeeklyPoints(bounty.assignee, bounty.points);
                             const userName = bounty.assignee === 'qiqi' ? '七七' : '一一';
                             addHistory(`系统任务"${bounty.title}"完成，${userName}获得${bounty.points}积分`, 'system');
                         }
@@ -2621,6 +4403,7 @@
                 // 执行记账
                 bankData[bounty.publisher].bounty += bounty.points;
                 bankData[bounty.assignee].trade += bounty.points;
+                addWeeklyPoints(bounty.assignee, bounty.points);
 
                 // 添加历史记录
                 const historyEntry = {
@@ -2748,6 +4531,7 @@
                 // 执行转账
                 bankData[from].trade -= points;
                 bankData[to].trade += points;
+                addWeeklyPoints(to, points);
 
                 // 添加历史记录
                 const historyEntry = {
@@ -2837,6 +4621,7 @@
             if (confirm(`确认奖励 ${getPlayerName(player)} ${points} 分？\n原因：${reason}`)) {
                 // 执行奖励
                 bankData[player].reward += points;
+                addWeeklyPoints(player, points);
 
                 // 添加历史记录
                 const historyEntry = {
@@ -2862,8 +4647,231 @@
             });
         }
 
+        // 每周星星积分汇总功能
+        function checkWeeklyReset() {
+            const now = new Date();
+            const currentWeekStart = getWeekStart(now);
+            
+            if (!weeklyData) {
+                weeklyData = {
+                    qiqi: 0,
+                    yiyi: 0,
+                    lastResetDate: currentWeekStart.toISOString()
+                };
+            }
+            
+            const lastResetDate = new Date(weeklyData.lastResetDate);
+            
+            // 检查是否需要处理周期性任务（跨周了）
+            if (currentWeekStart > lastResetDate) {
+                // 在重置之前，将本周获得的星星积分汇总到总积分
+                if (weeklyData.qiqi > 0 || weeklyData.yiyi > 0) {
+                    const qiqiStarBonus = calculateWeeklyStarBonus(weeklyData.qiqi);
+                    const yiyiStarBonus = calculateWeeklyStarBonus(weeklyData.yiyi);
+                    
+                    if (qiqiStarBonus > 0) {
+                        bankData.qiqi.reward += qiqiStarBonus;
+                        addHistory(`🌟 七七的星星积分汇总：本周获得${weeklyData.qiqi}积分，转换为${qiqiStarBonus}星星积分奖励`, 'system');
+                    }
+                    
+                    if (yiyiStarBonus > 0) {
+                        bankData.yiyi.reward += yiyiStarBonus;
+                        addHistory(`🌟 一一的星星积分汇总：本周获得${weeklyData.yiyi}积分，转换为${yiyiStarBonus}星星积分奖励`, 'system');
+                    }
+                }
+                
+                // 重置本周数据
+                weeklyData.qiqi = 0;
+                weeklyData.yiyi = 0;
+                weeklyData.lastResetDate = currentWeekStart.toISOString();
+                saveData();
+                console.log('每周星星积分已汇总并重置');
+            }
+        }
+
+        function calculateWeeklyStarBonus(weeklyPoints) {
+            // 根据本周获得的积分计算星星奖励
+            // 每10分本周积分可以获得1分星星奖励
+            return Math.floor(weeklyPoints / 10);
+        }
+
+        function getWeekStart(date) {
+            const d = new Date(date);
+            const day = d.getDay(); // 0 = 周日, 1 = 周一
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1); // 调整到周一
+            d.setDate(diff);
+            d.setHours(6, 0, 0, 0); // 设置为周一6点重置
+            return d;
+        }
+
+        function addWeeklyPoints(user, points) {
+            if (!weeklyData) {
+                weeklyData = { qiqi: 0, yiyi: 0, lastResetDate: new Date().toISOString() };
+            }
+            
+            checkWeeklyReset();
+            weeklyData[user] += points;
+            saveData();
+        }
+
+        function calculateStarCounts(points) {
+            if (points <= 0) return { rainbow: 0, big: 0, small: 0, half: 0 };
+            
+            let remainingPoints = points;
+            
+            // 彩色星星 (10000分 = 1个)
+            const rainbowStars = Math.floor(remainingPoints / 10000);
+            remainingPoints %= 10000;
+            
+            // 大星星 (1000分 = 1个)
+            const bigStars = Math.floor(remainingPoints / 1000);
+            remainingPoints %= 1000;
+            
+            // 小星星 (100分 = 1个)
+            const smallStars = Math.floor(remainingPoints / 100);
+            remainingPoints %= 100;
+            
+            // 半星 (50分 = 1个)
+            const halfStars = remainingPoints >= 50 ? 1 : 0;
+            
+            return { rainbow: rainbowStars, big: bigStars, small: smallStars, half: halfStars };
+        }
+
+        function generateStars(points) {
+            if (points <= 0) return '';
+            
+            let starsHTML = '';
+            let remainingPoints = points;
+            
+            // 彩色星星 (10000分 = 1个)
+            const rainbowStars = Math.floor(remainingPoints / 10000);
+            for (let i = 0; i < rainbowStars; i++) {
+                starsHTML += '<span class="star-rainbow">★</span>';
+            }
+            remainingPoints %= 10000;
+            
+            // 大星星 (1000分 = 1个)
+            const bigStars = Math.floor(remainingPoints / 1000);
+            for (let i = 0; i < bigStars; i++) {
+                starsHTML += '<span class="star-big">★</span>';
+            }
+            remainingPoints %= 1000;
+            
+            // 小星星 (100分 = 1个)
+            const smallStars = Math.floor(remainingPoints / 100);
+            for (let i = 0; i < smallStars; i++) {
+                starsHTML += '<span class="star-small">★</span>';
+            }
+            remainingPoints %= 100;
+            
+            // 半星 (50分 = 1个)
+            if (remainingPoints >= 50) {
+                starsHTML += '<span class="star-half">★</span>';
+            }
+            
+            return starsHTML;
+        }
+
+        function calculateMonthlyBonus(points) {
+            const stars = calculateStarCounts(points);
+            return stars.small * 1 + stars.big * 10 + stars.rainbow * 100;
+        }
+
+        function calculateStarEarnings(points) {
+            if (points <= 0) return '0分';
+            
+            const stars = calculateStarCounts(points);
+            const monthlyBonus = stars.small * 1 + stars.big * 10 + stars.rainbow * 100;
+            
+            if (monthlyBonus > 0) {
+                return `${monthlyBonus}分/月`;
+            }
+            return '0分';
+        }
+
+        function checkMonthlyBonus() {
+            const now = new Date();
+            const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+            
+            if (!monthlyStarBonus) {
+                monthlyStarBonus = {
+                    qiqi: 0,
+                    yiyi: 0,
+                    lastBonusDate: currentMonthStart.toISOString()
+                };
+            }
+            
+            const lastBonusDate = new Date(monthlyStarBonus.lastBonusDate);
+            
+            // 检查是否需要发放月度奖励（跨月了）
+            if (currentMonthStart > lastBonusDate) {
+                const qiqiTotal = bankData.qiqi.reward + bankData.qiqi.penalty + bankData.qiqi.bounty + bankData.qiqi.trade + bankData.qiqi.daily;
+                const yiyiTotal = bankData.yiyi.reward + bankData.yiyi.penalty + bankData.yiyi.bounty + bankData.yiyi.trade + bankData.yiyi.daily;
+                
+                const qiqiBonus = calculateMonthlyBonus(qiqiTotal);
+                const yiyiBonus = calculateMonthlyBonus(yiyiTotal);
+                
+                if (qiqiBonus > 0 || yiyiBonus > 0) {
+                    if (qiqiBonus > 0) {
+                        bankData.qiqi.reward += qiqiBonus;
+                        addWeeklyPoints('qiqi', qiqiBonus);
+                        monthlyStarBonus.qiqi += qiqiBonus;
+                    }
+                    
+                    if (yiyiBonus > 0) {
+                        bankData.yiyi.reward += yiyiBonus;
+                        addWeeklyPoints('yiyi', yiyiBonus);
+                        monthlyStarBonus.yiyi += yiyiBonus;
+                    }
+                    
+                    monthlyStarBonus.lastBonusDate = currentMonthStart.toISOString();
+                    saveData();
+                    
+                    const bonusMessage = [];
+                    if (qiqiBonus > 0) bonusMessage.push(`七七获得${qiqiBonus}分星星奖励`);
+                    if (yiyiBonus > 0) bonusMessage.push(`一一获得${yiyiBonus}分星星奖励`);
+                    
+                    addHistory(`🌟 月度星星奖励发放：${bonusMessage.join('，')}`, 'system');
+                    console.log('月度星星奖励已发放');
+                }
+            }
+        }
+
+        function updateStarBonusDisplay() {
+            const qiqiTotal = bankData.qiqi.reward + bankData.qiqi.penalty + bankData.qiqi.bounty + bankData.qiqi.trade + bankData.qiqi.daily;
+            const yiyiTotal = bankData.yiyi.reward + bankData.yiyi.penalty + bankData.yiyi.bounty + bankData.yiyi.trade + bankData.yiyi.daily;
+            
+            const qiqiStars = calculateStarCounts(qiqiTotal);
+            const yiyiStars = calculateStarCounts(yiyiTotal);
+            
+            const qiqiBonus = calculateMonthlyBonus(qiqiTotal);
+            const yiyiBonus = calculateMonthlyBonus(yiyiTotal);
+            
+            // 更新七七的星星统计
+            document.getElementById('qiqi-star-count').textContent = 
+                `彩色星星: ${qiqiStars.rainbow} | 大星星: ${qiqiStars.big} | 小星星: ${qiqiStars.small}`;
+            document.getElementById('qiqi-monthly-bonus').textContent = 
+                `下次奖励: ${qiqiBonus}分`;
+                
+            // 更新一一的星星统计
+            document.getElementById('yiyi-star-count').textContent = 
+                `彩色星星: ${yiyiStars.rainbow} | 大星星: ${yiyiStars.big} | 小星星: ${yiyiStars.small}`;
+            document.getElementById('yiyi-monthly-bonus').textContent = 
+                `下次奖励: ${yiyiBonus}分`;
+            
+            // 更新下次发放时间
+            const now = new Date();
+            const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('next-bonus-info').textContent = 
+                `下次发放时间: ${nextMonth.toLocaleDateString('zh-CN', options)}`;
+        }
+
         // 小银行页面
         function refreshBankPage() {
+            checkWeeklyReset();
+            checkMonthlyBonus();
+            
             const tbody = document.getElementById('bank-table-body');
             
             const rows = [
@@ -2878,7 +4886,9 @@
             ];
 
             tbody.innerHTML = rows.map(row => {
-                const total = row.data.reward + row.data.penalty + row.data.bounty + row.data.trade;
+                const total = row.data.reward + row.data.penalty + row.data.bounty + row.data.trade + row.data.daily;
+                const starEarnings = calculateStarEarnings(total);
+                
                 return `
                     <tr>
                         <td style="font-weight: bold;">${row.name}</td>
@@ -2886,10 +4896,30 @@
                         <td style="color: ${row.data.penalty >= 0 ? '#28a745' : '#dc3545'};">${row.data.penalty}</td>
                         <td style="color: ${row.data.bounty >= 0 ? '#28a745' : '#dc3545'};">${row.data.bounty}</td>
                         <td style="color: ${row.data.trade >= 0 ? '#28a745' : '#dc3545'};">${row.data.trade}</td>
-                        <td style="font-weight: bold; color: ${total >= 0 ? '#28a745' : '#dc3545'};">${total}</td>
+                        <td style="color: ${row.data.daily >= 0 ? '#28a745' : '#dc3545'};">${row.data.daily}</td>
+                        <td style="text-align: center; color: #ffc107; font-weight: bold;">${starEarnings}</td>
                     </tr>
                 `;
             }).join('');
+
+            // 更新积分展示卡片和星星积分池
+            updateScoreCards();
+            updateStarBonusDisplay();
+        }
+
+        function updateScoreCards() {
+            if (!weeklyData) {
+                weeklyData = { qiqi: 0, yiyi: 0, lastResetDate: new Date().toISOString() };
+            }
+
+            // 更新总积分显示卡片
+            const qiqiTotal = bankData.qiqi.reward + bankData.qiqi.penalty + bankData.qiqi.bounty + bankData.qiqi.trade + bankData.qiqi.daily;
+            const yiyiTotal = bankData.yiyi.reward + bankData.yiyi.penalty + bankData.yiyi.bounty + bankData.yiyi.trade + bankData.yiyi.daily;
+            
+            document.getElementById('qiqi-total-score').textContent = qiqiTotal;
+            document.getElementById('yiyi-total-score').textContent = yiyiTotal;
+            document.getElementById('qiqi-total-stars').innerHTML = generateStars(qiqiTotal);
+            document.getElementById('yiyi-total-stars').innerHTML = generateStars(yiyiTotal);
         }
 
         // 添加历史记录
@@ -2949,8 +4979,8 @@
         function clearAllPoints() {
             requireAuth(() => {
                 // 获取当前积分状态用于确认和记录
-                const qiqiTotal = bankData.qiqi.reward + bankData.qiqi.penalty + bankData.qiqi.bounty + bankData.qiqi.trade;
-                const yiyiTotal = bankData.yiyi.reward + bankData.yiyi.penalty + bankData.yiyi.bounty + bankData.yiyi.trade;
+                const qiqiTotal = bankData.qiqi.reward + bankData.qiqi.penalty + bankData.qiqi.bounty + bankData.qiqi.trade + bankData.qiqi.daily;
+                const yiyiTotal = bankData.yiyi.reward + bankData.yiyi.penalty + bankData.yiyi.bounty + bankData.yiyi.trade + bankData.yiyi.daily;
                 
                 const confirmMessage = `⚠️ 危险操作确认 ⚠️\n\n` +
                     `即将清零所有用户的积分数据：\n\n` +
@@ -2958,12 +4988,14 @@
                     `• 奖励：${bankData.qiqi.reward}\n` +
                     `• 罚分：${bankData.qiqi.penalty}\n` +
                     `• 悬赏：${bankData.qiqi.bounty}\n` +
-                    `• 交易：${bankData.qiqi.trade}\n\n` +
+                    `• 交易：${bankData.qiqi.trade}\n` +
+                    `• 每日任务：${bankData.qiqi.daily}\n\n` +
                     `一一当前总积分：${yiyiTotal}\n` +
                     `• 奖励：${bankData.yiyi.reward}\n` +
                     `• 罚分：${bankData.yiyi.penalty}\n` +
                     `• 悬赏：${bankData.yiyi.bounty}\n` +
-                    `• 交易：${bankData.yiyi.trade}\n\n` +
+                    `• 交易：${bankData.yiyi.trade}\n` +
+                    `• 每日任务：${bankData.yiyi.daily}\n\n` +
                     `此操作将清零所有积分数据，无法撤销！\n` +
                     `确定要继续吗？`;
 
@@ -2975,8 +5007,8 @@
                     };
 
                     // 清零所有积分
-                    bankData.qiqi = { reward: 0, penalty: 0, bounty: 0, trade: 0 };
-                    bankData.yiyi = { reward: 0, penalty: 0, bounty: 0, trade: 0 };
+                    bankData.qiqi = { reward: 0, penalty: 0, bounty: 0, trade: 0, daily: 0 };
+                    bankData.yiyi = { reward: 0, penalty: 0, bounty: 0, trade: 0, daily: 0 };
 
                     // 添加历史记录
                     const historyEntry = {
@@ -2987,8 +5019,8 @@
                         details: {
                             beforeClear: beforeClearData,
                             changes: [
-                                `七七：总分 ${qiqiTotal} → 0（奖:${beforeClearData.qiqi.reward}→0, 罚:${beforeClearData.qiqi.penalty}→0, 悬赏:${beforeClearData.qiqi.bounty}→0, 交易:${beforeClearData.qiqi.trade}→0）`,
-                                `一一：总分 ${yiyiTotal} → 0（奖:${beforeClearData.yiyi.reward}→0, 罚:${beforeClearData.yiyi.penalty}→0, 悬赏:${beforeClearData.yiyi.bounty}→0, 交易:${beforeClearData.yiyi.trade}→0）`
+                                `七七：总分 ${qiqiTotal} → 0（奖:${beforeClearData.qiqi.reward}→0, 罚:${beforeClearData.qiqi.penalty}→0, 悬赏:${beforeClearData.qiqi.bounty}→0, 交易:${beforeClearData.qiqi.trade}→0, 每日任务:${beforeClearData.qiqi.daily}→0）`,
+                                `一一：总分 ${yiyiTotal} → 0（奖:${beforeClearData.yiyi.reward}→0, 罚:${beforeClearData.yiyi.penalty}→0, 悬赏:${beforeClearData.yiyi.bounty}→0, 交易:${beforeClearData.yiyi.trade}→0, 每日任务:${beforeClearData.yiyi.daily}→0）`
                             ]
                         }
                     };
@@ -3003,7 +5035,312 @@
             });
         }
 
-        // 每日任务功能
+        // 新的每日任务系统功能
+        
+        // 任务池管理
+        function openTaskPoolModal() {
+            requireAuth(() => {
+                document.getElementById('task-pool-modal').style.display = 'flex';
+                refreshTaskPoolDisplay();
+            });
+        }
+
+        function closeTaskPoolModal() {
+            document.getElementById('task-pool-modal').style.display = 'none';
+            document.getElementById('pool-task-name').value = '';
+            document.getElementById('pool-task-description').value = '';
+        }
+
+        function closeTaskPoolModalIfClickedOutside(event) {
+            if (event.target === event.currentTarget) {
+                closeTaskPoolModal();
+            }
+        }
+
+        // 添加ESC键关闭模态框功能
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const taskPoolModal = document.getElementById('task-pool-modal');
+                const taskSelectModal = document.getElementById('daily-task-select-modal');
+                
+                if (taskPoolModal && taskPoolModal.style.display === 'flex') {
+                    closeTaskPoolModal();
+                } else if (taskSelectModal && taskSelectModal.style.display === 'flex') {
+                    closeDailyTaskSelectModal();
+                }
+            }
+        });
+
+        function addPoolTask() {
+            const taskName = document.getElementById('pool-task-name').value.trim();
+            const taskDescription = document.getElementById('pool-task-description').value.trim();
+            
+            if (!taskName) {
+                alert('请输入任务标题');
+                return;
+            }
+
+            if (taskPool.some(task => task.name === taskName)) {
+                alert('任务标题已存在');
+                return;
+            }
+
+            const newTask = {
+                id: `pool_${Date.now()}`,
+                name: taskName,
+                description: taskDescription,
+                createdAt: new Date().toISOString()
+            };
+
+            taskPool.push(newTask);
+            saveData();
+            refreshTaskPoolDisplay();
+            refreshDailyTasks();
+            document.getElementById('pool-task-name').value = '';
+            document.getElementById('pool-task-description').value = '';
+        }
+
+        function removePoolTask(taskId) {
+            if (!confirm('确定要删除这个任务吗？删除后已选择该任务的用户需要重新选择。')) return;
+
+            taskPool = taskPool.filter(task => task.id !== taskId);
+            
+            // 清除已选择此任务的用户
+            ['qiqi', 'yiyi'].forEach(user => {
+                for (let i = 0; i < 3; i++) {
+                    if (dailyTasks[user][i] && dailyTasks[user][i].poolTaskId === taskId) {
+                        dailyTasks[user][i] = null;
+                    }
+                }
+            });
+
+            saveData();
+            refreshTaskPoolDisplay();
+            refreshDailyTasks();
+        }
+
+        function refreshTaskPoolDisplay() {
+            const poolList = document.getElementById('pool-tasks-list');
+            const poolCount = document.getElementById('pool-count');
+            const taskPoolCount = document.getElementById('task-pool-count');
+            
+            poolCount.textContent = taskPool.length;
+            taskPoolCount.textContent = taskPool.length;
+
+            // 更新管理模态框中的任务列表
+            if (taskPool.length === 0) {
+                poolList.innerHTML = '<div class="pool-empty-message">暂无任务，请在上方添加新任务</div>';
+            } else {
+                poolList.innerHTML = `
+                    <div class="task-pool-grid">
+                        ${taskPool.map(task => `
+                            <div class="pool-task-item">
+                                <div class="pool-task-content">
+                                    <div class="pool-task-name">${task.name}</div>
+                                    ${task.description ? `<div class="pool-task-description">${task.description}</div>` : ''}
+                                </div>
+                                <div class="pool-task-actions">
+                                    <button class="modal-btn btn-danger" onclick="removePoolTask('${task.id}')" style="font-size: 0.8em; padding: 6px 12px;">删除</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            // 更新主页面上的任务池预览
+            updateTaskPoolPreview();
+        }
+
+        function updateTaskPoolPreview() {
+            const previewContainer = document.getElementById('pool-tasks-preview');
+            
+            if (taskPool.length === 0) {
+                previewContainer.innerHTML = '<div class="empty-pool">暂无任务，点击上方按钮添加任务</div>';
+            } else {
+                previewContainer.innerHTML = `
+                    <div class="preview-task-list">
+                        ${taskPool.map((task, index) => `
+                            <div class="preview-task-item" onclick="toggleTaskDetails('preview-${task.id}')">
+                                <div class="preview-task-header">
+                                    <div class="preview-task-title">${task.name}</div>
+                                    <div class="preview-task-count">#${index + 1}</div>
+                                    ${task.description ? '<div class="preview-task-expand">▼</div>' : ''}
+                                </div>
+                                ${task.description ? `
+                                    <div class="preview-task-details" id="preview-${task.id}" style="display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee; font-size: 0.85em; color: #666; line-height: 1.4;">
+                                        ${task.description}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+        }
+
+        // 切换任务详细信息显示
+        function toggleTaskDetails(detailsId) {
+            const detailsElement = document.getElementById(detailsId);
+            if (!detailsElement) return;
+            
+            const isVisible = detailsElement.style.display !== 'none';
+            const parentItem = detailsElement.closest('.preview-task-item, .available-task-item, .task-slot');
+            const expandIcon = parentItem.querySelector('.preview-task-expand, .available-task-expand, .daily-task-expand');
+            
+            if (isVisible) {
+                detailsElement.style.display = 'none';
+                if (expandIcon) expandIcon.textContent = '▼';
+            } else {
+                detailsElement.style.display = 'block';
+                if (expandIcon) expandIcon.textContent = '▲';
+            }
+        }
+
+        // 每日任务选择
+        let currentEditingSlot = null;
+        
+        function selectDailyTask(user, slotIndex) {
+            requireAuth(() => {
+                currentEditingUser = user;
+                currentEditingSlot = slotIndex;
+                document.getElementById('select-modal-title').textContent = `为${user === 'qiqi' ? '七七' : '一一'}选择任务 (位置${slotIndex + 1})`;
+                showAvailableTasks(user, slotIndex);
+                document.getElementById('daily-task-select-modal').style.display = 'flex';
+            });
+        }
+
+        function closeDailyTaskSelectModal() {
+            document.getElementById('daily-task-select-modal').style.display = 'none';
+        }
+
+        function closeDailyTaskSelectModalIfClickedOutside(event) {
+            if (event.target === event.currentTarget) {
+                closeDailyTaskSelectModal();
+            }
+        }
+
+        function showAvailableTasks(user, slotIndex) {
+            const availableList = document.getElementById('available-tasks-list');
+            
+            if (taskPool.length === 0) {
+                availableList.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">任务池为空，请先添加任务</div>';
+                return;
+            }
+
+            // 获取当前用户已选择的任务
+            const selectedTasks = dailyTasks[user].filter(task => task !== null).map(task => task.poolTaskId);
+
+            availableList.innerHTML = `
+                <div class="available-task-grid">
+                    ${taskPool.map(poolTask => {
+                const isSelected = selectedTasks.includes(poolTask.id);
+                const isCurrentSlot = dailyTasks[user][slotIndex] && dailyTasks[user][slotIndex].poolTaskId === poolTask.id;
+                
+                let className = 'available-task-item';
+                let clickHandler = `selectTaskFromPool('${poolTask.id}', '${poolTask.name}')`;
+                let statusText = '';
+
+                if (isSelected && !isCurrentSlot) {
+                    className += ' disabled';
+                    clickHandler = '';
+                    statusText = '<div class="task-unavailable-reason">已在其他位置选择</div>';
+                } else if (isCurrentSlot) {
+                    statusText = '<div style="color: #28a745; font-size: 0.9em; margin-top: 5px;">✓ 当前选择</div>';
+                }
+
+                return `
+                    <div class="${className}">
+                        <div class="available-task-header" ${clickHandler ? `onclick="${clickHandler}"` : ''}>
+                            <div style="font-weight: bold; display: flex; align-items: center; justify-content: space-between;">
+                                <span>${poolTask.name}</span>
+                                ${poolTask.description ? `<span class="available-task-expand" onclick="event.stopPropagation(); toggleTaskDetails('available-${poolTask.id}')" style="cursor: pointer; color: #007bff; font-size: 0.8em; margin-left: 8px;">▼</span>` : ''}
+                            </div>
+                            ${statusText}
+                        </div>
+                        ${poolTask.description ? `
+                            <div class="available-task-details" id="available-${poolTask.id}" style="display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee; font-size: 0.85em; color: #666; line-height: 1.4;">
+                                ${poolTask.description}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        function selectTaskFromPool(poolTaskId, taskName) {
+            const user = currentEditingUser;
+            const slotIndex = currentEditingSlot;
+
+            dailyTasks[user][slotIndex] = {
+                poolTaskId: poolTaskId,
+                name: taskName,
+                completed: false,
+                multiplier: 1,
+                completedAt: null
+            };
+
+            console.log('选择任务:', taskName, '用户:', user, '槽位:', slotIndex);
+            console.log('当前dailyTasks状态:', JSON.stringify(dailyTasks));
+            
+            saveData();
+            refreshDailyTasks();
+            closeDailyTaskSelectModal();
+        }
+
+        // 放弃每日任务
+        function abandonDailyTask(user, slotIndex) {
+            requireAuth(() => {
+                if (confirm('确定要放弃这个任务吗？放弃后可以重新选择其他任务。')) {
+                    dailyTasks[user][slotIndex] = null;
+                    dailyTasks.progress[user] = dailyTasks[user].filter(t => t && t.completed).length;
+                    
+                    const userName = user === 'qiqi' ? '七七' : '一一';
+                    console.log(`${userName} 放弃了位置 ${slotIndex + 1} 的任务`);
+                    
+                    saveData();
+                    refreshDailyTasks();
+                }
+            });
+        }
+
+        // 完成每日任务
+        function completeDailyTask(user, slotIndex, multiplier) {
+            requireAuth(() => {
+                const task = dailyTasks[user][slotIndex];
+                if (!task || task.completed) return;
+
+                const points = multiplier;
+                task.completed = true;
+                task.multiplier = multiplier;
+                task.completedAt = new Date().toISOString();
+                
+                bankData[user].daily += points;
+                addWeeklyPoints(user, points);
+                
+                dailyTasks.progress[user] = dailyTasks[user].filter(t => t && t.completed).length;
+
+                const multiplierText = multiplier === 1 ? '' : multiplier === 2 ? '(加倍)' : '(超级加倍)';
+                addHistory(`${user === 'qiqi' ? '七七' : '一一'}完成每日任务"${task.name}"${multiplierText} +${points}积分`, 'system');
+
+                saveData();
+                refreshDailyTasks();
+                refreshBankPage();
+            });
+        }
+
+        function clearDailyTaskSlot(user, slotIndex) {
+            requireAuth(() => {
+                if (confirm('确定要清除这个任务槽吗？')) {
+                    dailyTasks[user][slotIndex] = null;
+                    dailyTasks.progress[user] = dailyTasks[user].filter(t => t && t.completed).length;
+                    saveData();
+                    refreshDailyTasks();
+                }
+            });
+        }
         function openTaskModal(user) {
             currentEditingUser = user;
             currentEditingTask = null;
@@ -3094,6 +5431,7 @@
                     task.completedAt = new Date().toISOString();
                     // 添加积分（系统奖励）
                     bankData[user].reward += task.points;
+                    addWeeklyPoints(user, task.points);
                     addHistory(`${user === 'qiqi' ? '七七' : '一一'}完成任务"${task.title}" +${task.points}积分`, 'system');
                 }
 
@@ -3183,42 +5521,328 @@
         }
 
         function refreshDailyTasks() {
-            // 确保 dailyTasks 已初始化
-            if (!dailyTasks) {
-                dailyTasks = { qiqi: [], yiyi: [] };
+            // 确保新的数据结构已初始化
+            if (!dailyTasks || !dailyTasks.qiqi || !Array.isArray(dailyTasks.qiqi)) {
+                dailyTasks = {
+                    qiqi: [null, null, null],
+                    yiyi: [null, null, null],
+                    progress: { qiqi: 0, yiyi: 0 }
+                };
             }
-            if (!dailyTasks.qiqi) dailyTasks.qiqi = [];
-            if (!dailyTasks.yiyi) dailyTasks.yiyi = [];
+            if (!dailyTasks.progress) {
+                dailyTasks.progress = { qiqi: 0, yiyi: 0 };
+            }
+
+            // 更新进度
+            dailyTasks.progress.qiqi = dailyTasks.qiqi.filter(t => t && t.completed).length;
+            dailyTasks.progress.yiyi = dailyTasks.yiyi.filter(t => t && t.completed).length;
             
-            // 刷新七七的任务
-            const qiqiContainer = document.getElementById('qiqi-tasks');
+            // 刷新七七的任务槽
+            const qiqiContainer = document.getElementById('qiqi-daily-tasks');
             if (qiqiContainer) {
                 qiqiContainer.innerHTML = '';
-                
-                if (dailyTasks.qiqi.length === 0) {
-                    qiqiContainer.innerHTML = '<div class="no-tasks">暂无任务</div>';
-                } else {
-                    dailyTasks.qiqi.forEach(task => {
-                        const taskElement = createTaskElement(task, 'qiqi');
-                        qiqiContainer.appendChild(taskElement);
-                    });
+                for (let i = 0; i < 3; i++) {
+                    const slot = document.createElement('div');
+                    const task = dailyTasks.qiqi[i];
+                    
+                    if (!task) {
+                        slot.className = 'task-slot empty';
+                        slot.onclick = () => selectDailyTask('qiqi', i);
+                        slot.innerHTML = '<div class="slot-content">点击选择任务</div>';
+                    } else if (task.completed) {
+                        slot.className = 'task-slot completed';
+                        
+                        // 获取任务池中的详细信息
+                        const poolTask = taskPool.find(pt => pt.id === task.poolTaskId);
+                        const hasDescription = poolTask && poolTask.description;
+                        
+                        slot.innerHTML = `
+                            <div class="task-header" ${hasDescription ? `onclick="toggleTaskDetails('daily-qiqi-${i}')"` : ''} style="${hasDescription ? 'cursor: pointer;' : ''}">
+                                <div class="task-name-row">
+                                    <span class="task-name">${task.name}</span>
+                                    ${hasDescription ? '<span class="daily-task-expand" style="color: #28a745; font-size: 0.8em; margin-left: 8px;">▼</span>' : ''}
+                                </div>
+                                <div class="task-multiplier">✅ 已完成 (+${task.multiplier}分)</div>
+                            </div>
+                            ${hasDescription ? `
+                                <div class="daily-task-details" id="daily-qiqi-${i}" style="display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee; font-size: 0.85em; color: #666; line-height: 1.4;">
+                                    ${poolTask.description}
+                                </div>
+                            ` : ''}
+                            <div class="task-actions">
+                                <button class="multiplier-btn" onclick="clearDailyTaskSlot('qiqi', ${i})" style="background: #6c757d; color: white;">清除</button>
+                            </div>
+                        `;
+                    } else {
+                        slot.className = 'task-slot selected';
+                        
+                        // 获取任务池中的详细信息
+                        const poolTask = taskPool.find(pt => pt.id === task.poolTaskId);
+                        const hasDescription = poolTask && poolTask.description;
+                        
+                        slot.innerHTML = `
+                            <div class="task-header" ${hasDescription ? `onclick="toggleTaskDetails('daily-qiqi-active-${i}')"` : ''} style="${hasDescription ? 'cursor: pointer;' : ''}">
+                                <div class="task-name-row">
+                                    <span class="task-name">${task.name}</span>
+                                    ${hasDescription ? '<span class="daily-task-expand" style="color: #007bff; font-size: 0.8em; margin-left: 8px;">▼</span>' : ''}
+                                </div>
+                                <div class="task-multiplier">选择完成方式：</div>
+                            </div>
+                            ${hasDescription ? `
+                                <div class="daily-task-details" id="daily-qiqi-active-${i}" style="display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee; font-size: 0.85em; color: #666; line-height: 1.4;">
+                                    ${poolTask.description}
+                                </div>
+                            ` : ''}
+                            <div class="task-actions">
+                                <button class="multiplier-btn normal" onclick="completeDailyTask('qiqi', ${i}, 1)">完成 +1分</button>
+                                <button class="multiplier-btn double" onclick="completeDailyTask('qiqi', ${i}, 2)">加倍 +2分</button>
+                                <button class="multiplier-btn triple" onclick="completeDailyTask('qiqi', ${i}, 3)">超级 +3分</button>
+                                <button class="multiplier-btn abandon" onclick="abandonDailyTask('qiqi', ${i})">放弃</button>
+                            </div>
+                        `;
+                    }
+                    qiqiContainer.appendChild(slot);
                 }
             }
 
-            // 刷新一一的任务
-            const yiyiContainer = document.getElementById('yiyi-tasks');
+            // 刷新一一的任务槽
+            const yiyiContainer = document.getElementById('yiyi-daily-tasks');
             if (yiyiContainer) {
                 yiyiContainer.innerHTML = '';
-                
-                if (dailyTasks.yiyi.length === 0) {
-                    yiyiContainer.innerHTML = '<div class="no-tasks">暂无任务</div>';
-                } else {
-                    dailyTasks.yiyi.forEach(task => {
-                        const taskElement = createTaskElement(task, 'yiyi');
-                        yiyiContainer.appendChild(taskElement);
-                    });
+                for (let i = 0; i < 3; i++) {
+                    const slot = document.createElement('div');
+                    const task = dailyTasks.yiyi[i];
+                    
+                    if (!task) {
+                        slot.className = 'task-slot empty';
+                        slot.onclick = () => selectDailyTask('yiyi', i);
+                        slot.innerHTML = '<div class="slot-content">点击选择任务</div>';
+                    } else if (task.completed) {
+                        slot.className = 'task-slot completed';
+                        
+                        // 获取任务池中的详细信息
+                        const poolTask = taskPool.find(pt => pt.id === task.poolTaskId);
+                        const hasDescription = poolTask && poolTask.description;
+                        
+                        slot.innerHTML = `
+                            <div class="task-header" ${hasDescription ? `onclick="toggleTaskDetails('daily-yiyi-${i}')"` : ''} style="${hasDescription ? 'cursor: pointer;' : ''}">
+                                <div class="task-name-row">
+                                    <span class="task-name">${task.name}</span>
+                                    ${hasDescription ? '<span class="daily-task-expand" style="color: #28a745; font-size: 0.8em; margin-left: 8px;">▼</span>' : ''}
+                                </div>
+                                <div class="task-multiplier">✅ 已完成 (+${task.multiplier}分)</div>
+                            </div>
+                            ${hasDescription ? `
+                                <div class="daily-task-details" id="daily-yiyi-${i}" style="display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee; font-size: 0.85em; color: #666; line-height: 1.4;">
+                                    ${poolTask.description}
+                                </div>
+                            ` : ''}
+                            <div class="task-actions">
+                                <button class="multiplier-btn" onclick="clearDailyTaskSlot('yiyi', ${i})" style="background: #6c757d; color: white;">清除</button>
+                            </div>
+                        `;
+                    } else {
+                        slot.className = 'task-slot selected';
+                        
+                        // 获取任务池中的详细信息
+                        const poolTask = taskPool.find(pt => pt.id === task.poolTaskId);
+                        const hasDescription = poolTask && poolTask.description;
+                        
+                        slot.innerHTML = `
+                            <div class="task-header" ${hasDescription ? `onclick="toggleTaskDetails('daily-yiyi-active-${i}')"` : ''} style="${hasDescription ? 'cursor: pointer;' : ''}">
+                                <div class="task-name-row">
+                                    <span class="task-name">${task.name}</span>
+                                    ${hasDescription ? '<span class="daily-task-expand" style="color: #007bff; font-size: 0.8em; margin-left: 8px;">▼</span>' : ''}
+                                </div>
+                                <div class="task-multiplier">选择完成方式：</div>
+                            </div>
+                            ${hasDescription ? `
+                                <div class="daily-task-details" id="daily-yiyi-active-${i}" style="display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee; font-size: 0.85em; color: #666; line-height: 1.4;">
+                                    ${poolTask.description}
+                                </div>
+                            ` : ''}
+                            <div class="task-actions">
+                                <button class="multiplier-btn normal" onclick="completeDailyTask('yiyi', ${i}, 1)">完成 +1分</button>
+                                <button class="multiplier-btn double" onclick="completeDailyTask('yiyi', ${i}, 2)">加倍 +2分</button>
+                                <button class="multiplier-btn triple" onclick="completeDailyTask('yiyi', ${i}, 3)">超级 +3分</button>
+                                <button class="multiplier-btn abandon" onclick="abandonDailyTask('yiyi', ${i})">放弃</button>
+                            </div>
+                        `;
+                    }
+                    yiyiContainer.appendChild(slot);
                 }
             }
+
+            // 更新进度显示
+            document.getElementById('qiqi-progress').textContent = `${dailyTasks.progress.qiqi}/3`;
+            document.getElementById('yiyi-progress').textContent = `${dailyTasks.progress.yiyi}/3`;
+            document.getElementById('qiqi-progress-fill').style.width = `${(dailyTasks.progress.qiqi / 3) * 100}%`;
+            document.getElementById('yiyi-progress-fill').style.width = `${(dailyTasks.progress.yiyi / 3) * 100}%`;
+
+            // 更新任务池计数
+            refreshTaskPoolDisplay();
+            
+            // 更新任务承接详细信息
+            updateTaskAcceptanceInfo();
+            
+            // 更新预计积分显示
+            updateExpectedPoints();
+            
+            // 更新倒计时显示
+            updateDailyCountdown();
+        }
+
+        function updateTaskAcceptanceInfo() {
+            const qiqiDetails = document.getElementById('qiqi-acceptance-details');
+            const yiyiDetails = document.getElementById('yiyi-acceptance-details');
+            
+            // 获取七七承接的任务（一一发布的）
+            const qiqiAcceptedTasks = bountyData.filter(bounty => 
+                bounty.assignee === 'qiqi' && 
+                bounty.status === 'taken' && 
+                !bounty.completedAt
+            );
+            
+            // 获取一一承接的任务（七七发布的）
+            const yiyiAcceptedTasks = bountyData.filter(bounty => 
+                bounty.assignee === 'yiyi' && 
+                bounty.status === 'taken' && 
+                !bounty.completedAt
+            );
+            
+            // 更新七七的任务承接信息
+            if (qiqiAcceptedTasks.length === 0) {
+                qiqiDetails.innerHTML = '<div style="color: #999; text-align: center; padding: 10px;">暂无承接的悬赏任务</div>';
+            } else {
+                let html = '<div style="margin-bottom: 5px; font-weight: bold;">承接的任务 (' + qiqiAcceptedTasks.length + '个):</div>';
+                qiqiAcceptedTasks.forEach((task, index) => {
+                    const timeInfo = getTaskTimeDisplay(task);
+                    html += `
+                        <div style="background: white; border-radius: 5px; padding: 8px; margin: 5px 0; border-left: 3px solid #007bff;">
+                            <div style="font-weight: bold; color: #007bff; margin-bottom: 3px;">${task.title}</div>
+                            <div style="font-size: 0.8em; color: #666;">
+                                <span>发布者: ${getPlayerName(task.publisher)}</span> | 
+                                <span>积分: ${task.points}</span> | 
+                                <span>${timeInfo}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                qiqiDetails.innerHTML = html;
+            }
+            
+            // 更新一一的任务承接信息
+            if (yiyiAcceptedTasks.length === 0) {
+                yiyiDetails.innerHTML = '<div style="color: #999; text-align: center; padding: 10px;">暂无承接的悬赏任务</div>';
+            } else {
+                let html = '<div style="margin-bottom: 5px; font-weight: bold;">承接的任务 (' + yiyiAcceptedTasks.length + '个):</div>';
+                yiyiAcceptedTasks.forEach((task, index) => {
+                    const timeInfo = getTaskTimeDisplay(task);
+                    html += `
+                        <div style="background: white; border-radius: 5px; padding: 8px; margin: 5px 0; border-left: 3px solid #28a745;">
+                            <div style="font-weight: bold; color: #28a745; margin-bottom: 3px;">${task.title}</div>
+                            <div style="font-size: 0.8em; color: #666;">
+                                <span>发布者: ${getPlayerName(task.publisher)}</span> | 
+                                <span>积分: ${task.points}</span> | 
+                                <span>${timeInfo}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                yiyiDetails.innerHTML = html;
+            }
+        }
+        
+        function getTaskTimeDisplay(task) {
+            if (!task.startedAt) return '未开始';
+            
+            const startTime = new Date(task.startedAt);
+            const now = new Date();
+            const elapsed = Math.floor((now - startTime) / (1000 * 60 * 60 * 24));
+            
+            if (elapsed === 0) {
+                return '今天开始';
+            } else if (elapsed === 1) {
+                return '昨天开始';
+            } else {
+                return `${elapsed}天前开始`;
+            }
+        }
+
+        // 更新预计积分显示
+        function updateExpectedPoints() {
+            const users = ['qiqi', 'yiyi'];
+            
+            users.forEach(user => {
+                const userTasks = dailyTasks[user];
+                const selectedTasks = userTasks.filter(task => task !== null);
+                const completedTasks = userTasks.filter(task => task && task.completed);
+                const incompleteTasks = selectedTasks.length - completedTasks.length;
+                
+                let expectedPoints = 0;
+                let color = '#28a745'; // 绿色，正数
+                let text = '';
+                
+                if (selectedTasks.length === 3) {
+                    // 接了三个任务，按最低分计算（每个任务最少1分）
+                    expectedPoints = selectedTasks.length * 1;
+                    text = `预计获得积分: +${expectedPoints}分（最低）`;
+                } else {
+                    // 没接满三个任务，会扣分
+                    const missingTasks = 3 - selectedTasks.length;
+                    expectedPoints = -(missingTasks * 3); // 每少一个任务扣3分
+                    color = '#dc3545'; // 红色，负数
+                    
+                    if (missingTasks === 3) {
+                        text = `预计扣除积分: ${expectedPoints}分（未接任务）`;
+                    } else {
+                        text = `预计扣除积分: ${expectedPoints}分（少${missingTasks}个任务）`;
+                    }
+                }
+                
+                const pointsElement = document.getElementById(`${user}-expected-points`);
+                if (pointsElement) {
+                    pointsElement.textContent = text;
+                    pointsElement.style.color = color;
+                }
+            });
+        }
+
+        // 更新每日倒计时显示
+        function updateDailyCountdown() {
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const deadline = new Date(today.getTime() + 23.5 * 60 * 60 * 1000); // 今天23:30
+            
+            const timeLeft = deadline.getTime() - now.getTime();
+            
+            if (timeLeft <= 0) {
+                // 已过截止时间
+                document.getElementById('daily-countdown').textContent = '任务截止: 已结束';
+                const duplicateElement = document.querySelector('.daily-countdown-duplicate');
+                if (duplicateElement) {
+                    duplicateElement.textContent = '任务截止: 已结束';
+                }
+            } else {
+                // 计算剩余时间
+                const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                
+                const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                document.getElementById('daily-countdown').textContent = `任务截止: ${timeString}`;
+                
+                const duplicateElement = document.querySelector('.daily-countdown-duplicate');
+                if (duplicateElement) {
+                    duplicateElement.textContent = `任务截止: ${timeString}`;
+                }
+            }
+        }
+
+        // 启动倒计时定时器
+        function startDailyCountdownTimer() {
+            updateDailyCountdown(); // 立即更新一次
+            setInterval(updateDailyCountdown, 1000); // 每秒更新
         }
 
         function createTaskElement(task, user) {
@@ -3253,20 +5877,18 @@
         }
 
         function resetDailyTasks() {
-            // 重置所有任务的完成状态，但保留任务本身和已获得的积分
-            if (!dailyTasks) {
-                dailyTasks = { qiqi: [], yiyi: [] };
-                return;
-            }
-            Object.keys(dailyTasks).forEach(user => {
-                if (dailyTasks[user] && Array.isArray(dailyTasks[user])) {
-                    dailyTasks[user].forEach(task => {
-                        task.completed = false;
-                        task.completedAt = null;
-                    });
+            // 重置所有任务的完成状态
+            ['qiqi', 'yiyi'].forEach(user => {
+                for (let i = 0; i < 3; i++) {
+                    if (dailyTasks[user][i]) {
+                        dailyTasks[user][i].completed = false;
+                        dailyTasks[user][i].multiplier = 1;
+                        dailyTasks[user][i].completedAt = null;
+                    }
                 }
             });
             
+            dailyTasks.progress = { qiqi: 0, yiyi: 0 };
             console.log('每日任务状态已重置');
             refreshDailyTasks();
         }
@@ -3309,6 +5931,73 @@
             }
         }
 
+        // 每日任务截止时间检查 (11:30 PM)
+        function checkDailyTaskDeadline() {
+            const now = new Date();
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+            const currentDate = now.toDateString();
+            
+            // 检查是否到了11:30 PM (23:30)
+            if (currentHour === 23 && currentMinute >= 30) {
+                // 检查今天是否已经处理过截止惩罚
+                const lastPenaltyDate = localStorage.getItem('lastDailyTaskPenaltyDate');
+                
+                if (lastPenaltyDate !== currentDate) {
+                    // 应用每日任务截止惩罚
+                    applyDailyTaskPenalties();
+                    localStorage.setItem('lastDailyTaskPenaltyDate', currentDate);
+                }
+            }
+        }
+
+        function applyDailyTaskPenalties() {
+            let hasPenalties = false;
+            
+            ['qiqi', 'yiyi'].forEach(user => {
+                if (!dailyTasks[user]) return;
+                
+                // 计算未完成的任务数量
+                const incompleteTasks = dailyTasks[user].filter(task => task && !task.completed).length;
+                
+                if (incompleteTasks > 0) {
+                    hasPenalties = true;
+                    let penaltyPoints = 0;
+                    
+                    // 根据未完成任务数量计算惩罚（每个任务3分）
+                    penaltyPoints = incompleteTasks * 3;
+                    
+                    // 应用惩罚
+                    bankData[user].penalty -= penaltyPoints;
+                    
+                    const userName = user === 'qiqi' ? '七七' : '一一';
+                    addHistory(`${userName}未完成${incompleteTasks}个每日任务，扣除${penaltyPoints}分`, 'system');
+                    
+                    console.log(`${userName} 未完成 ${incompleteTasks} 个每日任务，扣除 ${penaltyPoints} 分`);
+                }
+            });
+            
+            if (hasPenalties) {
+                saveData();
+                refreshBankPage();
+                console.log('每日任务截止惩罚已应用');
+                
+                // 重置每日任务为新的一天
+                resetDailyTasksForNewDay();
+            }
+        }
+
+        function resetDailyTasksForNewDay() {
+            // 清空所有任务槽
+            dailyTasks.qiqi = [null, null, null];
+            dailyTasks.yiyi = [null, null, null];
+            dailyTasks.progress = { qiqi: 0, yiyi: 0 };
+            
+            saveData();
+            refreshDailyTasks();
+            console.log('每日任务已重置为新的一天');
+        }
+
         function formatTimeRemaining(expireAt) {
             const now = new Date();
             const expireTime = new Date(expireAt);
@@ -3341,8 +6030,11 @@
                 bountyCounter,
                 dailyTasksContent,
                 dailyTasks,
+                taskPool,
                 taskCounter,
                 lastResetDate,
+                weeklyData,
+                monthlyStarBonus,
                 lastUpdated: new Date().toISOString()
             };
             localStorage.setItem('pointSystemV2', JSON.stringify(data));
@@ -3459,29 +6151,686 @@
             }
         }
 
+        // 显示密码输入模态框
+        function showPasswordModal(callback) {
+            passwordCallback = callback;
+            const modal = document.getElementById('password-modal');
+            const passwordInput = document.getElementById('admin-password');
+            
+            modal.style.display = 'flex';
+            passwordInput.value = '';
+            
+            // 自动聚焦到密码输入框
+            setTimeout(() => {
+                passwordInput.focus();
+            }, 100);
+        }
+        
+        // 确认密码输入
+        function confirmPasswordInput() {
+            const passwordInput = document.getElementById('admin-password');
+            const password = passwordInput.value;
+            
+            if (password === ADMIN_PASSWORD) {
+                isAuthenticated = true;
+                localStorage.setItem(PASSWORD_STORAGE_KEY, Date.now().toString());
+                updateAuthStatus(true, PASSWORD_VALID_HOURS);
+                hidePasswordModal();
+                
+                // 执行回调函数
+                if (passwordCallback) {
+                    passwordCallback();
+                    passwordCallback = null;
+                }
+            } else {
+                // 显示错误提示
+                passwordInput.style.borderColor = '#dc3545';
+                passwordInput.style.boxShadow = '0 0 0 2px rgba(220, 53, 69, 0.1)';
+                
+                // 添加震动效果
+                passwordInput.style.animation = 'shake 0.5s ease-in-out';
+                
+                // 清空输入框并重新聚焦
+                passwordInput.value = '';
+                passwordInput.focus();
+                
+                // 恢复正常样式
+                setTimeout(() => {
+                    passwordInput.style.borderColor = '#ccc';
+                    passwordInput.style.boxShadow = 'none';
+                    passwordInput.style.animation = 'none';
+                }, 1000);
+                
+                // 显示错误消息
+                const errorMsg = document.createElement('div');
+                errorMsg.style.cssText = `
+                    position: absolute;
+                    top: -35px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: #dc3545;
+                    color: white;
+                    padding: 8px 12px;
+                    border-radius: 6px;
+                    font-size: 0.85em;
+                    z-index: 1000;
+                    white-space: nowrap;
+                    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+                    animation: slideIn 0.3s ease;
+                `;
+                errorMsg.textContent = '❌ 密码错误，请重试';
+                passwordInput.parentNode.style.position = 'relative';
+                passwordInput.parentNode.appendChild(errorMsg);
+                
+                setTimeout(() => {
+                    if (errorMsg.parentNode) {
+                        errorMsg.parentNode.removeChild(errorMsg);
+                    }
+                }, 2000);
+            }
+        }
+        
+        // 取消密码输入
+        function cancelPasswordInput() {
+            hidePasswordModal();
+            passwordCallback = null;
+        }
+        
+        // 隐藏密码输入模态框
+        function hidePasswordModal() {
+            const modal = document.getElementById('password-modal');
+            const passwordInput = document.getElementById('admin-password');
+            
+            modal.style.display = 'none';
+            passwordInput.value = '';
+            passwordInput.style.borderColor = '#ccc';
+            passwordInput.style.boxShadow = 'none';
+            passwordInput.style.animation = 'none';
+        }
+
         function requestPassword(action, callback) {
             if (checkAuthentication()) {
                 callback();
                 return;
             }
 
-            const password = prompt('请输入管理密码进行数据修改：');
-            
-            if (password === null) {
-                // 用户点击了取消
-                return;
-            } else if (password === ADMIN_PASSWORD) {
-                isAuthenticated = true;
-                localStorage.setItem(PASSWORD_STORAGE_KEY, Date.now().toString());
-                updateAuthStatus(true, PASSWORD_VALID_HOURS);
-                callback();
-            } else {
-                alert('密码错误！');
-            }
+            // 使用新的模态框替代 prompt
+            showPasswordModal(callback);
         }
 
         function requireAuth(callback) {
             requestPassword('modify', callback);
+        }
+
+        // 用户选择相关函数
+        function showUserSelectModal(title, label, options, callback) {
+            userSelectCallback = callback;
+            
+            // 设置标题和标签
+            document.getElementById('user-select-title').textContent = title;
+            document.getElementById('user-select-label').textContent = label;
+            
+            // 生成选项按钮
+            const optionsContainer = document.getElementById('user-select-options');
+            optionsContainer.innerHTML = '';
+            
+            options.forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'user-select-option';
+                button.textContent = option.text;
+                button.onclick = () => confirmUserSelect(option.value);
+                
+                // 添加样式
+                button.style.cssText = `
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    border: none;
+                    border-radius: 12px;
+                    padding: 15px 20px;
+                    font-size: 1em;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+                `;
+                
+                // 添加悬停效果
+                button.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                    this.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.4)';
+                });
+                
+                button.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.3)';
+                });
+                
+                optionsContainer.appendChild(button);
+            });
+            
+            // 显示模态框
+            document.getElementById('user-select-modal').style.display = 'flex';
+        }
+        
+        function confirmUserSelect(selectedValue) {
+            hideUserSelectModal();
+            
+            if (userSelectCallback) {
+                userSelectCallback(selectedValue);
+                userSelectCallback = null;
+            }
+        }
+        
+        function cancelUserSelect() {
+            hideUserSelectModal();
+            userSelectCallback = null;
+        }
+        
+        function hideUserSelectModal() {
+            const modal = document.getElementById('user-select-modal');
+            const modalBox = modal.querySelector('.modal-box');
+            modal.style.display = 'none';
+            document.getElementById('user-select-options').innerHTML = '';
+            // 重置模态框位置
+            resetModalPosition(modalBox);
+        }
+        
+        // 预定义的用户选择快捷函数
+        function selectAssignee(callback) {
+            showUserSelectModal(
+                '👥 选择承接者',
+                '请选择谁来承接这个悬赏任务：',
+                [
+                    { text: '🌸 七七', value: '七七' },
+                    { text: '⭐ 一一', value: '一一' }
+                ],
+                callback
+            );
+        }
+        
+        function selectRewardTarget(callback) {
+            showUserSelectModal(
+                '🎁 选择奖励对象', 
+                '系统任务完成后，奖励积分给谁：',
+                [
+                    { text: '🌸 七七', value: '七七' },
+                    { text: '⭐ 一一', value: '一一' },
+                    { text: '🎁 同时给两人', value: 'both' }
+                ],
+                callback
+            );
+        }
+
+        // 批量导入功能 - 重写版本
+        function showBatchImportModal() {
+            console.log('打开批量导入模态框');
+            const modal = document.getElementById('batch-import-modal');
+            const textarea = document.getElementById('batch-import-text');
+            const previewDiv = document.getElementById('batch-preview');
+            const confirmBtn = document.getElementById('batch-import-confirm');
+            
+            // 显示模态框
+            modal.style.display = 'flex';
+            
+            // 清空数据
+            textarea.value = '';
+            batchImportData = [];
+            confirmBtn.disabled = true;
+            previewDiv.innerHTML = '<div style="color: #6c757d; text-align: center; padding: 20px;">请在上方输入任务数据，将自动显示解析预览</div>';
+            
+            // 重新绑定事件监听器（确保事件正常工作）
+            textarea.removeEventListener('input', handleTextareaInput);
+            textarea.removeEventListener('paste', handleTextareaPaste);
+            textarea.addEventListener('input', handleTextareaInput);
+            textarea.addEventListener('paste', handleTextareaPaste);
+            console.log('事件监听器已重新绑定');
+            
+            // 自动聚焦
+            setTimeout(() => {
+                textarea.focus();
+            }, 100);
+            
+            console.log('模态框已打开');
+        }
+        
+        function handleTextareaInput() {
+            console.log('检测到输入变化 - handleTextareaInput');
+            updateBatchPreview();
+        }
+        
+        function handleTextareaPaste() {
+            console.log('检测到粘贴操作 - handleTextareaPaste');
+            setTimeout(() => {
+                updateBatchPreview();
+            }, 50);
+        }
+        
+        // 中文数字转阿拉伯数字函数
+        function chineseToNumber(chineseNum) {
+            const chineseNums = {
+                '零': 0, '一': 1, '二': 2, '三': 3, '四': 4, '五': 5, 
+                '六': 6, '七': 7, '八': 8, '九': 9, '十': 10,
+                '〇': 0, '壹': 1, '贰': 2, '叁': 3, '肆': 4, '伍': 5,
+                '陆': 6, '柒': 7, '捌': 8, '玖': 9, '拾': 10
+            };
+            
+            // 如果是纯数字，直接返回
+            if (/^\d+$/.test(chineseNum)) {
+                return parseInt(chineseNum);
+            }
+            
+            // 处理简单的中文数字（1-10）
+            if (chineseNums.hasOwnProperty(chineseNum)) {
+                return chineseNums[chineseNum];
+            }
+            
+            // 处理十几的数字，如"十一"、"十二"等
+            if (chineseNum.startsWith('十') && chineseNum.length === 2) {
+                const unit = chineseNums[chineseNum.charAt(1)];
+                return unit ? 10 + unit : null;
+            }
+            
+            // 处理二十、三十等
+            if (chineseNum.endsWith('十') && chineseNum.length === 2) {
+                const tens = chineseNums[chineseNum.charAt(0)];
+                return tens ? tens * 10 : null;
+            }
+            
+            // 处理二十一、三十五等
+            if (chineseNum.includes('十') && chineseNum.length === 3) {
+                const parts = chineseNum.split('十');
+                const tens = chineseNums[parts[0]];
+                const units = chineseNums[parts[1]];
+                if (tens && units) {
+                    return tens * 10 + units;
+                }
+            }
+            
+            return null;
+        }
+        
+        
+        function parseBatchImportText(text) {
+            console.log('parseBatchImportText 被调用，输入文本:', JSON.stringify(text));
+            const lines = text.split('\n').filter(line => line.trim());
+            console.log('分行结果:', lines);
+            const results = [];
+            const errors = [];
+            
+            lines.forEach((line, index) => {
+                let trimmedLine = line.trim();
+                if (!trimmedLine) return;
+                
+                // 移除开头的序号格式（支持多种格式）
+                // 匹配模式：数字 + 句号 + 可选空格，例如 "1. ", "10.", "123. "
+                // 也支持中文句号：数字 + 中文句号 + 可选空格，例如 "1。", "1。 "
+                // 还支持带括号：数字 + 右括号 + 可选空格，例如 "1) ", "10)"
+                trimmedLine = trimmedLine.replace(/^\d+[.。)]\s*/, '');
+                
+                // 如果移除序号后为空，跳过这一行
+                if (!trimmedLine) return;
+                
+                // 使用全角逗号分隔
+                const parts = trimmedLine.split('，');
+                
+                if (parts.length !== 3) {
+                    errors.push({
+                        line: index + 1,
+                        text: trimmedLine,
+                        error: `格式错误：需要3个字段，当前有${parts.length}个字段`
+                    });
+                    return;
+                }
+                
+                const [publisherText, title, pointsText] = parts.map(p => p.trim());
+                
+                // 验证发布者
+                let publisher;
+                if (publisherText === '一一') {
+                    publisher = 'yiyi';
+                } else if (publisherText === '七七') {
+                    publisher = 'qiqi';
+                } else {
+                    errors.push({
+                        line: index + 1,
+                        text: trimmedLine,
+                        error: `发布者错误：'${publisherText}'，应为'一一'或'七七'`
+                    });
+                    return;
+                }
+                
+                // 验证标题
+                if (!title || title.length === 0) {
+                    errors.push({
+                        line: index + 1,
+                        text: trimmedLine,
+                        error: '悬赏标题不能为空'
+                    });
+                    return;
+                }
+                
+                if (title.length > 100) {
+                    errors.push({
+                        line: index + 1,
+                        text: trimmedLine,
+                        error: `悬赏标题过长：${title.length}字符，最多100字符`
+                    });
+                    return;
+                }
+                
+                // 验证积分 - 支持中文数字
+                let points = chineseToNumber(pointsText.trim());
+                if (points === null || points <= 0) {
+                    errors.push({
+                        line: index + 1,
+                        text: trimmedLine,
+                        error: `积分错误: '${pointsText}', 支持阿拉伯数字(1-1000)或中文数字(一到一千)`
+                    });
+                    return;
+                }
+                
+                if (points > 1000) {
+                    errors.push({
+                        line: index + 1,
+                        text: trimmedLine,
+                        error: `积分过大：${points}，最大1000分`
+                    });
+                    return;
+                }
+                
+                // 数据有效，添加到结果
+                results.push({
+                    line: index + 1,
+                    publisher,
+                    publisherName: publisherText,
+                    title,
+                    points,
+                    originalText: trimmedLine
+                });
+            });
+            
+            return { results, errors };
+        }
+        
+        function updateBatchPreview() {
+            console.log('更新预览');
+            
+            const textarea = document.getElementById('batch-import-text');
+            const previewDiv = document.getElementById('batch-preview');
+            const confirmBtn = document.getElementById('batch-import-confirm');
+            
+            if (!textarea || !previewDiv || !confirmBtn) {
+                console.error('找不到需要的元素');
+                return;
+            }
+            
+            const text = textarea.value;
+            console.log('当前文本:', text);
+            
+            if (!text.trim()) {
+                previewDiv.innerHTML = '<div style="color: #6c757d; text-align: center; padding: 20px;">请在上方输入任务数据</div>';
+                batchImportData = [];
+                confirmBtn.disabled = true;
+                return;
+            }
+            
+            const result = parseBatchImportText(text);
+            batchImportData = result.results;
+            
+            let html = '';
+            
+            // 成功解析的任务
+            if (result.results.length > 0) {
+                html += `<div style="color: #28a745; font-weight: bold; margin-bottom: 10px;">✅ 成功解析 ${result.results.length} 个任务</div>`;
+                result.results.forEach(task => {
+                    html += `<div style="background: #f8f9fa; border-left: 3px solid #28a745; padding: 8px; margin: 5px 0; border-radius: 3px;">
+                        <strong>${task.publisherName}</strong> → ${task.title} <span style="color: #666;">(积分: ${task.points})</span>
+                    </div>`;
+                });
+            }
+            
+            // 错误信息
+            if (result.errors.length > 0) {
+                html += `<div style="color: #dc3545; font-weight: bold; margin: 15px 0 10px 0;">❌ 错误 ${result.errors.length} 行</div>`;
+                result.errors.forEach(error => {
+                    html += `<div style="background: #f8d7da; border-left: 3px solid #dc3545; padding: 8px; margin: 5px 0; border-radius: 3px;">
+                        <strong>行 ${error.line}:</strong> ${error.error}
+                    </div>`;
+                });
+            }
+            
+            if (!html) {
+                html = '<div style="color: #6c757d; text-align: center; padding: 20px;">请输入有效数据</div>';
+            }
+            
+            previewDiv.innerHTML = html;
+            confirmBtn.disabled = result.results.length === 0;
+            
+            console.log('预览更新完成');
+        }
+        
+        function confirmBatchImport() {
+            console.log('confirmBatchImport 被调用，batchImportData:', batchImportData);
+            if (batchImportData.length === 0) {
+                alert('没有有效的任务数据可以导入！');
+                return;
+            }
+            
+            requireAuth(() => {
+                let successCount = 0;
+                let failCount = 0;
+                
+                batchImportData.forEach((task, index) => {
+                    try {
+                        const now = new Date();
+                        // 自动分配承接者：一一发布→七七承接，七七发布→一一承接
+                        const assignee = task.publisher === 'qiqi' ? 'yiyi' : 'qiqi';
+                        
+                        const bounty = {
+                            id: `batch_bounty_${Date.now()}_${index}`,
+                            publisher: task.publisher,
+                            assignee: assignee,
+                            title: task.title,
+                            description: '', // 批量导入暂不支持描述
+                            points: task.points,
+                            timeLimit: null, // 批量导入暂不支持时间限制
+                            status: 'taken', // 自动承接，状态为taken
+                            createdAt: now.toISOString(),
+                            expireAt: null,
+                            startedAt: now.toISOString(),
+                            completedAt: null,
+                            settledAt: null,
+                            displayCreatedAt: now.toLocaleString(),
+                            displayExpireAt: null
+                        };
+                        
+                        bountyData.push(bounty);
+                        successCount++;
+                    } catch (error) {
+                        console.error('创建任务失败:', error);
+                        failCount++;
+                    }
+                });
+                
+                // 保存数据
+                saveData();
+                refreshBountyList();
+                refreshBankPage();
+                
+                // 显示结果
+                let message = `批量导入完成！\n\n✅ 成功创建：${successCount} 个任务`;
+                if (failCount > 0) {
+                    message += `\n❌ 失败：${failCount} 个任务`;
+                }
+                message += `\n\n📋 任务已自动分配承接者：\n• 一一发布的任务 → 七七承接\n• 七七发布的任务 → 一一承接`;
+                alert(message);
+                
+                // 关闭模态框
+                hideBatchImportModal();
+                
+                // 如果成功导入了任务，自动切换到悬赏任务页面
+                if (successCount > 0) {
+                    showPage('cards');
+                }
+            });
+        }
+        
+        function cancelBatchImport() {
+            hideBatchImportModal();
+        }
+        
+        function hideBatchImportModal() {
+            const modal = document.getElementById('batch-import-modal');
+            const modalBox = modal.querySelector('.modal-box');
+            modal.style.display = 'none';
+            
+            // 清空数据
+            document.getElementById('batch-import-text').value = '';
+            batchImportData = [];
+            
+            // 重置模态框位置
+            resetModalPosition(modalBox);
+        }
+        
+        // 确认输入相关函数
+        function showConfirmInputModal(title, message, expectedText, callback) {
+            confirmInputCallback = callback;
+            confirmInputExpectedText = expectedText;
+            
+            document.getElementById('confirm-input-title').textContent = title;
+            document.getElementById('confirm-input-message').innerHTML = message;
+            document.getElementById('confirm-input-text').placeholder = `请输入 "${expectedText}" 确认`;
+            document.getElementById('confirm-input-text').value = '';
+            
+            document.getElementById('confirm-input-modal').style.display = 'flex';
+            
+            // 自动聚焦
+            setTimeout(() => {
+                document.getElementById('confirm-input-text').focus();
+            }, 100);
+        }
+        
+        function submitConfirmInput() {
+            const inputText = document.getElementById('confirm-input-text').value;
+            
+            if (inputText === confirmInputExpectedText) {
+                hideConfirmInputModal();
+                if (confirmInputCallback) {
+                    confirmInputCallback();
+                    confirmInputCallback = null;
+                }
+            } else {
+                // 显示错误提示
+                const inputElement = document.getElementById('confirm-input-text');
+                inputElement.style.borderColor = '#dc3545';
+                inputElement.style.boxShadow = '0 0 0 2px rgba(220, 53, 69, 0.1)';
+                inputElement.style.animation = 'shake 0.5s ease-in-out';
+                
+                // 清空输入框并重新聚焦
+                inputElement.value = '';
+                inputElement.focus();
+                
+                // 恢复正常样式
+                setTimeout(() => {
+                    inputElement.style.borderColor = '#ccc';
+                    inputElement.style.boxShadow = 'none';
+                    inputElement.style.animation = 'none';
+                }, 1000);
+            }
+        }
+        
+        function cancelConfirmInput() {
+            hideConfirmInputModal();
+            confirmInputCallback = null;
+        }
+        
+        function hideConfirmInputModal() {
+            const modal = document.getElementById('confirm-input-modal');
+            const modalBox = modal.querySelector('.modal-box');
+            modal.style.display = 'none';
+            
+            // 清空数据
+            document.getElementById('confirm-input-text').value = '';
+            confirmInputExpectedText = '';
+            
+            // 重置模态框位置
+            resetModalPosition(modalBox);
+        }
+        
+        // 一键删除所有悬赏
+        function clearAllBounties() {
+            if (bountyData.length === 0) {
+                alert('当前没有悬赏任务可以删除！');
+                return;
+            }
+            
+            const confirmMessage = `
+                <div style="color: #721c24; font-weight: bold; margin-bottom: 15px;">确定要删除所有 ${bountyData.length} 个悬赏任务吗？</div>
+                <div style="margin-bottom: 10px;"><strong>此操作将：</strong></div>
+                <ul style="margin: 10px 0; padding-left: 20px; color: #721c24;">
+                    <li>删除所有悬赏任务（包括进行中和已完成的）</li>
+                    <li>退还未结算悬赏的积分给发布者</li>
+                    <li><strong>此操作无法撤销</strong></li>
+                </ul>
+            `;
+            
+            showConfirmInputModal(
+                '🗑️ 删除所有悬赏',
+                confirmMessage,
+                'DELETE',
+                () => {
+                    requireAuth(() => {
+                        performClearAllBounties();
+                    });
+                }
+            );
+        }
+        
+        function performClearAllBounties() {
+            let refundedPoints = 0;
+            let deletedCount = 0;
+            
+            bountyData.forEach(bounty => {
+                // 统计需要退还的积分
+                if (bounty.status === 'open' || bounty.status === 'taken') {
+                    // 未结算的悬赏，退还积分给发布者
+                    if (bounty.publisher !== 'system') {
+                        bankData[bounty.publisher].bounty += bounty.points;
+                        refundedPoints += bounty.points;
+                    }
+                }
+                deletedCount++;
+            });
+            
+            // 清空悬赏数据
+            bountyData = [];
+            
+            // 添加历史记录
+            const historyEntry = {
+                id: `history_${Date.now()}`,
+                type: 'system',
+                action: 'clear_all_bounties',
+                description: `管理员清空所有悬赏`,
+                details: {
+                    deletedCount: deletedCount,
+                    refundedPoints: refundedPoints,
+                    timestamp: new Date().toLocaleString()
+                }
+            };
+            historyData.unshift(historyEntry);
+            
+            // 保存数据
+            saveData();
+            refreshBountyList();
+            refreshBankPage();
+            
+            // 显示结果
+            let message = `🗑️ 清空完成！\n\n删除了 ${deletedCount} 个悬赏任务`;
+            if (refundedPoints > 0) {
+                message += `\n退还了 ${refundedPoints} 积分给发布者`;
+            }
+            message += '\n\n操作已记录到历史中。';
+            
+            alert(message);
         }
 
         // Firebase初始化监听
@@ -3541,18 +6890,51 @@
                     if (shouldUpdate) {
                         // 恢复云端数据
                         bountyData = cloudData.bountyData || [];
-                        bankData = cloudData.bankData || { qiqi: { reward: 0, penalty: 0, bounty: 0, trade: 0 }, yiyi: { reward: 0, penalty: 0, bounty: 0, trade: 0 } };
+                        bankData = cloudData.bankData || { qiqi: { reward: 0, penalty: 0, bounty: 0, trade: 0, daily: 0 }, yiyi: { reward: 0, penalty: 0, bounty: 0, trade: 0, daily: 0 } };
+                        // 为现有云端数据添加每日任务字段兼容性
+                        if (!bankData.qiqi.daily) bankData.qiqi.daily = 0;
+                        if (!bankData.yiyi.daily) bankData.yiyi.daily = 0;
                         historyData = cloudData.historyData || [];
                         bountyCounter = cloudData.bountyCounter || 1;
                         dailyTasksContent = cloudData.dailyTasksContent || '';
                         
                         // 恢复每日任务数据
-                        dailyTasks = cloudData.dailyTasks || { qiqi: [], yiyi: [] };
+                        if (cloudData.dailyTasks) {
+                            // 检查云端数据格式
+                            if (Array.isArray(cloudData.dailyTasks.qiqi) && Array.isArray(cloudData.dailyTasks.yiyi)) {
+                                dailyTasks = {
+                                    qiqi: cloudData.dailyTasks.qiqi || [null, null, null],
+                                    yiyi: cloudData.dailyTasks.yiyi || [null, null, null],
+                                    progress: cloudData.dailyTasks.progress || { qiqi: 0, yiyi: 0 }
+                                };
+                            } else {
+                                // 格式不正确，使用默认值
+                                dailyTasks = {
+                                    qiqi: [null, null, null],
+                                    yiyi: [null, null, null],
+                                    progress: { qiqi: 0, yiyi: 0 }
+                                };
+                            }
+                        } else {
+                            // 没有云端数据，使用默认值
+                            dailyTasks = {
+                                qiqi: [null, null, null],
+                                yiyi: [null, null, null],
+                                progress: { qiqi: 0, yiyi: 0 }
+                            };
+                        }
+                        taskPool = cloudData.taskPool || [];
                         taskCounter = cloudData.taskCounter || 1;
                         lastResetDate = cloudData.lastResetDate || null;
                         
+                        // 恢复每周和月度数据
+                        weeklyData = cloudData.weeklyData || { qiqi: 0, yiyi: 0, lastResetDate: new Date().toISOString() };
+                        monthlyStarBonus = cloudData.monthlyStarBonus || { qiqi: 0, yiyi: 0, lastBonusDate: new Date().toISOString() };
+                        
                         // 检查是否需要每日重置
                         checkDailyReset();
+                        
+                        console.log('云端数据加载完成, dailyTasks:', JSON.stringify(dailyTasks));
                         
                         // 更新界面
                         if (dailyTasksContent) {
@@ -3570,8 +6952,11 @@
                             bountyCounter,
                             dailyTasksContent,
                             dailyTasks,
+                            taskPool,
                             taskCounter,
                             lastResetDate,
+                            weeklyData,
+                            monthlyStarBonus,
                             lastUpdated: cloudData.lastUpdated
                         }));
                         
@@ -3580,6 +6965,7 @@
                         refreshHistoryPage();
                         refreshBountyList();
                         refreshDailyTasks();
+                        updateTaskPoolPreview();
                         
                         updateLastSyncTime();
                         updateConnectionStatus(true, '数据同步完成');
@@ -3598,24 +6984,127 @@
             }
         }
 
+        // 手动同步数据
+        async function manualSyncData() {
+            if (!isFirebaseReady) {
+                alert('Firebase未初始化，无法同步');
+                return;
+            }
+
+            if (!isOnline) {
+                alert('网络连接断开，无法同步');
+                return;
+            }
+
+            try {
+                // 先上传当前数据
+                const currentData = {
+                    bountyData,
+                    bankData,
+                    historyData,
+                    bountyCounter,
+                    dailyTasksContent,
+                    dailyTasks,
+                    taskPool,
+                    taskCounter,
+                    lastResetDate,
+                    weeklyData,
+                    monthlyStarBonus,
+                    lastUpdated: new Date().toISOString()
+                };
+
+                await window.firebaseDb.set(window.firebaseDb.ref(window.firebaseDb.database, 'pointSystemV2'), currentData);
+                console.log('手动上传数据成功');
+
+                // 然后下载最新数据
+                await autoDownloadFromFirebase();
+                
+                alert('数据同步成功！');
+                
+            } catch (error) {
+                console.error('手动同步失败:', error);
+                alert('数据同步失败：' + error.message);
+            }
+        }
+
+        // 显示同步调试信息
+        function showSyncDebugInfo() {
+            const debugInfo = [
+                `Firebase就绪状态: ${isFirebaseReady ? '✅ 已初始化' : '❌ 未初始化'}`,
+                `网络连接状态: ${isOnline ? '✅ 已连接' : '❌ 离线'}`,
+                `上次同步时间: ${lastSyncTime ? new Date(lastSyncTime).toLocaleString() : '未同步'}`,
+                `当前任务池数量: ${taskPool.length}个任务`,
+                `当前每日任务: 七七${dailyTasks.qiqi.filter(t => t).length}/3, 一一${dailyTasks.yiyi.filter(t => t).length}/3`,
+                `浏览器: ${navigator.userAgent.includes('Mobile') ? '移动端' : '桌面端'}`,
+                `时间: ${new Date().toLocaleString()}`
+            ].join('\n');
+
+            alert('🔍 同步状态信息：\n\n' + debugInfo);
+            console.log('同步调试信息:', {
+                isFirebaseReady,
+                isOnline,
+                lastSyncTime,
+                taskPoolLength: taskPool.length,
+                dailyTasksStatus: dailyTasks,
+                userAgent: navigator.userAgent
+            });
+        }
+
         function loadData() {
             const saved = localStorage.getItem('pointSystemV2');
             if (saved) {
                 try {
                     const data = JSON.parse(saved);
                     bountyData = data.bountyData || [];
-                    bankData = data.bankData || { qiqi: { reward: 0, penalty: 0, bounty: 0, trade: 0 }, yiyi: { reward: 0, penalty: 0, bounty: 0, trade: 0 } };
+                    bankData = data.bankData || { qiqi: { reward: 0, penalty: 0, bounty: 0, trade: 0, daily: 0 }, yiyi: { reward: 0, penalty: 0, bounty: 0, trade: 0, daily: 0 } };
+                    // 为现有数据添加每日任务字段兼容性
+                    if (!bankData.qiqi.daily) bankData.qiqi.daily = 0;
+                    if (!bankData.yiyi.daily) bankData.yiyi.daily = 0;
                     historyData = data.historyData || [];
                     bountyCounter = data.bountyCounter || 1;
                     dailyTasksContent = data.dailyTasksContent || '';
                     
-                    // 加载每日任务数据
-                    dailyTasks = data.dailyTasks || { qiqi: [], yiyi: [] };
+                    // 加载每日任务数据 - 兼容旧格式
+                    if (data.dailyTasks) {
+                        // 检查数据格式并加载
+                        if (Array.isArray(data.dailyTasks.qiqi) && Array.isArray(data.dailyTasks.yiyi)) {
+                            // 新格式，直接使用
+                            dailyTasks = {
+                                qiqi: data.dailyTasks.qiqi || [null, null, null],
+                                yiyi: data.dailyTasks.yiyi || [null, null, null],
+                                progress: data.dailyTasks.progress || { qiqi: 0, yiyi: 0 }
+                            };
+                        } else {
+                            // 其他格式，使用默认值
+                            dailyTasks = {
+                                qiqi: [null, null, null],
+                                yiyi: [null, null, null],
+                                progress: { qiqi: 0, yiyi: 0 }
+                            };
+                        }
+                    } else {
+                        // 没有数据，使用默认值
+                        dailyTasks = {
+                            qiqi: [null, null, null],
+                            yiyi: [null, null, null],
+                            progress: { qiqi: 0, yiyi: 0 }
+                        };
+                    }
+                    
+                    taskPool = data.taskPool || [];
                     taskCounter = data.taskCounter || 1;
                     lastResetDate = data.lastResetDate || null;
                     
+                    // 加载每周积分数据
+                    weeklyData = data.weeklyData || { qiqi: 0, yiyi: 0, lastResetDate: new Date().toISOString() };
+                    
+                    // 加载月度星星奖励数据
+                    monthlyStarBonus = data.monthlyStarBonus || { qiqi: 0, yiyi: 0, lastBonusDate: new Date().toISOString() };
+                    
                     // 检查是否需要每日重置
                     checkDailyReset();
+                    
+                    console.log('本地数据加载完成, dailyTasks:', JSON.stringify(dailyTasks));
                     
                     if (dailyTasksContent) {
                         const contentElement = document.getElementById('daily-tasks-content');
@@ -3855,6 +7344,8 @@
             refreshHistoryPage();
             refreshBountyList();
             refreshDailyTasks(); // 初始化每日任务显示
+            updateTaskPoolPreview(); // 初始化任务池预览
+            startDailyCountdownTimer(); // 启动倒计时定时器
             
             // 每分钟检查一次认证状态
             setInterval(checkAuthentication, 60000);
@@ -3862,8 +7353,12 @@
             // 每5分钟检查一次悬赏过期
             setInterval(checkBountyExpiry, 5 * 60 * 1000);
             
+            // 每分钟检查一次每日任务截止时间
+            setInterval(checkDailyTaskDeadline, 60 * 1000);
+            
             // 页面加载时立即检查一次
             checkBountyExpiry();
+            checkDailyTaskDeadline();
             
             // 初始化 PWA 功能
             registerServiceWorker();
@@ -3877,6 +7372,16 @@
         window.addEventListener('firebaseReady', function() {
             console.log('Firebase SDK 加载完成');
             initializeFirebase();
+            
+            // 在移动端延迟一下再尝试同步，确保网络稳定
+            if (navigator.userAgent.includes('Mobile')) {
+                setTimeout(() => {
+                    if (isFirebaseReady && isOnline) {
+                        console.log('移动端延迟同步启动');
+                        autoDownloadFromFirebase();
+                    }
+                }, 2000);
+            }
         });
 
         // 模态框拖拽功能
@@ -4039,7 +7544,45 @@
             makeDraggable('#task-modal');
             makeDraggable('#bounty-modal');
             makeDraggable('#task-manage-modal');
+            makeDraggable('#password-modal');
+            makeDraggable('#user-select-modal');
+            makeDraggable('#batch-import-modal');
+            makeDraggable('#confirm-input-modal');
             handleKeyboardResize();
+            
+            // 为密码输入框添加回车键支持
+            const passwordInput = document.getElementById('admin-password');
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    confirmPasswordInput();
+                }
+            });
+            
+            // 为批量导入文本框添加实时解析功能
+            const batchImportTextarea = document.getElementById('batch-import-text');
+            if (batchImportTextarea) {
+                batchImportTextarea.addEventListener('input', function() {
+                    console.log('检测到输入变化');
+                    updateBatchPreview();
+                });
+                batchImportTextarea.addEventListener('paste', function() {
+                    console.log('检测到粘贴操作');
+                    setTimeout(() => {
+                        updateBatchPreview();
+                    }, 50);
+                });
+                console.log('批量导入事件监听器已绑定');
+            } else {
+                console.error('找不到batch-import-text元素');
+            }
+            
+            // 为确认输入框添加回车键支持
+            const confirmInputText = document.getElementById('confirm-input-text');
+            confirmInputText.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    submitConfirmInput();
+                }
+            });
         });
         
         // 模态框点击外部关闭
@@ -4058,6 +7601,30 @@
         document.getElementById('task-manage-modal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeTaskManageModal();
+            }
+        });
+        
+        document.getElementById('password-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                cancelPasswordInput();
+            }
+        });
+        
+        document.getElementById('user-select-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                cancelUserSelect();
+            }
+        });
+        
+        document.getElementById('batch-import-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                cancelBatchImport();
+            }
+        });
+        
+        document.getElementById('confirm-input-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                cancelConfirmInput();
             }
         });
     </script>
