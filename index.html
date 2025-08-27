@@ -3017,6 +3017,70 @@
             border: 1px solid #dee2e6;
         }
 
+        /* 超额补充任务样式 */
+        .extra-tasks-section {
+            transition: all 0.3s ease;
+        }
+
+        .extra-tasks-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .extra-task-item {
+            transition: all 0.3s ease;
+        }
+
+        .extra-task-item:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .extra-task-item.completed {
+            animation: completedPulse 2s ease-in-out;
+        }
+
+        @keyframes completedPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        /* 连胜奖励准备状态样式 */
+        .task-attribute.streak-bonus.streak-ready {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24) !important;
+            animation: streakReady 2s infinite;
+        }
+
+        @keyframes streakReady {
+            0%, 100% { box-shadow: 0 0 5px rgba(255, 107, 107, 0.5); }
+            50% { box-shadow: 0 0 15px rgba(255, 107, 107, 0.8); }
+        }
+
+        /* 超额任务选择对话框样式 */
+        .extra-task-option {
+            transition: all 0.3s ease !important;
+        }
+
+        .extra-task-option:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .extra-tasks-header {
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+            
+            .extra-task-item .task-actions button {
+                font-size: 0.7em !important;
+                padding: 3px 6px !important;
+                margin-right: 3px !important;
+            }
+        }
+
         .daily-task-select-modal-box .available-tasks h4 {
             color: #2c3e50;
             margin-bottom: 20px;
@@ -3493,6 +3557,23 @@
                             <div class="slot-content">点击选择任务</div>
                         </div>
                     </div>
+                    
+                    <!-- 七七的超额补充任务区 -->
+                    <div class="extra-tasks-section" id="qiqi-extra-section" style="margin-top: 15px; padding: 15px; background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%); border-radius: 10px; border: 2px solid #007bff;">
+                        <div class="extra-tasks-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h4 style="color: #007bff; margin: 0; font-size: 1.1em;">✨ 超额补充任务</h4>
+                            <button class="btn btn-sm" onclick="openExtraTaskSelect('qiqi')" style="background: #007bff; color: white; border: none; padding: 5px 10px; border-radius: 5px; font-size: 0.8em;">+ 添加任务</button>
+                        </div>
+                        <div class="extra-tasks-grid" id="qiqi-extra-tasks">
+                            <div class="extra-task-placeholder" style="text-align: center; color: #666; font-size: 0.9em; padding: 20px;">
+                                点击"+ 添加任务"从任务池选择额外任务获得积分
+                            </div>
+                        </div>
+                        <div class="extra-tasks-stats" style="margin-top: 10px; font-size: 0.8em; color: #666;">
+                            今日额外完成: <span id="qiqi-extra-count">0</span> 个任务，额外获得: +<span id="qiqi-extra-points">0</span> 积分
+                        </div>
+                    </div>
+                    
                     <!-- 任务承接详细信息 -->
                     <div class="task-acceptance-info" id="qiqi-task-info" style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #007bff;">
                         <div style="font-weight: bold; color: #007bff; margin-bottom: 8px;">📋 任务承接情况</div>
@@ -3533,11 +3614,51 @@
                             <div class="slot-content">点击选择任务</div>
                         </div>
                     </div>
+                    
+                    <!-- 一一的超额补充任务区 -->
+                    <div class="extra-tasks-section" id="yiyi-extra-section" style="margin-top: 15px; padding: 15px; background: linear-gradient(135deg, #e8f5e8 0%, #f1f8e9 100%); border-radius: 10px; border: 2px solid #28a745;">
+                        <div class="extra-tasks-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h4 style="color: #28a745; margin: 0; font-size: 1.1em;">✨ 超额补充任务</h4>
+                            <button class="btn btn-sm" onclick="openExtraTaskSelect('yiyi')" style="background: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 5px; font-size: 0.8em;">+ 添加任务</button>
+                        </div>
+                        <div class="extra-tasks-grid" id="yiyi-extra-tasks">
+                            <div class="extra-task-placeholder" style="text-align: center; color: #666; font-size: 0.9em; padding: 20px;">
+                                点击"+ 添加任务"从任务池选择额外任务获得积分
+                            </div>
+                        </div>
+                        <div class="extra-tasks-stats" style="margin-top: 10px; font-size: 0.8em; color: #666;">
+                            今日额外完成: <span id="yiyi-extra-count">0</span> 个任务，额外获得: +<span id="yiyi-extra-points">0</span> 积分
+                        </div>
+                    </div>
+                    
                     <!-- 任务承接详细信息 -->
                     <div class="task-acceptance-info" id="yiyi-task-info" style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #28a745;">
                         <div style="font-weight: bold; color: #28a745; margin-bottom: 8px;">📋 任务承接情况</div>
                         <div id="yiyi-acceptance-details" style="font-size: 0.9em; color: #666;">
                             暂无承接的悬赏任务
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 任务统计区域 -->
+                <div class="task-stats-section" style="margin-top: 20px; padding: 20px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 12px; border: 1px solid #dee2e6;">
+                    <h4 style="color: #495057; margin-bottom: 15px; text-align: center;">📊 任务完成统计</h4>
+                    
+                    <!-- 七七的统计 -->
+                    <div class="user-stats-section" style="margin-bottom: 15px; padding: 15px; background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%); border-radius: 8px; border-left: 4px solid #007bff;">
+                        <h5 style="color: #007bff; margin-bottom: 10px;">👧 七七的任务统计</h5>
+                        <div id="qiqi-task-stats" style="font-size: 0.9em; line-height: 1.4;">
+                            <div id="qiqi-streak-stats" style="margin-bottom: 8px;"></div>
+                            <div id="qiqi-weekly-stats"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 一一的统计 -->
+                    <div class="user-stats-section" style="margin-bottom: 15px; padding: 15px; background: linear-gradient(135deg, #e8f5e8 0%, #f1f8e9 100%); border-radius: 8px; border-left: 4px solid #28a745;">
+                        <h5 style="color: #28a745; margin-bottom: 10px;">👦 一一的任务统计</h5>
+                        <div id="yiyi-task-stats" style="font-size: 0.9em; line-height: 1.4;">
+                            <div id="yiyi-streak-stats" style="margin-bottom: 8px;"></div>
+                            <div id="yiyi-weekly-stats"></div>
                         </div>
                     </div>
                 </div>
@@ -4182,7 +4303,11 @@
         let dailyTasks = {
             qiqi: [null, null, null], // 三个每日任务槽
             yiyi: [null, null, null],
-            progress: { qiqi: 0, yiyi: 0 } // 今日完成进度
+            progress: { qiqi: 0, yiyi: 0 }, // 今日完成进度
+            extraTasks: { // 超额补充任务
+                qiqi: [], // 七七的超额任务
+                yiyi: []  // 一一的超额任务
+            }
         };
         let taskCounter = 1;
         let currentEditingTask = null;
@@ -5730,7 +5855,7 @@
         }
 
         // 生成任务特殊属性的HTML显示
-        function getTaskSpecialAttributes(task) {
+        function getTaskSpecialAttributes(task, user = null) {
             const attributes = [];
             
             // 专属属性
@@ -5747,7 +5872,20 @@
             
             // 连胜奖励
             if (task.streakBonus) {
-                attributes.push('<span class="task-attribute streak-bonus">🔥 连胜奖励</span>');
+                let streakText = '🔥 连胜奖励';
+                
+                // 如果提供了用户信息，显示当前连胜天数
+                if (user && task.id) {
+                    const streakDays = getTaskStreakDays(user, task.id);
+                    if (streakDays > 0) {
+                        streakText = `🔥 连胜第${streakDays + 1}天`;
+                        if (streakDays >= 6) {
+                            streakText += ' (奖励就绪!)';
+                        }
+                    }
+                }
+                
+                attributes.push(`<span class="task-attribute streak-bonus">${streakText}</span>`);
             }
             
             // 每周次数限制
@@ -5949,7 +6087,13 @@
             
             // 遍历历史记录，统计本周完成的任务
             historyData.forEach(record => {
-                if (record.type === '每日任务完成' && record.details && record.details.user === user) {
+                // 检查历史记录的消息内容是否包含任务完成信息
+                const isTaskCompletion = record.message && (
+                    record.message.includes('完成每日任务') || 
+                    record.message.includes('完成超额任务')
+                );
+                
+                if (isTaskCompletion && record.details && record.details.user === user) {
                     const recordDate = new Date(record.time);
                     if (recordDate >= weekStart) {
                         const poolTaskId = record.details.poolTaskId;
@@ -6026,6 +6170,7 @@
                 saveData();
                 refreshDailyTasks();
                 refreshBankPage();
+                updateTaskStats(); // 更新任务统计
                 
                 // 特殊属性提示
                 let completionMessage = `任务完成！+${totalPoints}积分`;
@@ -6049,7 +6194,13 @@
                 
                 // 检查这一天是否完成了此任务
                 const completed = historyData.some(record => {
-                    if (record.type === '每日任务完成' && record.details && 
+                    // 检查历史记录的消息内容是否包含任务完成信息
+                    const isTaskCompletion = record.message && (
+                        record.message.includes('完成每日任务') || 
+                        record.message.includes('完成超额任务')
+                    );
+                    
+                    if (isTaskCompletion && record.details && 
                         record.details.user === user && record.details.poolTaskId === poolTaskId) {
                         const recordDate = new Date(record.time);
                         return recordDate >= dayStart && recordDate < dayEnd;
@@ -6067,6 +6218,259 @@
             return streakDays;
         }
 
+        // 超额补充任务相关函数
+        function openExtraTaskSelect(user) {
+            // 获取可选择的任务（与任务池共享，可以重复选择）
+            const availableTasks = taskPool.filter(task => 
+                (task.exclusive === user || !task.exclusive)
+            );
+
+            if (availableTasks.length === 0) {
+                alert('任务池中没有可选择的任务！请先在任务池管理中添加任务。');
+                return;
+            }
+
+            // 创建选择界面
+            showExtraTaskSelectDialog(user, availableTasks);
+        }
+
+        function showExtraTaskSelectDialog(user, availableTasks) {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.style.zIndex = '10000';
+            modal.style.display = 'flex';  // 覆盖默认的 display: none
+            
+            const userColor = user === 'qiqi' ? '#007bff' : '#28a745';
+            const userName = user === 'qiqi' ? '七七' : '一一';
+            
+            modal.innerHTML = `
+                <div class="modal-box" style="
+                    max-width: 500px; 
+                    width: 90vw; 
+                    max-height: 70vh; 
+                    overflow-y: auto; 
+                    padding: 20px; 
+                    margin: auto;
+                    background: white;
+                    border-radius: 15px;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                ">
+                    <div class="modal-header" style="
+                        background: ${userColor}; 
+                        color: white; 
+                        padding: 15px; 
+                        margin: -20px -20px 20px -20px; 
+                        border-radius: 15px 15px 0 0;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    ">
+                        <h3 style="margin: 0; font-size: 1.1em;">✨ ${userName}选择超额任务</h3>
+                        <button class="modal-close-btn" onclick="closeExtraTaskModal()" style="
+                            background: rgba(255,255,255,0.2); 
+                            border: 1px solid rgba(255,255,255,0.3); 
+                            color: white; 
+                            border-radius: 50%; 
+                            width: 30px; 
+                            height: 30px;
+                            cursor: pointer;
+                            font-size: 16px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        ">×</button>
+                    </div>
+                    <div class="extra-task-list" style="max-height: 50vh; overflow-y: auto;">
+                        ${availableTasks.map(task => `
+                            <div class="extra-task-option" onclick="selectExtraTask('${user}', '${task.id}')" style="
+                                border: 2px solid #e9ecef; 
+                                border-radius: 8px; 
+                                padding: 12px; 
+                                margin-bottom: 8px; 
+                                cursor: pointer; 
+                                transition: all 0.3s ease;
+                                background: white;
+                            " onmouseover="this.style.borderColor='${userColor}'; this.style.backgroundColor='#f8f9fa';" 
+                               onmouseout="this.style.borderColor='#e9ecef'; this.style.backgroundColor='white';">
+                                <div style="font-weight: bold; margin-bottom: 4px; font-size: 0.95em;">${task.name}</div>
+                                ${task.description ? `<div style="color: #666; font-size: 0.8em; margin-bottom: 6px; line-height: 1.3;">${task.description}</div>` : ''}
+                                ${getTaskSpecialAttributes(task, user)}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function selectExtraTask(user, taskId) {
+            const task = taskPool.find(t => t.id === taskId);
+            if (!task) return;
+
+            // 添加到超额任务列表
+            const extraTask = {
+                poolTaskId: taskId,
+                name: task.name,
+                description: task.description,
+                completed: false,
+                multiplier: 1,
+                completedAt: null,
+                addedAt: new Date().toISOString()
+            };
+
+            dailyTasks.extraTasks[user].push(extraTask);
+            saveData();
+            refreshExtraTasks();
+            closeExtraTaskModal();
+            
+            alert(`已添加超额任务："${task.name}"！`);
+        }
+
+        function closeExtraTaskModal() {
+            // 简化逻辑：查找所有 zIndex 为 10000 的模态框并关闭
+            const allModals = document.querySelectorAll('.modal-overlay');
+            
+            let found = false;
+            allModals.forEach((modal) => {
+                if (modal.style.zIndex === '10000') {
+                    modal.remove();
+                    found = true;
+                }
+            });
+            
+            // 如果没有找到指定 zIndex 的模态框，关闭最后一个
+            if (!found && allModals.length > 0) {
+                const lastModal = allModals[allModals.length - 1];
+                lastModal.remove();
+            }
+        }
+
+        function completeExtraTask(user, taskIndex, multiplier) {
+            requireAuth(() => {
+                const task = dailyTasks.extraTasks[user][taskIndex];
+                if (!task || task.completed) return;
+
+                const poolTask = taskPool.find(pt => pt.id === task.poolTaskId);
+                let points = multiplier;
+                let bonusPoints = 0;
+                let actualTaskCount = 1;
+                
+                // 处理以一抵二属性
+                if (poolTask && poolTask.doubleValue) {
+                    actualTaskCount = 2;
+                }
+                
+                // 处理连胜奖励
+                if (poolTask && poolTask.streakBonus) {
+                    const streakDays = getTaskStreakDays(user, task.poolTaskId);
+                    if (streakDays >= 6) {
+                        bonusPoints = 5;
+                    }
+                }
+                
+                const totalPoints = points + bonusPoints;
+                
+                task.completed = true;
+                task.multiplier = multiplier;
+                task.completedAt = new Date().toISOString();
+                
+                // 添加积分
+                bankData[user].reward += totalPoints;
+                addWeeklyPoints(user, totalPoints);
+                
+                // 添加历史记录
+                const multiplierText = multiplier === 1 ? '' : multiplier === 2 ? '(加倍)' : '(超级加倍)';
+                const specialText = [];
+                if (actualTaskCount > 1) specialText.push(`以一抵二`);
+                if (bonusPoints > 0) specialText.push(`连胜奖励+${bonusPoints}分`);
+                const specialInfo = specialText.length > 0 ? `(${specialText.join(', ')})` : '';
+                
+                addHistory(`${user === 'qiqi' ? '七七' : '一一'}完成超额任务"${task.name}"${multiplierText}${specialInfo} +${totalPoints}积分`, 'system', {
+                    user: user,
+                    poolTaskId: task.poolTaskId,
+                    taskName: task.name,
+                    basePoints: points,
+                    bonusPoints: bonusPoints,
+                    totalPoints: totalPoints,
+                    actualTaskCount: actualTaskCount
+                });
+                
+                saveData();
+                refreshBankPage();
+                refreshExtraTasks();
+                updateTaskStats(); // 更新任务统计
+                
+                let completionMessage = `✅ 超额任务完成！\n🎯 任务: ${task.name}\n💰 获得积分: +${totalPoints}分`;
+                if (bonusPoints > 0) completionMessage += `\n🔥 连胜奖励+${bonusPoints}分！`;
+                
+                alert(completionMessage);
+            });
+        }
+
+        function removeExtraTask(user, taskIndex) {
+            if (confirm('确定要移除这个超额任务吗？')) {
+                dailyTasks.extraTasks[user].splice(taskIndex, 1);
+                saveData();
+                refreshExtraTasks();
+            }
+        }
+
+        function refreshExtraTasks() {
+            ['qiqi', 'yiyi'].forEach(user => {
+                const container = document.getElementById(`${user}-extra-tasks`);
+                const countSpan = document.getElementById(`${user}-extra-count`);
+                const pointsSpan = document.getElementById(`${user}-extra-points`);
+                
+                if (!container) return;
+                
+                if (!dailyTasks.extraTasks || !dailyTasks.extraTasks[user]) {
+                    dailyTasks.extraTasks = { qiqi: [], yiyi: [] };
+                }
+                
+                const extraTasks = dailyTasks.extraTasks[user];
+                const completedCount = extraTasks.filter(t => t.completed).length;
+                const totalPoints = extraTasks.reduce((sum, t) => t.completed ? sum + (t.multiplier || 1) : sum, 0);
+                
+                if (countSpan) countSpan.textContent = completedCount;
+                if (pointsSpan) pointsSpan.textContent = totalPoints;
+                
+                if (extraTasks.length === 0) {
+                    container.innerHTML = '<div class="extra-task-placeholder" style="text-align: center; color: #666; font-size: 0.9em; padding: 20px;">点击"+ 添加任务"从任务池选择额外任务获得积分</div>';
+                    return;
+                }
+                
+                container.innerHTML = extraTasks.map((task, index) => {
+                    const poolTask = taskPool.find(pt => pt.id === task.poolTaskId);
+                    const userColor = user === 'qiqi' ? '#007bff' : '#28a745';
+                    
+                    if (task.completed) {
+                        return `
+                            <div class="extra-task-item completed" style="border: 2px solid ${userColor}; background: #f8f9fa; border-radius: 8px; padding: 12px; margin-bottom: 8px;">
+                                <div class="task-name" style="font-weight: bold; margin-bottom: 5px;">${task.name}</div>
+                                ${poolTask ? getTaskSpecialAttributes(poolTask, user) : ''}
+                                <div class="task-status" style="color: ${userColor}; font-size: 0.9em;">✅ 已完成 (+${task.multiplier}分)</div>
+                                <button onclick="removeExtraTask('${user}', ${index})" style="background: #6c757d; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8em; margin-top: 5px;">移除</button>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div class="extra-task-item" style="border: 2px solid #e9ecef; border-radius: 8px; padding: 12px; margin-bottom: 8px;">
+                                <div class="task-name" style="font-weight: bold; margin-bottom: 5px;">${task.name}</div>
+                                ${poolTask ? getTaskSpecialAttributes(poolTask, user) : ''}
+                                <div class="task-actions" style="margin-top: 8px;">
+                                    <button onclick="completeExtraTask('${user}', ${index}, 1)" style="background: #28a745; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8em; margin-right: 5px;">完成 +1分</button>
+                                    <button onclick="completeExtraTask('${user}', ${index}, 2)" style="background: #ffc107; color: #212529; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8em; margin-right: 5px;">加倍 +2分</button>
+                                    <button onclick="completeExtraTask('${user}', ${index}, 3)" style="background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8em; margin-right: 5px;">超级 +3分</button>
+                                    <button onclick="removeExtraTask('${user}', ${index})" style="background: #6c757d; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8em;">移除</button>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }).join('');
+            });
+        }
+
         // 完成每日任务
 
         function clearDailyTaskSlot(user, slotIndex) {
@@ -6079,6 +6483,65 @@
                 }
             });
         }
+
+        // 更新任务统计显示
+        function updateTaskStats() {
+            ['qiqi', 'yiyi'].forEach(user => {
+                updateUserTaskStats(user);
+            });
+        }
+
+        function updateUserTaskStats(user) {
+            const streakStatsElement = document.getElementById(`${user}-streak-stats`);
+            const weeklyStatsElement = document.getElementById(`${user}-weekly-stats`);
+            
+            if (!streakStatsElement || !weeklyStatsElement) return;
+            
+            // 获取用户的连胜奖励任务统计
+            const streakTasks = taskPool.filter(task => task.streakBonus);
+            const streakStats = [];
+            
+            streakTasks.forEach(task => {
+                if (task.exclusive && task.exclusive !== user) return; // 跳过不属于该用户的专属任务
+                
+                const streakDays = getTaskStreakDays(user, task.id);
+                if (streakDays > 0) {
+                    const status = streakDays >= 6 ? '🔥就绪' : `${streakDays + 1}天`;
+                    streakStats.push(`${task.name}(${status})`);
+                }
+            });
+            
+            // 获取用户的每周限制任务统计
+            const weeklyTasks = taskPool.filter(task => task.weeklyLimit && task.weeklyLimit > 0);
+            const weeklyStats = [];
+            
+            // 计算本周的任务使用次数
+            const weeklyTaskUsage = getWeeklyTaskUsage(user);
+            
+            weeklyTasks.forEach(task => {
+                if (task.exclusive && task.exclusive !== user) return; // 跳过不属于该用户的专属任务
+                
+                const used = weeklyTaskUsage[task.id] || 0;
+                const limit = task.weeklyLimit;
+                const status = used >= limit ? '⚠️已满' : `${used}/${limit}`;
+                weeklyStats.push(`${task.name}(${status})`);
+            });
+            
+            // 更新连胜奖励统计显示
+            if (streakStats.length > 0) {
+                streakStatsElement.innerHTML = `<strong>🔥 连胜奖励：</strong>${streakStats.join('，')}`;
+            } else {
+                streakStatsElement.innerHTML = `<strong>🔥 连胜奖励：</strong><span style="color: #999;">暂无连胜任务</span>`;
+            }
+            
+            // 更新每周限制统计显示
+            if (weeklyStats.length > 0) {
+                weeklyStatsElement.innerHTML = `<strong>🏃 每周限次：</strong>${weeklyStats.join('，')}`;
+            } else {
+                weeklyStatsElement.innerHTML = `<strong>🏃 每周限次：</strong><span style="color: #999;">暂无限次任务</span>`;
+            }
+        }
+
         function openTaskModal(user) {
             currentEditingUser = user;
             currentEditingTask = null;
@@ -6264,11 +6727,15 @@
                 dailyTasks = {
                     qiqi: [null, null, null],
                     yiyi: [null, null, null],
-                    progress: { qiqi: 0, yiyi: 0 }
+                    progress: { qiqi: 0, yiyi: 0 },
+                    extraTasks: { qiqi: [], yiyi: [] }
                 };
             }
             if (!dailyTasks.progress) {
                 dailyTasks.progress = { qiqi: 0, yiyi: 0 };
+            }
+            if (!dailyTasks.extraTasks) {
+                dailyTasks.extraTasks = { qiqi: [], yiyi: [] };
             }
 
             // 更新进度
@@ -6300,7 +6767,7 @@
                                     <span class="task-name">${task.name}</span>
                                     ${hasDescription ? '<span class="daily-task-expand" style="color: #28a745; font-size: 0.8em; margin-left: 8px;">▼</span>' : ''}
                                 </div>
-                                ${getTaskSpecialAttributes(poolTask)}
+                                ${getTaskSpecialAttributes(poolTask, 'qiqi')}
                                 <div class="task-multiplier">✅ 已完成 (+${task.multiplier}分)</div>
                             </div>
                             ${hasDescription ? `
@@ -6325,7 +6792,7 @@
                                     <span class="task-name">${task.name}</span>
                                     ${hasDescription ? '<span class="daily-task-expand" style="color: #007bff; font-size: 0.8em; margin-left: 8px;">▼</span>' : ''}
                                 </div>
-                                ${getTaskSpecialAttributes(poolTask)}
+                                ${getTaskSpecialAttributes(poolTask, 'qiqi')}
                                 <div class="task-multiplier">选择完成方式：</div>
                             </div>
                             ${hasDescription ? `
@@ -6370,7 +6837,7 @@
                                     <span class="task-name">${task.name}</span>
                                     ${hasDescription ? '<span class="daily-task-expand" style="color: #28a745; font-size: 0.8em; margin-left: 8px;">▼</span>' : ''}
                                 </div>
-                                ${getTaskSpecialAttributes(poolTask)}
+                                ${getTaskSpecialAttributes(poolTask, 'yiyi')}
                                 <div class="task-multiplier">✅ 已完成 (+${task.multiplier}分)</div>
                             </div>
                             ${hasDescription ? `
@@ -6395,7 +6862,7 @@
                                     <span class="task-name">${task.name}</span>
                                     ${hasDescription ? '<span class="daily-task-expand" style="color: #007bff; font-size: 0.8em; margin-left: 8px;">▼</span>' : ''}
                                 </div>
-                                ${getTaskSpecialAttributes(poolTask)}
+                                ${getTaskSpecialAttributes(poolTask, 'yiyi')}
                                 <div class="task-multiplier">选择完成方式：</div>
                             </div>
                             ${hasDescription ? `
@@ -6637,9 +7104,14 @@
             dailyTasks.yiyi = [null, null, null];
             dailyTasks.progress = { qiqi: 0, yiyi: 0 };
             
+            // 清空超额任务
+            dailyTasks.extraTasks = { qiqi: [], yiyi: [] };
+            
             saveData();
-            console.log('每日任务已清空，需要重新选择');
+            console.log('每日任务和超额任务已清空，需要重新选择');
             refreshDailyTasks();
+            refreshExtraTasks();
+            updateTaskStats(); // 更新任务统计
         }
 
         function checkBountyExpiry() {
@@ -8185,6 +8657,8 @@
             refreshHistoryPage();
             refreshBountyList();
             refreshDailyTasks(); // 初始化每日任务显示
+            refreshExtraTasks(); // 初始化超额任务显示
+            updateTaskStats(); // 初始化任务统计显示
             updateTaskPoolPreview(); // 初始化任务池预览
             refreshTaskPoolDisplay(); // 初始化任务池管理显示
             
