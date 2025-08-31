@@ -3499,10 +3499,10 @@
 
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="showPage('daily')">📅 小日常</button>
-            <button class="nav-tab" onclick="showPage('cards')">🎫 小任务</button>
+            <button class="nav-tab" onclick="showPage('cards')">🎫 小悬赏</button>
             <button class="nav-tab" onclick="showPage('penalty')">⚖️ 小奖惩</button>
             <button class="nav-tab" onclick="showPage('bank')">🏦 小银行</button>
-            <button class="nav-tab" onclick="showPage('history')">📜 积分历史</button>
+            <button class="nav-tab" onclick="showPage('history')">📜 小历史</button>
         </div>
 
         <div class="content">
@@ -3938,20 +3938,22 @@
                 <table class="stats-table">
                     <thead>
                         <tr>
+                            <th>周次</th>
                             <th>用户</th>
-                            <th>奖</th>
-                            <th>罚</th>
+                            <th>奖励</th>
+                            <th>惩罚</th>
                             <th>发布</th>
                             <th>获取</th>
                             <th>交易</th>
-                            <th>日收入</th>
-                            <th>日惩罚</th>
-                            <th>星星收入</th>
+                            <th>日收</th>
+                            <th>日罚</th>
+                            <th>星收</th>
+                            <th>总分</th>
                         </tr>
                     </thead>
                     <tbody id="bank-table-body">
                         <tr>
-                            <td colspan="9" style="text-align: center; color: #666; padding: 20px;">暂无数据</td>
+                            <td colspan="11" style="text-align: center; color: #666; padding: 20px;">暂无数据</td>
                         </tr>
                     </tbody>
                 </table>
@@ -4298,6 +4300,19 @@
         let weeklyData = { qiqi: 0, yiyi: 0, lastResetDate: new Date().toISOString() };
         let monthlyStarBonus = { qiqi: 0, yiyi: 0, lastBonusDate: new Date().toISOString() };
         
+        // 严格惩罚系统 - 记录截止时刻的任务状态
+        let dailyTaskSnapshots = {}; // 格式: {"Mon Dec 30 2024": {qiqi: [...], yiyi: [...]}}
+        let penaltySystemStartDate = null; // 惩罚系统开始日期
+        
+        // 周度积分统计系统
+        const SYSTEM_START_DATE = new Date('2025-06-01'); // 系统开始日期：2025年6月1日
+        let weeklyStats = {
+            qiqi: { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0, starIncome: 0 },
+            yiyi: { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0, starIncome: 0 },
+            currentWeek: getCurrentWeekNumber(),
+            weekStart: getWeekStartDate().toDateString()
+        };
+        
         // 新的每日任务系统数据
         let taskPool = []; // 任务池
         let dailyTasks = {
@@ -4344,6 +4359,9 @@
             if (pageId === 'history') refreshHistoryPage();
             if (pageId === 'cards') refreshBountyList();
             if (pageId === 'daily') refreshDailyTasks();
+            
+            // 每次切换页面时检查惩罚
+            processSnapshotPenalties();
         }
 
         // 悬赏功能
@@ -4481,6 +4499,11 @@
                     bankData.yiyi.reward += points;
                     addWeeklyPoints('qiqi', points);
                     addWeeklyPoints('yiyi', points);
+                    
+                    // 更新周度跟踪
+                    updateWeeklyPointTracking('qiqi', 'reward', points);
+                    updateWeeklyPointTracking('yiyi', 'reward', points);
+                    
                     bounty.status = 'settled';
                     bounty.completedAt = now.toISOString();
                     bounty.settledAt = now.toISOString();
@@ -4491,6 +4514,10 @@
                     // 直接给指定用户发放积分
                     bankData[assignee].reward += points;
                     addWeeklyPoints(assignee, points);
+                    
+                    // 更新周度跟踪
+                    updateWeeklyPointTracking(assignee, 'reward', points);
+                    
                     bounty.status = 'settled';
                     bounty.completedAt = now.toISOString();
                     bounty.settledAt = now.toISOString();
@@ -4509,7 +4536,11 @@
                     return;
                 }
                 bankData[publisher].reward -= points;
-                bankData[publisher].bounty -= points;
+                bankData[publisher].publish -= points; // 记录发布成本
+                
+                // 更新周度跟踪
+                updateWeeklyPointTracking(publisher, 'publish', -points);
+                
                 
                 addHistory(`${publisher === 'qiqi' ? '七七' : '一一'}发布悬赏"${title}"，扣除${points}积分`, 'bounty');
                 alert('悬赏创建成功！积分已扣除。');
@@ -4754,6 +4785,7 @@
                         bankData[bounty.publisher].publish -= bounty.points; // 发布成本（负数）
                         bankData[bounty.assignee].obtain += bounty.points;   // 获取收益（正数）
                         addWeeklyPoints(bounty.assignee, bounty.points);
+                        
 
                         // 添加历史记录
                         const historyEntry = {
@@ -4797,6 +4829,7 @@
                 bankData[bounty.publisher].publish -= bounty.points; // 发布成本（负数）
                 bankData[bounty.assignee].obtain += bounty.points;   // 获取收益（正数）
                 addWeeklyPoints(bounty.assignee, bounty.points);
+                
 
                 // 添加历史记录
                 const historyEntry = {
@@ -4869,7 +4902,9 @@
                         // 未结算的悬赏：退还发布者的悬赏积分
                         if (bounty.publisher !== 'system') {
                             // 普通悬赏需要退还积分
-                            bankData[bounty.publisher].bounty += bounty.points; // 将负数悬赏归零
+                            bankData[bounty.publisher].reward += bounty.points;
+                            bankData[bounty.publisher].publish += bounty.points; // 撤销发布成本
+                            
                         }
                         
                         const historyEntry = {
@@ -4925,6 +4960,7 @@
                 bankData[from].trade -= points;
                 bankData[to].trade += points;
                 addWeeklyPoints(to, points);
+                
 
                 // 添加历史记录
                 const historyEntry = {
@@ -4971,6 +5007,7 @@
             if (confirm(`确认对 ${getPlayerName(player)} 扣除 ${points} 分？\n原因：${reason}`)) {
                 // 执行扣分
                 bankData[player].penalty -= points;
+                
 
                 // 添加历史记录
                 const historyEntry = {
@@ -5014,7 +5051,11 @@
             if (confirm(`确认奖励 ${getPlayerName(player)} ${points} 分？\n原因：${reason}`)) {
                 // 执行奖励
                 bankData[player].reward += points;
+                
+                // 更新周度跟踪
+                updateWeeklyPointTracking(player, 'reward', points);
                 addWeeklyPoints(player, points);
+                
 
                 // 添加历史记录
                 const historyEntry = {
@@ -5064,11 +5105,13 @@
                     
                     if (qiqiStarBonus > 0) {
                         bankData.qiqi.reward += qiqiStarBonus;
+                        updateWeeklyPointTracking('qiqi', 'starIncome', qiqiStarBonus);
                         addHistory(`🌟 七七的星星积分汇总：本周获得${weeklyData.qiqi}积分，转换为${qiqiStarBonus}星星积分奖励`, 'system');
                     }
                     
                     if (yiyiStarBonus > 0) {
                         bankData.yiyi.reward += yiyiStarBonus;
+                        updateWeeklyPointTracking('yiyi', 'starIncome', yiyiStarBonus);
                         addHistory(`🌟 一一的星星积分汇总：本周获得${weeklyData.yiyi}积分，转换为${yiyiStarBonus}星星积分奖励`, 'system');
                     }
                 }
@@ -5102,8 +5145,7 @@
                 weeklyData = { qiqi: 0, yiyi: 0, lastResetDate: new Date().toISOString() };
             }
             
-            checkWeeklyReset();
-            weeklyData[user] += points;
+                        weeklyData[user] += points;
             saveData();
         }
 
@@ -5207,12 +5249,14 @@
                 if (qiqiBonus > 0 || yiyiBonus > 0) {
                     if (qiqiBonus > 0) {
                         bankData.qiqi.reward += qiqiBonus;
+                        updateWeeklyPointTracking('qiqi', 'starIncome', qiqiBonus);
                         addWeeklyPoints('qiqi', qiqiBonus);
                         monthlyStarBonus.qiqi += qiqiBonus;
                     }
                     
                     if (yiyiBonus > 0) {
                         bankData.yiyi.reward += yiyiBonus;
+                        updateWeeklyPointTracking('yiyi', 'starIncome', yiyiBonus);
                         addWeeklyPoints('yiyi', yiyiBonus);
                         monthlyStarBonus.yiyi += yiyiBonus;
                     }
@@ -5262,37 +5306,45 @@
 
         // 小银行页面
         function refreshBankPage() {
-            checkWeeklyReset();
+            checkWeeklyReset(); // 检查是否需要周度重置
             checkMonthlyBonus();
             
-            const tbody = document.getElementById('bank-table-body');
+            // 更新周度统计数据
+            updateWeeklyStats();
             
+            // 更新周度积分统计表
+            const tbody = document.getElementById('bank-table-body');
             const rows = [
                 {
                     name: '七七',
-                    data: bankData.qiqi
+                    data: bankData.qiqi,
+                    user: 'qiqi'
                 },
                 {
                     name: '一一',
-                    data: bankData.yiyi
+                    data: bankData.yiyi,
+                    user: 'yiyi'
                 }
             ];
 
             tbody.innerHTML = rows.map(row => {
+                const weeklyData = weeklyStats[row.user];
                 const total = row.data.reward + row.data.penalty + row.data.publish + row.data.obtain + row.data.trade + row.data.dailyIncome + row.data.dailyPenalty;
                 const starEarnings = calculateStarEarnings(total);
                 
                 return `
                     <tr>
+                        <td style="font-weight: bold; text-align: center;">${weeklyStats.currentWeek}</td>
                         <td style="font-weight: bold;">${row.name}</td>
-                        <td style="color: ${row.data.reward >= 0 ? '#28a745' : '#dc3545'};">${row.data.reward}</td>
-                        <td style="color: ${row.data.penalty >= 0 ? '#28a745' : '#dc3545'};">${row.data.penalty}</td>
-                        <td style="color: ${row.data.publish >= 0 ? '#28a745' : '#dc3545'};">${row.data.publish}</td>
-                        <td style="color: ${row.data.obtain >= 0 ? '#28a745' : '#dc3545'};">${row.data.obtain}</td>
-                        <td style="color: ${row.data.trade >= 0 ? '#28a745' : '#dc3545'};">${row.data.trade}</td>
-                        <td style="color: ${row.data.dailyIncome >= 0 ? '#28a745' : '#dc3545'};">${row.data.dailyIncome}</td>
-                        <td style="color: ${row.data.dailyPenalty >= 0 ? '#28a745' : '#dc3545'};">${row.data.dailyPenalty}</td>
+                        <td style="color: ${weeklyData.reward >= 0 ? '#28a745' : '#dc3545'};">${weeklyData.reward}</td>
+                        <td style="color: ${weeklyData.penalty >= 0 ? '#28a745' : '#dc3545'};">${weeklyData.penalty}</td>
+                        <td style="color: ${weeklyData.publish >= 0 ? '#28a745' : '#dc3545'};">${weeklyData.publish}</td>
+                        <td style="color: ${weeklyData.obtain >= 0 ? '#28a745' : '#dc3545'};">${weeklyData.obtain}</td>
+                        <td style="color: ${weeklyData.trade >= 0 ? '#28a745' : '#dc3545'};">${weeklyData.trade}</td>
+                        <td style="color: ${weeklyData.dailyIncome >= 0 ? '#28a745' : '#dc3545'};">${weeklyData.dailyIncome}</td>
+                        <td style="color: ${weeklyData.dailyPenalty >= 0 ? '#28a745' : '#dc3545'};">${weeklyData.dailyPenalty}</td>
                         <td style="text-align: center; color: #ffc107; font-weight: bold;">${starEarnings}</td>
+                        <td style="color: ${total >= 0 ? '#28a745' : '#dc3545'}; font-weight: bold;">${total}</td>
                     </tr>
                 `;
             }).join('');
@@ -5315,17 +5367,35 @@
             document.getElementById('yiyi-total-score').textContent = yiyiTotal;
             document.getElementById('qiqi-total-stars').innerHTML = generateStars(qiqiTotal);
             document.getElementById('yiyi-total-stars').innerHTML = generateStars(yiyiTotal);
+            
+            // 调试信息：显示快照状态和历史记录检查
+            const snapshotDates = Object.keys(dailyTaskSnapshots);
+            const pendingSnapshots = snapshotDates.filter(date => !dailyTaskSnapshots[date].penaltyProcessed);
+            const processedSnapshots = snapshotDates.filter(date => dailyTaskSnapshots[date].penaltyProcessed);
+            
+            console.log(`任务快照状态: ${pendingSnapshots.length}个待处理, ${processedSnapshots.length}个已处理`);
+            if (pendingSnapshots.length > 0) {
+                console.log('待处理快照:', pendingSnapshots);
+            }
+            
         }
 
         // 添加历史记录
-        function addHistory(message, type = 'system') {
+        function addHistory(message, type = 'system', details = null) {
             const historyEntry = {
                 id: Date.now(),
                 type: type === 'system' ? '系统记录' : type === 'bounty' ? '悬赏记录' : '操作记录',
                 message: message,
                 timestamp: new Date().toISOString(),
-                displayTime: new Date().toLocaleString()
+                displayTime: new Date().toLocaleString(),
+                time: new Date().toLocaleString() // 兼容连胜检查中使用的time字段
             };
+            
+            // 如果有详细信息，添加到记录中
+            if (details) {
+                historyEntry.details = details;
+            }
+            
             historyData.unshift(historyEntry);
             
             // 只保留最近2000条记录
@@ -5782,6 +5852,11 @@
                     weeklyData = cloudData.weeklyData || { qiqi: 0, yiyi: 0, lastResetDate: new Date().toISOString() };
                     monthlyStarBonus = cloudData.monthlyStarBonus || { qiqi: 0, yiyi: 0, lastBonusDate: new Date().toISOString() };
                     
+                    // 加载任务快照数据
+                    dailyTaskSnapshots = cloudData.dailyTaskSnapshots || {};
+                    penaltySystemStartDate = cloudData.penaltySystemStartDate || null;
+                    
+                    
                     // 检查是否需要每日重置
                     checkDailyReset();
                     
@@ -5798,6 +5873,8 @@
                         lastResetDate,
                         weeklyData,
                         monthlyStarBonus,
+                        dailyTaskSnapshots,
+                        penaltySystemStartDate,
                         lastUpdated: cloudData.lastUpdated
                     }));
                     
@@ -6094,7 +6171,7 @@
                 );
                 
                 if (isTaskCompletion && record.details && record.details.user === user) {
-                    const recordDate = new Date(record.time);
+                    const recordDate = new Date(record.timestamp || record.time);
                     if (recordDate >= weekStart) {
                         const poolTaskId = record.details.poolTaskId;
                         if (poolTaskId) {
@@ -6142,6 +6219,10 @@
                 bankData[user].dailyIncome += totalPoints;
                 addWeeklyPoints(user, totalPoints);
                 
+                // 更新周度跟踪
+                updateWeeklyPointTracking(user, 'dailyIncome', totalPoints);
+                
+                
                 // 更新进度（考虑以一抵二）
                 dailyTasks.progress[user] = dailyTasks[user].reduce((total, t) => {
                     if (t && t.completed) {
@@ -6171,6 +6252,9 @@
                 refreshDailyTasks();
                 refreshBankPage();
                 updateTaskStats(); // 更新任务统计
+                
+                // 每次完成任务时也检查待处理的惩罚
+                setTimeout(() => processSnapshotPenalties(), 100);
                 
                 // 特殊属性提示
                 let completionMessage = `任务完成！+${totalPoints}积分`;
@@ -6202,7 +6286,7 @@
                     
                     if (isTaskCompletion && record.details && 
                         record.details.user === user && record.details.poolTaskId === poolTaskId) {
-                        const recordDate = new Date(record.time);
+                        const recordDate = new Date(record.timestamp || record.time);
                         return recordDate >= dayStart && recordDate < dayEnd;
                     }
                     return false;
@@ -6378,6 +6462,7 @@
                 // 添加积分
                 bankData[user].reward += totalPoints;
                 addWeeklyPoints(user, totalPoints);
+                
                 
                 // 添加历史记录
                 const multiplierText = multiplier === 1 ? '' : multiplier === 2 ? '(加倍)' : '(超级加倍)';
@@ -6633,6 +6718,7 @@
                     // 添加积分（系统奖励）
                     bankData[user].reward += task.points;
                     addWeeklyPoints(user, task.points);
+                    
                     addHistory(`${user === 'qiqi' ? '七七' : '一一'}完成任务"${task.title}" +${task.points}积分`, 'system');
                 }
 
@@ -7129,7 +7215,10 @@
                         
                         // 如果悬赏已被接取，返还积分给发布者（系统任务不需要返还）
                         if (bounty.status === 'taken' && bounty.publisher !== 'system') {
-                            bankData[bounty.publisher].bounty += bounty.points;
+                            bankData[bounty.publisher].reward += bounty.points;
+                            bankData[bounty.publisher].publish += bounty.points; // 撤销发布成本
+                            
+                            
                             addHistory(`悬赏"${bounty.title}"超期自动放弃，${bounty.points}积分归还给${bounty.publisher === 'qiqi' ? '七七' : '一一'}`, 'system');
                         } else if (bounty.publisher === 'system') {
                             addHistory(`系统任务"${bounty.title}"超期自动取消`, 'system');
@@ -7152,72 +7241,276 @@
             }
         }
 
-        // 每日任务截止时间检查 (11:30 PM)
-        function checkDailyTaskDeadline() {
-            const now = new Date();
-            const currentHour = now.getHours();
-            const currentMinute = now.getMinutes();
-            const currentDate = now.toDateString();
+        // 严格惩罚管理系统 - 基于23:30时刻快照
+        function captureTaskSnapshot(dateString) {
+            // 在23:30时刻保存当前任务完成状态
+            const snapshot = {
+                qiqi: JSON.parse(JSON.stringify(dailyTasks.qiqi || [])),
+                yiyi: JSON.parse(JSON.stringify(dailyTasks.yiyi || [])),
+                capturedAt: new Date().toISOString()
+            };
             
-            // 检查是否到了11:30 PM (23:30)
-            if (currentHour === 23 && currentMinute >= 30) {
-                // 检查今天是否已经处理过截止惩罚
-                const lastPenaltyDate = localStorage.getItem('lastDailyTaskPenaltyDate');
-                
-                if (lastPenaltyDate !== currentDate) {
-                    // 应用每日任务截止惩罚
-                    applyDailyTaskPenalties();
-                    localStorage.setItem('lastDailyTaskPenaltyDate', currentDate);
-                }
-            }
+            dailyTaskSnapshots[dateString] = snapshot;
+            console.log(`保存任务状态快照: ${dateString}`, snapshot);
+            saveData();
+            return snapshot;
         }
-
-        function applyDailyTaskPenalties() {
-            let hasPenalties = false;
+        
+        function processSnapshotPenalties() {
+            let processedCount = 0;
             
-            ['qiqi', 'yiyi'].forEach(user => {
-                if (!dailyTasks[user]) return;
+            // 遍历所有快照，只处理惩罚系统启动之后的日期
+            Object.keys(dailyTaskSnapshots).forEach(dateString => {
+                const snapshot = dailyTaskSnapshots[dateString];
+                if (snapshot.penaltyProcessed) return; // 已处理过
                 
-                // 计算实际缺少的任务数量（考虑以一抵二）
-                let completedTaskCount = 0;
-                dailyTasks[user].forEach(task => {
-                    if (task && task.completed) {
-                        const poolTask = taskPool.find(pt => pt.id === task.poolTaskId);
-                        if (poolTask && poolTask.doubleValue) {
-                            completedTaskCount += 2; // 以一抵二
-                        } else {
-                            completedTaskCount += 1;
+                // 只处理惩罚系统启动之后的日期
+                if (!isDateAfterPenaltyStart(dateString)) {
+                    console.log(`跳过惩罚系统启动前的日期: ${dateString}`);
+                    snapshot.penaltyProcessed = true; // 标记为已处理但不扣分
+                    snapshot.skippedReason = '在惩罚系统启动之前';
+                    return;
+                }
+                
+                console.log(`处理 ${dateString} 的惩罚快照`);
+                
+                ['qiqi', 'yiyi'].forEach(user => {
+                    if (!snapshot[user]) return;
+                    
+                    // 计算23:30时刻的完成任务数（考虑以一抵二）
+                    let completedTaskCount = 0;
+                    snapshot[user].forEach(task => {
+                        if (task && task.completed) {
+                            const poolTask = taskPool.find(pt => pt.id === task.poolTaskId);
+                            if (poolTask && poolTask.doubleValue) {
+                                completedTaskCount += 2; // 以一抵二
+                            } else {
+                                completedTaskCount += 1;
+                            }
                         }
+                    });
+                    
+                    const missingTaskCount = Math.max(0, 3 - completedTaskCount);
+                    
+                    if (missingTaskCount > 0) {
+                        // 根据缺少的任务数量计算惩罚（每个任务3分）
+                        const penaltyPoints = missingTaskCount * 3;
+                        
+                        // 应用每日任务惩罚
+                        bankData[user].dailyPenalty -= penaltyPoints;
+                        
+                        
+                        const userName = user === 'qiqi' ? '七七' : '一一';
+                        addHistory(`${userName}在${dateString}少完成${missingTaskCount}个任务，扣除${penaltyPoints}分`, 'system');
+                        
+                        console.log(`${userName} 在${dateString}少完成 ${missingTaskCount} 个任务，扣除 ${penaltyPoints} 分`);
                     }
                 });
                 
-                const missingTaskCount = Math.max(0, 3 - completedTaskCount);
-                
-                if (missingTaskCount > 0) {
-                    hasPenalties = true;
-                    
-                    // 根据缺少的任务数量计算惩罚（每个任务3分）
-                    const penaltyPoints = missingTaskCount * 3;
-                    
-                    // 应用每日任务惩罚
-                    bankData[user].dailyPenalty -= penaltyPoints;
-                    
-                    const userName = user === 'qiqi' ? '七七' : '一一';
-                    addHistory(`${userName}少完成${missingTaskCount}个任务数，扣除${penaltyPoints}分`, 'system');
-                    
-                    console.log(`${userName} 少完成 ${missingTaskCount} 个任务数，扣除 ${penaltyPoints} 分`);
-                }
+                // 标记为已处理
+                snapshot.penaltyProcessed = true;
+                snapshot.processedAt = new Date().toISOString();
+                processedCount++;
             });
             
-            if (hasPenalties) {
+            if (processedCount > 0) {
+                console.log(`处理了 ${processedCount} 天的惩罚快照`);
                 saveData();
                 refreshBankPage();
-                console.log('每日任务截止惩罚已应用');
-                
-                // 使用统一的重置逻辑
-                checkDailyReset();
+            }
+            
+            // 清理超过7天的快照
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+            Object.keys(dailyTaskSnapshots).forEach(dateString => {
+                if (new Date(dateString) < sevenDaysAgo) {
+                    delete dailyTaskSnapshots[dateString];
+                }
+            });
+        }
+        
+        // 初始化惩罚系统（从今天开始）
+        function initializePenaltySystem() {
+            const today = new Date().toDateString();
+            
+            if (!penaltySystemStartDate) {
+                penaltySystemStartDate = today;
+                console.log(`惩罚系统已启动，从 ${today} 开始严格执行`);
+                saveData();
             }
         }
+        
+        // 检查日期是否在惩罚系统启动之后
+        function isDateAfterPenaltyStart(dateString) {
+            if (!penaltySystemStartDate) return false;
+            return new Date(dateString) >= new Date(penaltySystemStartDate);
+        }
+        
+        // 每周积分系统辅助函数
+        function getWeekStart(date = new Date()) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1); // 调整到周一
+            return new Date(d.setDate(diff));
+        }
+        
+        function getWeekNumber(date = new Date()) {
+            const startOfYear = new Date(date.getFullYear(), 0, 1);
+            const pastDaysOfYear = (date - startOfYear) / 86400000;
+            return Math.ceil((pastDaysOfYear + startOfYear.getDay() + 1) / 7);
+        }
+        
+        // 更新周度统计数据
+        function updateWeeklyStats() {
+            // 更新当前周数
+            weeklyStats.currentWeek = getCurrentWeekNumber();
+            
+            // 检查是否新的一周开始
+            const currentWeekStart = getWeekStartDate().toDateString();
+            if (weeklyStats.weekStart !== currentWeekStart) {
+                // 新的一周，重置周度统计
+                weeklyStats.qiqi = { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0, starIncome: 0 };
+                weeklyStats.yiyi = { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0, starIncome: 0 };
+                weeklyStats.weekStart = currentWeekStart;
+            }
+        }
+        
+        // 周度统计系统函数
+        function getWeekStartDate(date = new Date()) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1); // 调整到周一
+            d.setDate(diff);
+            d.setHours(0, 0, 0, 0);
+            return d;
+        }
+        
+        function getCurrentWeekNumber(date = new Date()) {
+            // 计算从2025年6月1日起的周次
+            const systemStartWeek = getWeekStartDate(SYSTEM_START_DATE);
+            const currentWeek = getWeekStartDate(date);
+            const weeksDiff = Math.floor((currentWeek - systemStartWeek) / (7 * 24 * 60 * 60 * 1000));
+            return weeksDiff + 1; // 第1周开始
+        }
+        
+        // 检查是否需要周度重置
+        function checkWeeklyReset() {
+            const currentWeekStart = getWeekStartDate().toDateString();
+            
+            if (weeklyStats.weekStart !== currentWeekStart) {
+                console.log('检测到新的一周，生成上周积分汇总...');
+                generateWeeklySummary();
+                resetWeeklyStats();
+            }
+        }
+        
+        // 生成周度积分汇总到历史记录
+        function generateWeeklySummary() {
+            const weekEnd = new Date();
+            weekEnd.setDate(weekEnd.getDate() - 1); // 昨天作为上周结束
+            
+            const qiqiTotal = weeklyStats.qiqi.reward + weeklyStats.qiqi.penalty + weeklyStats.qiqi.publish + 
+                             weeklyStats.qiqi.obtain + weeklyStats.qiqi.trade + weeklyStats.qiqi.dailyIncome + 
+                             weeklyStats.qiqi.dailyPenalty + weeklyStats.qiqi.starIncome;
+                             
+            const yiyiTotal = weeklyStats.yiyi.reward + weeklyStats.yiyi.penalty + weeklyStats.yiyi.publish + 
+                             weeklyStats.yiyi.obtain + weeklyStats.yiyi.trade + weeklyStats.yiyi.dailyIncome + 
+                             weeklyStats.yiyi.dailyPenalty + weeklyStats.yiyi.starIncome;
+            
+            const summary = `
+📊 第${weeklyStats.currentWeek - 1}周积分汇总 (${weeklyStats.weekStart} ~ ${weekEnd.toDateString()})
+
+🎯 七七本周：
+• 奖励：+${weeklyStats.qiqi.reward}分
+• 惩罚：${weeklyStats.qiqi.penalty}分  
+• 发布：${weeklyStats.qiqi.publish}分
+• 获取：+${weeklyStats.qiqi.obtain}分
+• 交易：${weeklyStats.qiqi.trade >= 0 ? '+' : ''}${weeklyStats.qiqi.trade}分
+• 日收：+${weeklyStats.qiqi.dailyIncome}分
+• 日罚：${weeklyStats.qiqi.dailyPenalty}分
+• 星收：+${weeklyStats.qiqi.starIncome}分
+• 总分：${qiqiTotal >= 0 ? '+' : ''}${qiqiTotal}分
+
+🎯 一一本周：
+• 奖励：+${weeklyStats.yiyi.reward}分
+• 惩罚：${weeklyStats.yiyi.penalty}分
+• 发布：${weeklyStats.yiyi.publish}分
+• 获取：+${weeklyStats.yiyi.obtain}分
+• 交易：${weeklyStats.yiyi.trade >= 0 ? '+' : ''}${weeklyStats.yiyi.trade}分
+• 日收：+${weeklyStats.yiyi.dailyIncome}分
+• 日罚：${weeklyStats.yiyi.dailyPenalty}分
+• 星收：+${weeklyStats.yiyi.starIncome}分
+• 总分：${yiyiTotal >= 0 ? '+' : ''}${yiyiTotal}分
+            `.trim();
+            
+            // 添加到积分历史
+            addHistory(summary, 'system', {
+                type: 'weekly_summary',
+                weekNumber: weeklyStats.currentWeek - 1,
+                weekStart: weeklyStats.weekStart,
+                weekEnd: weekEnd.toDateString(),
+                data: JSON.parse(JSON.stringify(weeklyStats))
+            });
+            
+            console.log('周度积分汇总已生成:', summary);
+        }
+        
+        // 重置周度统计数据
+        function resetWeeklyStats() {
+            const newWeekStart = getWeekStartDate();
+            const newWeekNumber = getCurrentWeekNumber();
+            
+            weeklyStats = {
+                qiqi: { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0, starIncome: 0 },
+                yiyi: { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0, starIncome: 0 },
+                currentWeek: newWeekNumber,
+                weekStart: newWeekStart.toDateString()
+            };
+            
+            console.log(`新的一周开始: 第${newWeekNumber}周 (${newWeekStart.toDateString()})`);
+            saveData();
+        }
+        
+        // 更新周度积分跟踪
+        function updateWeeklyPointTracking(user, category, points) {
+            if (!weeklyStats[user] || weeklyStats[user][category] === undefined) return;
+            
+            // 检查是否需要周度重置
+            checkWeeklyReset();
+            
+            // 更新对应类别的积分
+            weeklyStats[user][category] += points;
+            
+            console.log(`${user}本周${category}: ${weeklyStats[user][category]}`);
+        }
+        
+
+        // 检查并处理所有待处理的惩罚
+        function checkAndApplyPendingPenalties() {
+            // 只处理启动日期之后的快照
+            processSnapshotPenalties();
+        }
+
+        // 每日任务截止时间检查 - 在23:30时刻捕获状态快照
+        function checkDailyTaskDeadline() {
+            const now = new Date();
+            const currentDate = now.toDateString();
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+            
+            // 精确在23:30时刻捕获任务状态快照
+            if (currentHour === 23 && currentMinute >= 30 && currentMinute < 35) {
+                // 检查是否已经为今天创建了快照
+                if (!dailyTaskSnapshots[currentDate]) {
+                    console.log(`23:30截止时间到！保存 ${currentDate} 的任务状态快照`);
+                    captureTaskSnapshot(currentDate);
+                }
+            }
+            
+            // 处理所有快照的惩罚（延迟执行，确保快照创建后再处理）
+            setTimeout(() => processSnapshotPenalties(), 1000);
+        }
+
 
 
         function formatTimeRemaining(expireAt) {
@@ -7257,6 +7550,9 @@
                 lastResetDate,
                 weeklyData,
                 monthlyStarBonus,
+                dailyTaskSnapshots, // 保存任务状态快照
+                penaltySystemStartDate, // 保存惩罚系统开始日期
+                weeklyStats, // 保存周度积分统计数据
                 lastUpdated: new Date().toISOString()
             };
             localStorage.setItem('pointSystemV2', JSON.stringify(data));
@@ -8016,7 +8312,9 @@
                 if (bounty.status === 'open' || bounty.status === 'taken') {
                     // 未结算的悬赏，退还积分给发布者
                     if (bounty.publisher !== 'system') {
-                        bankData[bounty.publisher].bounty += bounty.points;
+                        bankData[bounty.publisher].reward += bounty.points;
+                        bankData[bounty.publisher].publish += bounty.points; // 撤销发布成本
+                        
                         refundedPoints += bounty.points;
                     }
                 }
@@ -8202,6 +8500,11 @@
                         weeklyData = cloudData.weeklyData || { qiqi: 0, yiyi: 0, lastResetDate: new Date().toISOString() };
                         monthlyStarBonus = cloudData.monthlyStarBonus || { qiqi: 0, yiyi: 0, lastBonusDate: new Date().toISOString() };
                         
+                        // 加载任务快照数据
+                        dailyTaskSnapshots = cloudData.dailyTaskSnapshots || {};
+                        penaltySystemStartDate = cloudData.penaltySystemStartDate || null;
+                        
+                        
                         // 检查是否需要每日重置
                         checkDailyReset();
                         
@@ -8228,7 +8531,9 @@
                             lastResetDate,
                             weeklyData,
                             monthlyStarBonus,
-                            lastUpdated: cloudData.lastUpdated
+                            dailyTaskSnapshots,
+                            penaltySystemStartDate,
+                                lastUpdated: cloudData.lastUpdated
                         }));
                         
                         // 刷新所有页面
@@ -8405,6 +8710,19 @@
                     
                     // 加载月度星星奖励数据
                     monthlyStarBonus = data.monthlyStarBonus || { qiqi: 0, yiyi: 0, lastBonusDate: new Date().toISOString() };
+                    
+                    // 加载任务快照数据
+                    dailyTaskSnapshots = data.dailyTaskSnapshots || {};
+                    penaltySystemStartDate = data.penaltySystemStartDate || null;
+                    
+                    // 加载周度统计数据
+                    weeklyStats = data.weeklyStats || {
+                        qiqi: { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0, starIncome: 0 },
+                        yiyi: { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0, starIncome: 0 },
+                        currentWeek: getCurrentWeekNumber(),
+                        weekStart: getWeekStartDate().toDateString()
+                    };
+                    
                     
                     // 检查是否需要每日重置
                     checkDailyReset();
@@ -8653,6 +8971,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             checkAuthentication(); // 检查认证状态
             loadData();
+            initializePenaltySystem(); // 初始化惩罚系统
+            checkWeeklyReset(); // 检查周度重置
             refreshBankPage();
             refreshHistoryPage();
             refreshBountyList();
@@ -8678,6 +8998,23 @@
             // 页面加载时立即检查一次
             checkBountyExpiry();
             checkDailyTaskDeadline();
+            checkAndApplyPendingPenalties(); // 检查是否有待处理的惩罚
+            
+            // 多重触发机制 - 确保惩罚100%执行
+            document.addEventListener('visibilitychange', function() {
+                processSnapshotPenalties(); // 页面隐藏/显示时都检查
+            });
+            
+            // 每隔30秒强制检查一次（更频繁）
+            setInterval(() => {
+                checkDailyTaskDeadline();
+                processSnapshotPenalties();
+            }, 30 * 1000);
+            
+            // 页面关闭前最后检查一次
+            window.addEventListener('beforeunload', function() {
+                processSnapshotPenalties();
+            });
             
             // 初始化 PWA 功能
             registerServiceWorker();
