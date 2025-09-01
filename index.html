@@ -2435,6 +2435,148 @@
             height: 100%;
             background: linear-gradient(90deg, #28a745, #20c997);
             transition: width 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 完成3个任务时的特殊进度条效果 */
+        .progress-fill.completed {
+            background: linear-gradient(90deg, #ffd700, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7);
+            background-size: 300% 300%;
+            animation: rainbowShine 2s ease-in-out infinite;
+        }
+
+        @keyframes rainbowShine {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* 奖励按钮动画 */
+        .reward-claim-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ffd93d, #6bcf7f, #4d9de0, #e15759, #ff9ff3);
+            background-size: 300% 300%;
+            animation: rewardGlow 1.5s ease-in-out infinite;
+            border: none;
+            color: white;
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+            transform: scale(1);
+            transition: transform 0.2s ease;
+        }
+
+        .reward-claim-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+        }
+
+        @keyframes rewardGlow {
+            0%, 100% { 
+                background-position: 0% 50%; 
+                box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+            }
+            50% { 
+                background-position: 100% 50%; 
+                box-shadow: 0 4px 20px rgba(255, 215, 61, 0.6);
+            }
+        }
+
+        /* 庆祝文字效果 */
+        .celebration-text {
+            background: linear-gradient(45deg, #ff6b6b, #ffd93d, #6bcf7f);
+            background-size: 200% 200%;
+            animation: celebrationShine 1s ease-in-out infinite;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+
+        @keyframes celebrationShine {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* 庆祝动画关键帧 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+            50% { transform: scale(1.1) rotate(5deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px currentColor; }
+            to { text-shadow: 0 0 30px currentColor, 0 0 40px currentColor; }
+        }
+
+        @keyframes rainbowText {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes confettiFall {
+            0% { 
+                transform: translateY(-10px) rotate(0deg); 
+                opacity: 1; 
+            }
+            100% { 
+                transform: translateY(100vh) rotate(360deg); 
+                opacity: 0; 
+            }
+        }
+
+        @keyframes coinFall {
+            0% { 
+                transform: translateY(0) rotate(0deg) scale(1); 
+                opacity: 1; 
+            }
+            50% { 
+                transform: translateY(50vh) rotate(180deg) scale(1.2); 
+                opacity: 0.8; 
+            }
+            100% { 
+                transform: translateY(100vh) rotate(360deg) scale(0.8); 
+                opacity: 0; 
+            }
+        }
+
+        @keyframes rewardTextFloat {
+            0% { 
+                transform: translateX(-50%) translateY(0) scale(0.5); 
+                opacity: 0; 
+            }
+            20% { 
+                transform: translateX(-50%) translateY(-20px) scale(1.2); 
+                opacity: 1; 
+            }
+            80% { 
+                transform: translateX(-50%) translateY(-40px) scale(1); 
+                opacity: 1; 
+            }
+            100% { 
+                transform: translateX(-50%) translateY(-60px) scale(0.8); 
+                opacity: 0; 
+            }
         }
 
         .daily-tasks-grid {
@@ -3509,6 +3651,37 @@
             <div id="daily" class="page active">
                 <h2>📅 每日任务</h2>
                 
+                <!-- 积分池系统 - 置顶显示 -->
+                <div class="points-pool-top-section" style="margin: 25px 0; padding: 30px; background: linear-gradient(135deg, #fff8e1 0%, #f3e5f5 50%, #e8f5e8 100%); border-radius: 25px; border: 3px solid #ff9800; box-shadow: 0 15px 40px rgba(255, 152, 0, 0.25);">
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <h3 style="color: #f57c00; margin: 0; font-size: 1.8em; text-shadow: 0 3px 6px rgba(245, 124, 0, 0.4); font-weight: bold;">💰 积分池系统 🏛️</h3>
+                        <p style="color: #e65100; margin: 12px 0 0 0; font-size: 1.1em; font-weight: 600; text-shadow: 0 1px 2px rgba(230, 81, 0, 0.3);">📝 每日任务积分暂存，每周日23:30自动提现！🕕</p>
+                    </div>
+                    
+                    <!-- 用户积分池网格显示 -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 25px;">
+                        <!-- 七七的积分池 -->
+                        <div style="padding: 25px; background: linear-gradient(135deg, #e3f2fd 0%, #f8f4ff 100%); border-radius: 20px; border: 3px solid #2196f3; box-shadow: 0 8px 25px rgba(33, 150, 243, 0.2);">
+                            <h5 style="color: #1976d2; margin: 0 0 15px 0; font-size: 1.3em; text-align: center; font-weight: bold; text-shadow: 0 2px 4px rgba(25, 118, 210, 0.3);">👧 七七的积分池 💎</h5>
+                            <div id="qiqi-pool-info-top" style="font-size: 1.0em; line-height: 1.6; margin-bottom: 18px;"></div>
+                            <div style="display: flex; gap: 12px; justify-content: center;">
+                                <button onclick="withdrawPoints('qiqi')" id="qiqi-withdraw-all-btn-top" style="background: linear-gradient(45deg, #4caf50, #66bb6a); color: white; border: none; padding: 12px 18px; border-radius: 12px; font-size: 0.95em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3); transition: all 0.3s ease;">💸 全部提现</button>
+                                <button onclick="showPartialWithdrawModal('qiqi')" id="qiqi-withdraw-partial-btn-top" style="background: linear-gradient(45deg, #2196f3, #42a5f5); color: white; border: none; padding: 12px 18px; border-radius: 12px; font-size: 0.95em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3); transition: all 0.3s ease;">✂️ 部分提现</button>
+                            </div>
+                        </div>
+                        
+                        <!-- 一一的积分池 -->
+                        <div style="padding: 25px; background: linear-gradient(135deg, #e8f5e8 0%, #f0f9ff 100%); border-radius: 20px; border: 3px solid #4caf50; box-shadow: 0 8px 25px rgba(76, 175, 80, 0.2);">
+                            <h5 style="color: #388e3c; margin: 0 0 15px 0; font-size: 1.3em; text-align: center; font-weight: bold; text-shadow: 0 2px 4px rgba(56, 142, 60, 0.3);">👦 一一的积分池 💎</h5>
+                            <div id="yiyi-pool-info-top" style="font-size: 1.0em; line-height: 1.6; margin-bottom: 18px;"></div>
+                            <div style="display: flex; gap: 12px; justify-content: center;">
+                                <button onclick="withdrawPoints('yiyi')" id="yiyi-withdraw-all-btn-top" style="background: linear-gradient(45deg, #4caf50, #66bb6a); color: white; border: none; padding: 12px 18px; border-radius: 12px; font-size: 0.95em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3); transition: all 0.3s ease;">💸 全部提现</button>
+                                <button onclick="showPartialWithdrawModal('yiyi')" id="yiyi-withdraw-partial-btn-top" style="background: linear-gradient(45deg, #2196f3, #42a5f5); color: white; border: none; padding: 12px 18px; border-radius: 12px; font-size: 0.95em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3); transition: all 0.3s ease;">✂️ 部分提现</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- 任务池管理 -->
                 <div class="task-pool-section">
                     <div class="section-header">
@@ -3542,6 +3715,9 @@
                             </div>
                             <div class="daily-countdown" id="daily-countdown" style="color: #dc3545; font-weight: bold;">
                                 任务截止: 23:30:00
+                            </div>
+                            <div class="task-reward-claim" id="qiqi-reward-claim" style="margin-top: 8px;">
+                                <!-- 奖励领取按钮将通过JavaScript动态添加 -->
                             </div>
                         </div>
                     </div>
@@ -3599,6 +3775,9 @@
                             </div>
                             <div class="daily-countdown-duplicate" style="color: #dc3545; font-weight: bold;">
                                 任务截止: 23:30:00
+                            </div>
+                            <div class="task-reward-claim" id="yiyi-reward-claim" style="margin-top: 8px;">
+                                <!-- 奖励领取按钮将通过JavaScript动态添加 -->
                             </div>
                         </div>
                     </div>
@@ -3661,6 +3840,27 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- 任务奖励等级系统 -->
+                <div class="task-reward-section" style="margin-top: 20px; padding: 25px; background: linear-gradient(135deg, #fff8e1 0%, #ffe0b2 50%, #ffcc02 100%); border-radius: 15px; border: 2px solid #ff9800; box-shadow: 0 8px 25px rgba(255, 152, 0, 0.3);">
+                    <h4 style="color: #e65100; margin-bottom: 15px; text-align: center; font-size: 1.3em; text-shadow: 0 2px 4px rgba(230, 81, 0, 0.3);">🏆 任务完成奖励系统 ✨</h4>
+                    <p style="text-align: center; color: #bf360c; margin-bottom: 25px; font-size: 1em; font-weight: 500;">🎯 完成3个任务可获得额外奖励，升级等级可增加奖励积分！🚀</p>
+                    
+                    <!-- 七七的奖励等级 -->
+                    <div class="user-reward-section" style="margin-bottom: 20px; padding: 20px; background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%); border-radius: 15px; border: 2px solid #2196f3; box-shadow: 0 6px 20px rgba(33, 150, 243, 0.2);">
+                        <h5 style="color: #1976d2; margin-bottom: 12px; font-size: 1.1em; display: flex; align-items: center; justify-content: center;">👧 七七的奖励等级 ⭐</h5>
+                        <div id="qiqi-reward-info" style="font-size: 0.95em; line-height: 1.5; margin-bottom: 15px; text-align: center;"></div>
+                        <button class="modal-btn btn-primary" id="qiqi-upgrade-btn" onclick="upgradeRewardLevel('qiqi')" style="font-size: 0.9em; padding: 8px 15px; border-radius: 10px; background: linear-gradient(45deg, #2196f3, #21cbf3); border: none; box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3); transition: all 0.3s ease;">🚀 升级</button>
+                    </div>
+                    
+                    <!-- 一一的奖励等级 -->
+                    <div class="user-reward-section" style="margin-bottom: 20px; padding: 20px; background: linear-gradient(135deg, #e8f5e8 0%, #f1f8e9 100%); border-radius: 15px; border: 2px solid #4caf50; box-shadow: 0 6px 20px rgba(76, 175, 80, 0.2);">
+                        <h5 style="color: #388e3c; margin-bottom: 12px; font-size: 1.1em; display: flex; align-items: center; justify-content: center;">👦 一一的奖励等级 ⭐</h5>
+                        <div id="yiyi-reward-info" style="font-size: 0.95em; line-height: 1.5; margin-bottom: 15px; text-align: center;"></div>
+                        <button class="modal-btn btn-primary" id="yiyi-upgrade-btn" onclick="upgradeRewardLevel('yiyi')" style="font-size: 0.9em; padding: 8px 15px; border-radius: 10px; background: linear-gradient(45deg, #4caf50, #8bc34a); border: none; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3); transition: all 0.3s ease;">🚀 升级</button>
+                    </div>
+                </div>
+
 
                 <!-- 系统说明 -->
                 <div class="daily-info">
@@ -3855,60 +4055,7 @@
                     <small>📅 每周一自动重置本周积分</small>
                 </div>
 
-                <!-- 星星积分池 -->
-                <div class="star-bonus-pool">
-                    <h4>✨ 星星积分池</h4>
-                    <div class="bonus-info">
-                        <div class="bonus-description">
-                            <p>每个月第一天，根据拥有的星星数量获得额外积分：</p>
-                            <ul>
-                                <li>每个小星星 +1分</li>
-                                <li>每个大星星 +10分</li>
-                                <li>每个彩色星星 +100分</li>
-                            </ul>
-                        </div>
-                        <div class="bonus-dashboard">
-                            <div class="user-bonus-section">
-                                <div class="user-bonus-card qiqi-bonus">
-                                    <h5>七七的星星积分</h5>
-                                    <div class="star-count" id="qiqi-star-count">计算中...</div>
-                                    <div class="monthly-bonus" id="qiqi-monthly-bonus">下次奖励: 计算中</div>
-                                </div>
-                                <div class="user-bonus-card yiyi-bonus">
-                                    <h5>一一的星星积分</h5>
-                                    <div class="star-count" id="yiyi-star-count">计算中...</div>
-                                    <div class="monthly-bonus" id="yiyi-monthly-bonus">下次奖励: 计算中</div>
-                                </div>
-                            </div>
-                            <div class="next-bonus-date">
-                                <small id="next-bonus-info">下次发放时间: 计算中</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- 星星等级说明 -->
-                <div class="star-legend">
-                    <h4>⭐ 星星等级说明</h4>
-                    <div class="legend-grid">
-                        <div class="legend-item">
-                            <span class="star-half">★</span>
-                            <span class="legend-text">50分 = 半星</span>
-                        </div>
-                        <div class="legend-item">
-                            <span class="star-small">★</span>
-                            <span class="legend-text">100分 = 小星星</span>
-                        </div>
-                        <div class="legend-item">
-                            <span class="star-big">★</span>
-                            <span class="legend-text">1000分 = 大星星</span>
-                        </div>
-                        <div class="legend-item">
-                            <span class="star-rainbow">★</span>
-                            <span class="legend-text">10000分 = 彩色星星</span>
-                        </div>
-                    </div>
-                </div>
                 
                 <!-- 自动同步状态面板 -->
                 <div class="sync-info">
@@ -3927,11 +4074,17 @@
                 
                 <!-- 积分管理操作 -->
                 <div style="background: #fff3cd; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #ffc107;">
-                    <h4 style="color: #856404; margin-bottom: 15px;">⚙️ 积分管理</h4>
-                    <p style="color: #856404; margin-bottom: 15px; font-size: 0.9em;">危险操作：此操作将清零所有用户的积分数据</p>
-                    <button class="modal-btn btn-primary" onclick="clearAllPoints()" style="background: #dc3545; border-color: #dc3545;">
-                        🗑️ 清零所有积分
-                    </button>
+                    <h4 style="color: #856404; margin-bottom: 15px;">⚙️ 数据管理</h4>
+                    <p style="color: #856404; margin-bottom: 15px; font-size: 0.9em;">危险操作：请谨慎使用以下功能</p>
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                        <button class="modal-btn btn-primary" onclick="clearAllPoints()" style="background: #dc3545; border-color: #dc3545; flex: 1; min-width: 150px;">
+                            🗑️ 清零所有积分
+                        </button>
+                        <button class="modal-btn btn-primary" onclick="globalDataClear()" style="background: linear-gradient(45deg, #8b0000, #660000); border-color: #660000; flex: 1; min-width: 150px; box-shadow: 0 4px 15px rgba(139, 0, 0, 0.3);">
+                            💥 全局清空所有数据
+                        </button>
+                    </div>
+                    <p style="color: #dc3545; margin: 10px 0 0 0; font-size: 0.8em; font-weight: bold;">⚠️ 全局清空将删除所有数据（任务、积分、历史等），不可恢复！</p>
                 </div>
                 
                 <table class="stats-table">
@@ -4293,6 +4446,30 @@
         // 全局变量
         let bountyData = [];
         let bankData = { qiqi: { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0 }, yiyi: { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0 } };
+        
+        // 任务完成奖励系统
+        let taskRewardSystem = {
+            qiqi: { level: 0, tasksCompleted: 0, pendingReward: 0, lastClaimDate: null },
+            yiyi: { level: 0, tasksCompleted: 0, pendingReward: 0, lastClaimDate: null }
+        };
+        
+        // 积分池系统
+        let pointsPool = {
+            qiqi: { 
+                pending: 0,        // 可提现积分
+                withdrawn: 0,      // 已提现积分（本周累计）
+                lastWithdrawDate: null,
+                weekStart: null
+            },
+            yiyi: { 
+                pending: 0,        // 可提现积分
+                withdrawn: 0,      // 已提现积分（本周累计）
+                lastWithdrawDate: null,
+                weekStart: null
+            },
+            autoWithdrawTime: '23:30',  // 自动提现时间
+            lastAutoWithdraw: null
+        };
         let historyData = [];
         let bountyCounter = 1;
         let dailyTasksContent = '';
@@ -4321,6 +4498,10 @@
             extraTasks: { // 超额补充任务
                 qiqi: [], // 七七的超额任务
                 yiyi: []  // 一一的超额任务
+            },
+            clearedCompleted: { // 已清除的完成任务记录
+                qiqi: [],
+                yiyi: []
             }
         };
         let taskCounter = 1;
@@ -5273,6 +5454,571 @@
             }
         }
 
+        // 任务完成奖励系统
+        function getUpgradeCost(level) {
+            if (level === 0) return 300;
+            return 300 * Math.pow(2, level);
+        }
+
+        function getTaskCompletionReward(level) {
+            return level + 1;
+        }
+
+        function canUpgradeRewardLevel(user) {
+            const currentLevel = taskRewardSystem[user].level;
+            const upgradeCost = getUpgradeCost(currentLevel);
+            const userTotal = bankData[user].reward + bankData[user].penalty + bankData[user].publish + bankData[user].obtain + bankData[user].trade + bankData[user].dailyIncome + bankData[user].dailyPenalty;
+            return userTotal >= upgradeCost;
+        }
+
+        function upgradeRewardLevel(user) {
+            const currentLevel = taskRewardSystem[user].level;
+            const upgradeCost = getUpgradeCost(currentLevel);
+            const userTotal = bankData[user].reward + bankData[user].penalty + bankData[user].publish + bankData[user].obtain + bankData[user].trade + bankData[user].dailyIncome + bankData[user].dailyPenalty;
+            const userName = user === 'qiqi' ? '七七' : '一一';
+            const newLevel = currentLevel + 1;
+            const newReward = getTaskCompletionReward(newLevel);
+            
+            if (userTotal < upgradeCost) {
+                alert(`积分不足！${userName}需要${upgradeCost}积分才能升级，当前只有${userTotal}积分。`);
+                return false;
+            }
+            
+            // 简化升级流程，减少确认步骤
+            if (confirm(`升级${userName}的任务奖励等级？\n消耗${upgradeCost}积分 → ${currentLevel}级升至${newLevel}级\n奖励提升：${currentLevel + 1}分 → ${newReward}分`)) {
+                bankData[user].reward -= upgradeCost;
+                taskRewardSystem[user].level++;
+                
+                addHistory(`${userName}升级任务奖励等级到${newLevel}级，消耗${upgradeCost}积分，现在完成3个任务可获得${newReward}分奖励`, 'system');
+                
+                saveData();
+                refreshBankPage();
+                refreshDailyTasks();
+                alert(`🚀 ${userName}升级成功！${newLevel}级 → 奖励${newReward}分！`);
+                return true;
+            }
+            return false;
+        }
+
+        function createCelebrationEffect(user) {
+            // 创建全屏庆祝遮罩
+            const celebration = document.createElement('div');
+            celebration.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                animation: fadeIn 0.5s ease-in;
+            `;
+            
+            const userName = user === 'qiqi' ? '七七' : '一一';
+            const userColor = user === 'qiqi' ? '#2196f3' : '#4caf50';
+            
+            celebration.innerHTML = `
+                <div style="
+                    text-align: center;
+                    color: white;
+                    animation: bounceIn 1s ease-out;
+                ">
+                    <div style="
+                        font-size: 4em;
+                        margin-bottom: 20px;
+                        animation: pulse 1s ease-in-out infinite;
+                    ">🎉🎊🥳</div>
+                    <h2 style="
+                        font-size: 2.5em;
+                        margin: 20px 0;
+                        color: ${userColor};
+                        text-shadow: 0 0 20px ${userColor};
+                        animation: glow 1s ease-in-out infinite alternate;
+                    ">恭喜${userName}!</h2>
+                    <p style="
+                        font-size: 1.5em;
+                        margin: 20px 0;
+                        background: linear-gradient(45deg, #ffd700, #ff6b6b, #4ecdc4);
+                        background-size: 200% 200%;
+                        animation: rainbowText 2s ease-in-out infinite;
+                        -webkit-background-clip: text;
+                        background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                        font-weight: bold;
+                    ">完成了3个任务!</p>
+                    <div style="
+                        font-size: 3em;
+                        animation: bounce 2s ease-in-out infinite;
+                    ">🎁✨🌟</div>
+                </div>
+            `;
+            
+            // 创建彩纸效果
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.cssText = `
+                    position: absolute;
+                    width: 10px;
+                    height: 10px;
+                    background: ${['#ff6b6b', '#ffd93d', '#6bcf7f', '#4d9de0', '#e15759', '#ff9ff3'][Math.floor(Math.random() * 6)]};
+                    left: ${Math.random() * 100}%;
+                    top: -10px;
+                    border-radius: 50%;
+                    animation: confettiFall ${2 + Math.random() * 3}s linear infinite;
+                    animation-delay: ${Math.random() * 2}s;
+                `;
+                celebration.appendChild(confetti);
+            }
+            
+            document.body.appendChild(celebration);
+            
+            // 3秒后自动移除庆祝效果
+            setTimeout(() => {
+                celebration.style.animation = 'fadeOut 0.5s ease-out';
+                setTimeout(() => {
+                    if (celebration.parentNode) {
+                        celebration.parentNode.removeChild(celebration);
+                    }
+                }, 500);
+            }, 3000);
+        }
+
+        function checkTaskCompletionReward(user, actualTaskCount = 1) {
+            const today = new Date().toDateString();
+            const lastClaimDate = taskRewardSystem[user].lastClaimDate;
+            
+            // 如果今天已经领取过奖励，不再增加进度
+            if (lastClaimDate === today) {
+                return 0;
+            }
+            
+            taskRewardSystem[user].tasksCompleted += actualTaskCount;
+            
+            if (taskRewardSystem[user].tasksCompleted >= 3) {
+                const rewardPoints = getTaskCompletionReward(taskRewardSystem[user].level);
+                taskRewardSystem[user].pendingReward += rewardPoints;
+                taskRewardSystem[user].tasksCompleted = 0;
+                
+                const userName = user === 'qiqi' ? '七七' : '一一';
+                
+                // 创建庆祝特效
+                createCelebrationEffect(user);
+                
+                return rewardPoints;
+            }
+            return 0;
+        }
+
+        function claimTaskReward(user) {
+            const pendingReward = taskRewardSystem[user].pendingReward;
+            const userName = user === 'qiqi' ? '七七' : '一一';
+            
+            if (pendingReward <= 0) {
+                alert(`${userName}暂无可领取的奖励！`);
+                return false;
+            }
+            
+            // 检查是否今天已经领取过
+            const today = new Date().toDateString();
+            const lastClaimDate = taskRewardSystem[user].lastClaimDate;
+            
+            if (lastClaimDate === today) {
+                alert(`${userName}今天已经领取过奖励了！明天再来吧~ 🌅`);
+                return false;
+            }
+            
+            // 直接领取，无需确认
+            bankData[user].reward += pendingReward;
+            taskRewardSystem[user].lastClaimDate = today;
+            
+            addHistory(`${userName}领取任务完成奖励${pendingReward}分（等级${taskRewardSystem[user].level}）`, 'system');
+            
+            taskRewardSystem[user].pendingReward = 0;
+            saveData();
+            refreshBankPage();
+            refreshDailyTasks();
+            
+            // 创建领取成功特效
+            createRewardClaimEffect(user, pendingReward);
+            return true;
+        }
+
+        function createRewardClaimEffect(user, rewardPoints) {
+            // 创建金币掉落效果
+            for (let i = 0; i < 20; i++) {
+                const coin = document.createElement('div');
+                coin.style.cssText = `
+                    position: fixed;
+                    width: 30px;
+                    height: 30px;
+                    background: linear-gradient(45deg, #ffd700, #ffed4a);
+                    border-radius: 50%;
+                    border: 2px solid #ffcc00;
+                    z-index: 10000;
+                    left: ${45 + Math.random() * 10}%;
+                    top: 30%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1.2em;
+                    animation: coinFall ${1 + Math.random() * 2}s ease-out forwards;
+                    animation-delay: ${Math.random() * 0.5}s;
+                    box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+                `;
+                coin.textContent = '💰';
+                
+                document.body.appendChild(coin);
+                
+                // 移除金币
+                setTimeout(() => {
+                    if (coin.parentNode) {
+                        coin.parentNode.removeChild(coin);
+                    }
+                }, 3000);
+            }
+            
+            // 创建奖励文字飞入效果
+            const rewardText = document.createElement('div');
+            rewardText.style.cssText = `
+                position: fixed;
+                top: 40%;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 10001;
+                font-size: 2em;
+                font-weight: bold;
+                color: #ffd700;
+                text-shadow: 0 0 20px #ffd700;
+                animation: rewardTextFloat 2s ease-out forwards;
+            `;
+            rewardText.textContent = `+${rewardPoints}分! 🎉`;
+            
+            document.body.appendChild(rewardText);
+            
+            setTimeout(() => {
+                if (rewardText.parentNode) {
+                    rewardText.parentNode.removeChild(rewardText);
+                }
+            }, 2000);
+        }
+
+        // 积分池功能
+        function addToPointsPool(user, points) {
+            // 检查是否需要重置周数据
+            const today = new Date();
+            const weekStart = getWeekStartDate();
+            
+            if (!pointsPool[user].weekStart || new Date(pointsPool[user].weekStart) < weekStart) {
+                pointsPool[user].weekStart = weekStart.toISOString();
+                pointsPool[user].withdrawn = 0; // 新周重置已提现积分
+            }
+            
+            pointsPool[user].pending += points;
+        }
+
+        function calculatePenalty(user) {
+            const totalWithdrawn = pointsPool[user].withdrawn;
+            if (totalWithdrawn < 25) {
+                return (25 - totalWithdrawn) * 2; // 每少一分扣两分
+            }
+            return 0;
+        }
+
+        function withdrawPoints(user, amount = null) {
+            if (amount === null) {
+                amount = pointsPool[user].pending; // 全部提现
+            }
+            
+            if (amount <= 0 || amount > pointsPool[user].pending) {
+                alert('提现金额无效！');
+                return false;
+            }
+            
+            const userName = user === 'qiqi' ? '七七' : '一一';
+            
+            // 执行提现
+            pointsPool[user].pending -= amount;
+            pointsPool[user].withdrawn += amount;
+            pointsPool[user].lastWithdrawDate = new Date().toISOString();
+            
+            // 添加到总积分
+            bankData[user].dailyIncome += amount;
+            addWeeklyPoints(user, amount);
+            
+            addHistory(`${userName}从积分池提现${amount}分`, 'system');
+            
+            saveData();
+            refreshDailyTasks();
+            refreshBankPage();
+            
+            return true;
+        }
+
+        function autoWithdrawCheck() {
+            const now = new Date();
+            const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+            const today = now.toDateString();
+            const isWeekEnd = now.getDay() === 0; // 周日
+            
+            if (isWeekEnd && currentTime === pointsPool.autoWithdrawTime && pointsPool.lastAutoWithdraw !== today) {
+                ['qiqi', 'yiyi'].forEach(user => {
+                    if (pointsPool[user].pending > 0) {
+                        autoWithdrawUser(user);
+                    }
+                });
+                pointsPool.lastAutoWithdraw = today;
+                saveData();
+            }
+        }
+
+        function autoWithdrawUser(user) {
+            const pendingPoints = pointsPool[user].pending;
+            const userName = user === 'qiqi' ? '七七' : '一一';
+            
+            // 自动提现所有积分
+            pointsPool[user].pending = 0;
+            pointsPool[user].withdrawn += pendingPoints;
+            
+            // 计算惩罚
+            const totalWithdrawn = pointsPool[user].withdrawn;
+            const penalty = calculatePenalty(user);
+            
+            // 添加到总积分
+            bankData[user].dailyIncome += pendingPoints;
+            addWeeklyPoints(user, pendingPoints);
+            
+            // 应用惩罚
+            if (penalty > 0) {
+                bankData[user].reward -= penalty;
+                addHistory(`${userName}自动提现${pendingPoints}分，本周总计${totalWithdrawn}分，低于25分惩罚-${penalty}分`, 'system');
+            } else {
+                addHistory(`${userName}自动提现${pendingPoints}分，本周总计${totalWithdrawn}分`, 'system');
+            }
+        }
+
+        function getWeekStartDate() {
+            const now = new Date();
+            const day = now.getDay();
+            const diff = now.getDate() - day + (day === 0 ? -6 : 1); // 调整到周一
+            const monday = new Date(now.setDate(diff));
+            monday.setHours(0, 0, 0, 0);
+            return monday;
+        }
+
+        function globalDataClear() {
+            if (confirm('⚠️ 确认要清除所有数据吗？\n\n这将删除：\n• 所有任务数据\n• 银行积分数据\n• 积分池数据\n• 任务奖励系统数据\n• 历史记录\n• 所有设置和配置\n\n此操作不可恢复！')) {
+                // 清除所有本地存储
+                localStorage.clear();
+                
+                // 重置所有全局变量
+                bankData = { 
+                    qiqi: { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0, starIncome: 0 }, 
+                    yiyi: { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0, starIncome: 0 } 
+                };
+                weeklyData = { qiqi: 0, yiyi: 0, lastResetDate: new Date().toISOString() };
+                monthlyStarBonus = { qiqi: 0, yiyi: 0, lastBonusDate: new Date().toISOString() };
+                taskList = { qiqi: [], yiyi: [] };
+                taskPool = [];
+                taskCounter = 1;
+                historyData = [];
+                penaltyHistory = [];
+                lastResetDate = null;
+                taskSnapshots = {};
+                dailyTasks = {
+                    qiqi: [null, null, null],
+                    yiyi: [null, null, null],
+                    progress: { qiqi: 0, yiyi: 0 },
+                    extraTasks: { qiqi: [], yiyi: [] },
+                    clearedCompleted: { qiqi: [], yiyi: [] }
+                };
+                
+                // 重置任务奖励系统
+                taskRewardSystem = {
+                    qiqi: { level: 0, tasksCompleted: 0, pendingReward: 0, lastClaimDate: null },
+                    yiyi: { level: 0, tasksCompleted: 0, pendingReward: 0, lastClaimDate: null }
+                };
+                
+                // 重置积分池
+                pointsPool = {
+                    qiqi: { pending: 0, withdrawn: 0, lastWithdrawDate: null, weekStart: null },
+                    yiyi: { pending: 0, withdrawn: 0, lastWithdrawDate: null, weekStart: null },
+                    autoWithdrawTime: '23:30',
+                    lastAutoWithdraw: null
+                };
+                
+                // 保存空数据并刷新所有页面
+                saveData();
+                refreshDailyPage();
+                refreshBankPage();
+                refreshHistoryPage();
+                updatePointsPoolDisplay();
+                
+                addHistory('系统重置：所有数据已清空', 'system');
+                alert('🗑️ 所有数据已清空完成！');
+                
+                // 刷新当前页面显示
+                location.reload();
+            }
+        }
+
+        function showPartialWithdrawModal(user) {
+            const userName = user === 'qiqi' ? '七七' : '一一';
+            const pendingPoints = pointsPool[user].pending;
+            
+            if (pendingPoints <= 0) {
+                alert(`${userName}的积分池中没有可提现的积分！`);
+                return;
+            }
+            
+            const amount = prompt(`${userName}的积分池中有${pendingPoints}分可提现\n\n请输入要提现的积分数量（1-${pendingPoints}）：`);
+            
+            if (amount === null) return; // 用户取消
+            
+            const withdrawAmount = parseInt(amount);
+            if (isNaN(withdrawAmount) || withdrawAmount <= 0 || withdrawAmount > pendingPoints) {
+                alert('请输入有效的提现金额！');
+                return;
+            }
+            
+            withdrawPoints(user, withdrawAmount);
+        }
+
+        function updatePointsPoolDisplay() {
+            ['qiqi', 'yiyi'].forEach(user => {
+                const pending = pointsPool[user].pending;
+                const withdrawn = pointsPool[user].withdrawn;
+                const totalWeekly = pending + withdrawn;
+                const projectedPenalty = totalWeekly < 25 ? (25 - totalWeekly) * 2 : 0;
+                
+                // 更新顶部新版本显示
+                const poolInfoTopEl = document.getElementById(`${user}-pool-info-top`);
+                const withdrawAllTopBtn = document.getElementById(`${user}-withdraw-all-btn-top`);
+                const withdrawPartialTopBtn = document.getElementById(`${user}-withdraw-partial-btn-top`);
+                
+                if (poolInfoTopEl) {
+                    let riskWarning = '';
+                    if (projectedPenalty > 0) {
+                        riskWarning = `<div style="color: #d32f2f; font-weight: bold; margin-top: 5px; font-size: 0.8em;">⚠️ 预计扣分 ${projectedPenalty} 分！</div>`;
+                    }
+                    
+                    poolInfoTopEl.innerHTML = `
+                        <div style="color: #1976d2;">💰 可提现积分: <strong>${pending}分</strong></div>
+                        <div style="color: #4caf50;">✅ 已提现积分: <strong>${withdrawn}分</strong></div>
+                        <div style="color: #666;">📊 本周总计: <strong>${totalWeekly}分</strong> (需25分)</div>
+                        ${riskWarning}
+                    `;
+                }
+                
+                if (withdrawAllTopBtn) {
+                    withdrawAllTopBtn.disabled = pending === 0;
+                    withdrawAllTopBtn.style.opacity = pending === 0 ? '0.5' : '1';
+                }
+                
+                if (withdrawPartialTopBtn) {
+                    withdrawPartialTopBtn.disabled = pending === 0;
+                    withdrawPartialTopBtn.style.opacity = pending === 0 ? '0.5' : '1';
+                }
+                
+                // 保留原有显示元素更新（如果存在）
+                const poolInfoEl = document.getElementById(`${user}-pool-info`);
+                const withdrawAllBtn = document.getElementById(`${user}-withdraw-all-btn`);
+                const withdrawPartialBtn = document.getElementById(`${user}-withdraw-partial-btn`);
+                
+                if (poolInfoEl) {
+                    let riskWarning = '';
+                    if (projectedPenalty > 0) {
+                        riskWarning = `<div style="color: #d32f2f; font-weight: bold; margin-top: 8px;">⚠️ 风险提醒：预计扣分 ${projectedPenalty} 分！</div>`;
+                    }
+                    
+                    poolInfoEl.innerHTML = `
+                        <div>💰 可提现积分: <strong style="color: #2e7d32;">${pending}分</strong></div>
+                        <div>✅ 已提现积分: <strong style="color: #1976d2;">${withdrawn}分</strong></div>
+                        <div>📊 本周总计: <strong style="color: ${totalWeekly >= 25 ? '#4caf50' : '#f57c00'};">${totalWeekly}分</strong> ${totalWeekly >= 25 ? '🎯' : '(需25分)'}</div>
+                        ${riskWarning}
+                    `;
+                }
+                
+                // 更新按钮状态
+                if (withdrawAllBtn) {
+                    withdrawAllBtn.disabled = pending <= 0;
+                    withdrawAllBtn.style.opacity = pending > 0 ? '1' : '0.5';
+                }
+                
+                if (withdrawPartialBtn) {
+                    withdrawPartialBtn.disabled = pending <= 0;
+                    withdrawPartialBtn.style.opacity = pending > 0 ? '1' : '0.5';
+                }
+            });
+        }
+
+        function updateTaskRewardDisplay() {
+            ['qiqi', 'yiyi'].forEach(user => {
+                const level = taskRewardSystem[user].level;
+                const tasksCompleted = taskRewardSystem[user].tasksCompleted;
+                const pendingReward = taskRewardSystem[user].pendingReward;
+                const currentReward = getTaskCompletionReward(level);
+                const nextUpgradeCost = getUpgradeCost(level);
+                const userTotal = bankData[user].reward + bankData[user].penalty + bankData[user].publish + bankData[user].obtain + bankData[user].trade + bankData[user].dailyIncome + bankData[user].dailyPenalty;
+                const canUpgrade = canUpgradeRewardLevel(user);
+                
+                // 更新每日任务区域的领取按钮
+                const rewardClaimEl = document.getElementById(`${user}-reward-claim`);
+                if (rewardClaimEl) {
+                    const today = new Date().toDateString();
+                    const lastClaimDate = taskRewardSystem[user].lastClaimDate;
+                    const hasClaimedToday = lastClaimDate === today;
+                    
+                    if (pendingReward > 0 && !hasClaimedToday) {
+                        rewardClaimEl.innerHTML = `
+                            <button class="reward-claim-btn" onclick="claimTaskReward('${user}')" 
+                                    style="font-size: 0.9em; padding: 10px 15px; width: 100%; border-radius: 20px; cursor: pointer;">
+                                🎉 领取 ${pendingReward} 分奖励! 🎁
+                            </button>`;
+                    } else if (hasClaimedToday) {
+                        rewardClaimEl.innerHTML = `
+                            <div style="text-align: center; color: #6c757d; font-size: 0.8em; padding: 8px; background: #f8f9fa; border-radius: 10px; border: 1px solid #dee2e6;">
+                                ✅ 今日已领取奖励 🌅
+                            </div>`;
+                    } else {
+                        rewardClaimEl.innerHTML = '';
+                    }
+                }
+                
+                // 更新详细信息区域
+                const rewardInfoEl = document.getElementById(`${user}-reward-info`);
+                if (rewardInfoEl) {
+                    const today = new Date().toDateString();
+                    const lastClaimDate = taskRewardSystem[user].lastClaimDate;
+                    const hasClaimedToday = lastClaimDate === today;
+                    
+                    let claimButton = '';
+                    if (pendingReward > 0 && !hasClaimedToday) {
+                        claimButton = `<button class="reward-claim-btn" onclick="claimTaskReward('${user}')" style="margin-top: 10px; font-size: 0.9em; padding: 8px 15px; border-radius: 15px; cursor: pointer;">🎉 领取 ${pendingReward} 分奖励! 🎁</button>`;
+                    } else if (hasClaimedToday) {
+                        claimButton = `<div style="margin-top: 10px; text-align: center; color: #6c757d; font-size: 0.85em; padding: 8px; background: #f8f9fa; border-radius: 10px; border: 1px solid #dee2e6;">✅ 今日已领取奖励 🌅</div>`;
+                    }
+                    
+                    rewardInfoEl.innerHTML = `
+                        <div>当前等级: ${level}级 | 完成3个任务奖励: ${currentReward}分</div>
+                        <div>已完成任务: ${tasksCompleted}/3 ${pendingReward > 0 ? '| 🎁 有奖励可领取!' : ''}</div>
+                        <div>升级费用: ${nextUpgradeCost}积分 | 当前积分: ${userTotal}分</div>
+                        ${claimButton}
+                    `;
+                }
+                
+                // 更新升级按钮状态
+                const upgradeBtn = document.getElementById(`${user}-upgrade-btn`);
+                if (upgradeBtn) {
+                    upgradeBtn.disabled = !canUpgrade;
+                    upgradeBtn.textContent = canUpgrade ? '🚀 升级' : `需要${nextUpgradeCost}积分`;
+                    upgradeBtn.style.opacity = canUpgrade ? '1' : '0.5';
+                }
+            });
+        }
+
         function updateStarBonusDisplay() {
             const qiqiTotal = bankData.qiqi.reward + bankData.qiqi.penalty + bankData.qiqi.publish + bankData.qiqi.obtain + bankData.qiqi.trade + bankData.qiqi.dailyIncome + bankData.qiqi.dailyPenalty;
             const yiyiTotal = bankData.yiyi.reward + bankData.yiyi.penalty + bankData.yiyi.publish + bankData.yiyi.obtain + bankData.yiyi.trade + bankData.yiyi.dailyIncome + bankData.yiyi.dailyPenalty;
@@ -5283,24 +6029,37 @@
             const qiqiBonus = calculateMonthlyBonus(qiqiTotal);
             const yiyiBonus = calculateMonthlyBonus(yiyiTotal);
             
-            // 更新七七的星星统计
-            document.getElementById('qiqi-star-count').textContent = 
-                `彩色星星: ${qiqiStars.rainbow} | 大星星: ${qiqiStars.big} | 小星星: ${qiqiStars.small}`;
-            document.getElementById('qiqi-monthly-bonus').textContent = 
-                `下次奖励: ${qiqiBonus}分`;
+            // 更新七七的星星统计 - 检查元素是否存在
+            const qiqiStarCountEl = document.getElementById('qiqi-star-count');
+            if (qiqiStarCountEl) {
+                qiqiStarCountEl.textContent = 
+                    `彩色星星: ${qiqiStars.rainbow} | 大星星: ${qiqiStars.big} | 小星星: ${qiqiStars.small}`;
+            }
+            const qiqiMonthlyBonusEl = document.getElementById('qiqi-monthly-bonus');
+            if (qiqiMonthlyBonusEl) {
+                qiqiMonthlyBonusEl.textContent = `下次奖励: ${qiqiBonus}分`;
+            }
                 
-            // 更新一一的星星统计
-            document.getElementById('yiyi-star-count').textContent = 
-                `彩色星星: ${yiyiStars.rainbow} | 大星星: ${yiyiStars.big} | 小星星: ${yiyiStars.small}`;
-            document.getElementById('yiyi-monthly-bonus').textContent = 
-                `下次奖励: ${yiyiBonus}分`;
+            // 更新一一的星星统计 - 检查元素是否存在
+            const yiyiStarCountEl = document.getElementById('yiyi-star-count');
+            if (yiyiStarCountEl) {
+                yiyiStarCountEl.textContent = 
+                    `彩色星星: ${yiyiStars.rainbow} | 大星星: ${yiyiStars.big} | 小星星: ${yiyiStars.small}`;
+            }
+            const yiyiMonthlyBonusEl = document.getElementById('yiyi-monthly-bonus');
+            if (yiyiMonthlyBonusEl) {
+                yiyiMonthlyBonusEl.textContent = `下次奖励: ${yiyiBonus}分`;
+            }
             
-            // 更新下次发放时间
-            const now = new Date();
-            const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('next-bonus-info').textContent = 
-                `下次发放时间: ${nextMonth.toLocaleDateString('zh-CN', options)}`;
+            // 更新下次发放时间 - 检查元素是否存在
+            const nextBonusInfoEl = document.getElementById('next-bonus-info');
+            if (nextBonusInfoEl) {
+                const now = new Date();
+                const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                nextBonusInfoEl.textContent = 
+                    `下次发放时间: ${nextMonth.toLocaleDateString('zh-CN', options)}`;
+            }
         }
 
         // 小银行页面
@@ -5328,22 +6087,23 @@
 
             tbody.innerHTML = rows.map(row => {
                 const weeklyData = weeklyStats[row.user];
-                const total = row.data.reward + row.data.penalty + row.data.publish + row.data.obtain + row.data.trade + row.data.dailyIncome + row.data.dailyPenalty;
-                const starEarnings = calculateStarEarnings(total);
+                const total = (row.data.reward || 0) + (row.data.penalty || 0) + (row.data.publish || 0) + (row.data.obtain || 0) + (row.data.trade || 0) + (row.data.dailyIncome || 0) + (row.data.dailyPenalty || 0);
+                const safeTotal = isNaN(total) ? 0 : total;
+                const starEarnings = calculateStarEarnings(safeTotal) || '0分';
                 
                 return `
                     <tr>
                         <td style="font-weight: bold; text-align: center;">${weeklyStats.currentWeek}</td>
                         <td style="font-weight: bold;">${row.name}</td>
-                        <td style="color: ${weeklyData.reward >= 0 ? '#28a745' : '#dc3545'};">${weeklyData.reward}</td>
-                        <td style="color: ${weeklyData.penalty >= 0 ? '#28a745' : '#dc3545'};">${weeklyData.penalty}</td>
-                        <td style="color: ${weeklyData.publish >= 0 ? '#28a745' : '#dc3545'};">${weeklyData.publish}</td>
-                        <td style="color: ${weeklyData.obtain >= 0 ? '#28a745' : '#dc3545'};">${weeklyData.obtain}</td>
-                        <td style="color: ${weeklyData.trade >= 0 ? '#28a745' : '#dc3545'};">${weeklyData.trade}</td>
-                        <td style="color: ${weeklyData.dailyIncome >= 0 ? '#28a745' : '#dc3545'};">${weeklyData.dailyIncome}</td>
-                        <td style="color: ${weeklyData.dailyPenalty >= 0 ? '#28a745' : '#dc3545'};">${weeklyData.dailyPenalty}</td>
+                        <td style="color: ${(weeklyData.reward || 0) >= 0 ? '#28a745' : '#dc3545'};">${weeklyData.reward || 0}</td>
+                        <td style="color: ${(weeklyData.penalty || 0) >= 0 ? '#28a745' : '#dc3545'};">${weeklyData.penalty || 0}</td>
+                        <td style="color: ${(weeklyData.publish || 0) >= 0 ? '#28a745' : '#dc3545'};">${weeklyData.publish || 0}</td>
+                        <td style="color: ${(weeklyData.obtain || 0) >= 0 ? '#28a745' : '#dc3545'};">${weeklyData.obtain || 0}</td>
+                        <td style="color: ${(weeklyData.trade || 0) >= 0 ? '#28a745' : '#dc3545'};">${weeklyData.trade || 0}</td>
+                        <td style="color: ${(weeklyData.dailyIncome || 0) >= 0 ? '#28a745' : '#dc3545'};">${weeklyData.dailyIncome || 0}</td>
+                        <td style="color: ${(weeklyData.dailyPenalty || 0) >= 0 ? '#28a745' : '#dc3545'};">${weeklyData.dailyPenalty || 0}</td>
                         <td style="text-align: center; color: #ffc107; font-weight: bold;">${starEarnings}</td>
-                        <td style="color: ${total >= 0 ? '#28a745' : '#dc3545'}; font-weight: bold;">${total}</td>
+                        <td style="color: ${safeTotal >= 0 ? '#28a745' : '#dc3545'}; font-weight: bold;">${safeTotal}</td>
                     </tr>
                 `;
             }).join('');
@@ -5351,6 +6111,7 @@
             // 更新积分展示卡片和星星积分池
             updateScoreCards();
             updateStarBonusDisplay();
+            updateTaskRewardDisplay();
         }
 
         function updateScoreCards() {
@@ -5443,27 +6204,29 @@
         function clearAllPoints() {
             requireAuth(() => {
                 // 获取当前积分状态用于确认和记录
-                const qiqiTotal = bankData.qiqi.reward + bankData.qiqi.penalty + bankData.qiqi.publish + bankData.qiqi.obtain + bankData.qiqi.trade + bankData.qiqi.daily;
-                const yiyiTotal = bankData.yiyi.reward + bankData.yiyi.penalty + bankData.yiyi.publish + bankData.yiyi.obtain + bankData.yiyi.trade + bankData.yiyi.daily;
+                const qiqiTotal = (bankData.qiqi.reward || 0) + (bankData.qiqi.penalty || 0) + (bankData.qiqi.publish || 0) + (bankData.qiqi.obtain || 0) + (bankData.qiqi.trade || 0) + (bankData.qiqi.dailyIncome || 0) + (bankData.qiqi.dailyPenalty || 0) + (bankData.qiqi.starIncome || 0);
+                const yiyiTotal = (bankData.yiyi.reward || 0) + (bankData.yiyi.penalty || 0) + (bankData.yiyi.publish || 0) + (bankData.yiyi.obtain || 0) + (bankData.yiyi.trade || 0) + (bankData.yiyi.dailyIncome || 0) + (bankData.yiyi.dailyPenalty || 0) + (bankData.yiyi.starIncome || 0);
+                const safeTotalQiqi = isNaN(qiqiTotal) ? 0 : qiqiTotal;
+                const safeTotalYiyi = isNaN(yiyiTotal) ? 0 : yiyiTotal;
                 
                 const confirmMessage = `⚠️ 危险操作确认 ⚠️\n\n` +
                     `即将清零所有用户的积分数据：\n\n` +
-                    `七七当前总积分：${qiqiTotal}\n` +
-                    `• 奖励：${bankData.qiqi.reward}\n` +
-                    `• 罚分：${bankData.qiqi.penalty}\n` +
-                    `• 发布：${bankData.qiqi.publish}\n` +
-                    `• 获取：${bankData.qiqi.obtain}\n` +
-                    `• 交易：${bankData.qiqi.trade}\n` +
-                    `• 日收入：${bankData.qiqi.dailyIncome}\n` +
-                    `• 日惩罚：${bankData.qiqi.dailyPenalty}\n\n` +
-                    `一一当前总积分：${yiyiTotal}\n` +
-                    `• 奖励：${bankData.yiyi.reward}\n` +
-                    `• 罚分：${bankData.yiyi.penalty}\n` +
-                    `• 发布：${bankData.yiyi.publish}\n` +
-                    `• 获取：${bankData.yiyi.obtain}\n` +
-                    `• 交易：${bankData.yiyi.trade}\n` +
-                    `• 日收入：${bankData.yiyi.dailyIncome}\n` +
-                    `• 日惩罚：${bankData.yiyi.dailyPenalty}\n\n` +
+                    `七七当前总积分：${safeTotalQiqi}\n` +
+                    `• 奖励：${bankData.qiqi.reward || 0}\n` +
+                    `• 罚分：${bankData.qiqi.penalty || 0}\n` +
+                    `• 发布：${bankData.qiqi.publish || 0}\n` +
+                    `• 获取：${bankData.qiqi.obtain || 0}\n` +
+                    `• 交易：${bankData.qiqi.trade || 0}\n` +
+                    `• 日收入：${bankData.qiqi.dailyIncome || 0}\n` +
+                    `• 日惩罚：${bankData.qiqi.dailyPenalty || 0}\n\n` +
+                    `一一当前总积分：${safeTotalYiyi}\n` +
+                    `• 奖励：${bankData.yiyi.reward || 0}\n` +
+                    `• 罚分：${bankData.yiyi.penalty || 0}\n` +
+                    `• 发布：${bankData.yiyi.publish || 0}\n` +
+                    `• 获取：${bankData.yiyi.obtain || 0}\n` +
+                    `• 交易：${bankData.yiyi.trade || 0}\n` +
+                    `• 日收入：${bankData.yiyi.dailyIncome || 0}\n` +
+                    `• 日惩罚：${bankData.yiyi.dailyPenalty || 0}\n\n` +
                     `此操作将清零所有积分数据，无法撤销！\n` +
                     `确定要继续吗？`;
 
@@ -5832,6 +6595,20 @@
                     taskPool = cloudData.taskPool || [];
                     taskCounter = cloudData.taskCounter || 1;
                     
+                    // 恢复任务奖励系统数据
+                    taskRewardSystem = cloudData.taskRewardSystem || {
+                        qiqi: { level: 0, tasksCompleted: 0, pendingReward: 0, lastClaimDate: null },
+                        yiyi: { level: 0, tasksCompleted: 0, pendingReward: 0, lastClaimDate: null }
+                    };
+                    
+                    // 恢复积分池数据
+                    pointsPool = cloudData.pointsPool || {
+                        qiqi: { pending: 0, withdrawn: 0, lastWithdrawDate: null, weekStart: null },
+                        yiyi: { pending: 0, withdrawn: 0, lastWithdrawDate: null, weekStart: null },
+                        autoWithdrawTime: '23:30',
+                        lastAutoWithdraw: null
+                    };
+                    
                     // 恢复每日任务数据
                     if (cloudData.dailyTasks && Array.isArray(cloudData.dailyTasks.qiqi) && Array.isArray(cloudData.dailyTasks.yiyi)) {
                         dailyTasks = {
@@ -5843,7 +6620,9 @@
                         dailyTasks = {
                             qiqi: [null, null, null],
                             yiyi: [null, null, null],
-                            progress: { qiqi: 0, yiyi: 0 }
+                            progress: { qiqi: 0, yiyi: 0 },
+                            extraTasks: { qiqi: [], yiyi: [] },
+                            clearedCompleted: { qiqi: [], yiyi: [] }
                         };
                     }
                     
@@ -5874,6 +6653,8 @@
                         monthlyStarBonus,
                         dailyTaskSnapshots,
                         penaltySystemStartDate,
+                        taskRewardSystem,
+                        pointsPool,
                         lastUpdated: cloudData.lastUpdated
                     }));
                     
@@ -6215,12 +6996,14 @@
                 task.actualTaskCount = actualTaskCount;
                 task.bonusPoints = bonusPoints;
                 
-                bankData[user].dailyIncome += totalPoints;
-                addWeeklyPoints(user, totalPoints);
+                // 积分先进入积分池，不直接添加到总分
+                addToPointsPool(user, totalPoints);
                 
                 // 更新周度跟踪
                 updateWeeklyPointTracking(user, 'dailyIncome', totalPoints);
                 
+                // 检查任务完成奖励（传递实际任务计数）
+                const bonusReward = checkTaskCompletionReward(user, actualTaskCount);
                 
                 // 更新进度（考虑以一抵二）
                 dailyTasks.progress[user] = dailyTasks[user].reduce((total, t) => {
@@ -6458,10 +7241,11 @@
                 task.multiplier = multiplier;
                 task.completedAt = new Date().toISOString();
                 
-                // 添加积分
-                bankData[user].reward += totalPoints;
-                addWeeklyPoints(user, totalPoints);
+                // 积分先进入积分池，不直接添加到总分
+                addToPointsPool(user, totalPoints);
                 
+                // 检查任务完成奖励（传递实际任务计数）
+                const bonusReward = checkTaskCompletionReward(user, actualTaskCount);
                 
                 // 添加历史记录
                 const multiplierText = multiplier === 1 ? '' : multiplier === 2 ? '(加倍)' : '(超级加倍)';
@@ -6560,6 +7344,19 @@
         function clearDailyTaskSlot(user, slotIndex) {
             requireAuth(() => {
                 if (confirm('确定要清除这个任务槽吗？')) {
+                    const task = dailyTasks[user][slotIndex];
+                    // 如果任务已完成，记录为已清除完成的任务，防止重新选择后取消完成
+                    if (task && task.completed) {
+                        if (!dailyTasks.clearedCompleted) {
+                            dailyTasks.clearedCompleted = { qiqi: [], yiyi: [] };
+                        }
+                        dailyTasks.clearedCompleted[user].push({
+                            poolTaskId: task.poolTaskId,
+                            name: task.name,
+                            clearedAt: new Date().toISOString()
+                        });
+                    }
+                    
                     dailyTasks[user][slotIndex] = null;
                     dailyTasks.progress[user] = dailyTasks[user].filter(t => t && t.completed).length;
                     saveData();
@@ -6704,6 +7501,17 @@
 
             requireAuth(() => {
                 if (task.completed) {
+                    // 检查是否是之前清除过的完成任务，如果是则不允许取消完成
+                    if (dailyTasks.clearedCompleted && dailyTasks.clearedCompleted[user]) {
+                        const wasPreviouslyCleared = dailyTasks.clearedCompleted[user].some(cleared => 
+                            cleared.poolTaskId === task.poolTaskId && cleared.name === task.name
+                        );
+                        if (wasPreviouslyCleared) {
+                            alert('此任务之前已完成并清除，不能取消完成状态！');
+                            return;
+                        }
+                    }
+                    
                     // 取消完成
                     task.completed = false;
                     task.completedAt = null;
@@ -6718,7 +7526,23 @@
                     bankData[user].reward += task.points;
                     addWeeklyPoints(user, task.points);
                     
-                    addHistory(`${user === 'qiqi' ? '七七' : '一一'}完成任务"${task.title}" +${task.points}积分`, 'system');
+                    // 获取任务的实际计数（检查是否有以一抵二属性）
+                    let actualTaskCount = 1;
+                    if (task.poolTaskId) {
+                        const poolTask = taskPool.find(pt => pt.id === task.poolTaskId);
+                        if (poolTask && poolTask.doubleValue) {
+                            actualTaskCount = 2;
+                        }
+                    }
+                    
+                    // 检查任务完成奖励（传递实际任务计数）
+                    const bonusReward = checkTaskCompletionReward(user, actualTaskCount);
+                    
+                    let message = `${user === 'qiqi' ? '七七' : '一一'}完成任务"${task.title}" +${task.points}积分`;
+                    if (bonusReward > 0) {
+                        message += `，额外奖励+${bonusReward}分`;
+                    }
+                    addHistory(message, 'system');
                 }
 
                 saveData();
@@ -6968,10 +7792,45 @@
             }
 
             // 更新进度显示
-            document.getElementById('qiqi-progress').textContent = `${dailyTasks.progress.qiqi}/3`;
-            document.getElementById('yiyi-progress').textContent = `${dailyTasks.progress.yiyi}/3`;
-            document.getElementById('qiqi-progress-fill').style.width = `${(dailyTasks.progress.qiqi / 3) * 100}%`;
-            document.getElementById('yiyi-progress-fill').style.width = `${(dailyTasks.progress.yiyi / 3) * 100}%`;
+            ['qiqi', 'yiyi'].forEach(user => {
+                const progress = dailyTasks.progress[user];
+                const level = taskRewardSystem[user].level;
+                const tasksCompleted = taskRewardSystem[user].tasksCompleted;
+                const pendingReward = taskRewardSystem[user].pendingReward;
+                
+                let progressText = `${progress}/3`;
+                let progressClass = '';
+                
+                if (pendingReward > 0) {
+                    progressText = `<span class="celebration-text">🎉${progress}/3 🎁${pendingReward}分可领取!</span>`;
+                    progressClass = 'completed';
+                } else if (progress === 3) {
+                    progressText = `<span class="celebration-text">🎉${progress}/3 完成!</span>`;
+                    progressClass = 'completed';
+                } else if (tasksCompleted > 0) {
+                    progressText += ` (奖励进度:${tasksCompleted}/3⭐)`;
+                }
+                
+                const progressEl = document.getElementById(`${user}-progress`);
+                if (progressEl) {
+                    progressEl.innerHTML = progressText;
+                }
+                
+                const progressFillEl = document.getElementById(`${user}-progress-fill`);
+                if (progressFillEl) {
+                    progressFillEl.style.width = `${(progress / 3) * 100}%`;
+                    progressFillEl.className = `progress-fill ${progressClass}`;
+                }
+            });
+            
+            // 更新奖励等级显示
+            updateTaskRewardDisplay();
+            
+            // 更新积分池显示
+            updatePointsPoolDisplay();
+            
+            // 检查自动提现
+            autoWithdrawCheck();
 
             // 更新任务池计数
             refreshTaskPoolDisplay();
@@ -7191,6 +8050,9 @@
             
             // 清空超额任务
             dailyTasks.extraTasks = { qiqi: [], yiyi: [] };
+            
+            // 清空已清除完成任务记录（每日重置）
+            dailyTasks.clearedCompleted = { qiqi: [], yiyi: [] };
             
             saveData();
             console.log('每日任务和超额任务已清空，需要重新选择');
@@ -7552,6 +8414,8 @@
                 dailyTaskSnapshots, // 保存任务状态快照
                 penaltySystemStartDate, // 保存惩罚系统开始日期
                 weeklyStats, // 保存周度积分统计数据
+                taskRewardSystem, // 保存任务奖励系统数据
+                pointsPool, // 保存积分池数据
                 lastUpdated: new Date().toISOString()
             };
             localStorage.setItem('pointSystemV2', JSON.stringify(data));
@@ -8473,14 +9337,18 @@
                                 dailyTasks = {
                                     qiqi: cloudData.dailyTasks.qiqi || [null, null, null],
                                     yiyi: cloudData.dailyTasks.yiyi || [null, null, null],
-                                    progress: cloudData.dailyTasks.progress || { qiqi: 0, yiyi: 0 }
+                                    progress: cloudData.dailyTasks.progress || { qiqi: 0, yiyi: 0 },
+                                    extraTasks: cloudData.dailyTasks.extraTasks || { qiqi: [], yiyi: [] },
+                                    clearedCompleted: cloudData.dailyTasks.clearedCompleted || { qiqi: [], yiyi: [] }
                                 };
                             } else {
                                 // 格式不正确，使用默认值
                                 dailyTasks = {
                                     qiqi: [null, null, null],
                                     yiyi: [null, null, null],
-                                    progress: { qiqi: 0, yiyi: 0 }
+                                    progress: { qiqi: 0, yiyi: 0 },
+                                    extraTasks: { qiqi: [], yiyi: [] },
+                                    clearedCompleted: { qiqi: [], yiyi: [] }
                                 };
                             }
                         } else {
@@ -8488,12 +9356,28 @@
                             dailyTasks = {
                                 qiqi: [null, null, null],
                                 yiyi: [null, null, null],
-                                progress: { qiqi: 0, yiyi: 0 }
+                                progress: { qiqi: 0, yiyi: 0 },
+                                extraTasks: { qiqi: [], yiyi: [] },
+                                clearedCompleted: { qiqi: [], yiyi: [] }
                             };
                         }
                         taskPool = cloudData.taskPool || [];
                         taskCounter = cloudData.taskCounter || 1;
                         lastResetDate = cloudData.lastResetDate || null;
+                        
+                        // 恢复任务奖励系统数据
+                        taskRewardSystem = cloudData.taskRewardSystem || {
+                            qiqi: { level: 0, tasksCompleted: 0, pendingReward: 0, lastClaimDate: null },
+                            yiyi: { level: 0, tasksCompleted: 0, pendingReward: 0, lastClaimDate: null }
+                        };
+                        
+                        // 恢复积分池数据
+                        pointsPool = cloudData.pointsPool || {
+                            qiqi: { pending: 0, withdrawn: 0, lastWithdrawDate: null, weekStart: null },
+                            yiyi: { pending: 0, withdrawn: 0, lastWithdrawDate: null, weekStart: null },
+                            autoWithdrawTime: '23:30',
+                            lastAutoWithdraw: null
+                        };
                         
                         // 恢复每周和月度数据
                         weeklyData = cloudData.weeklyData || { qiqi: 0, yiyi: 0, lastResetDate: new Date().toISOString() };
@@ -8532,6 +9416,7 @@
                             monthlyStarBonus,
                             dailyTaskSnapshots,
                             penaltySystemStartDate,
+                            taskRewardSystem,
                                 lastUpdated: cloudData.lastUpdated
                         }));
                         
@@ -8681,14 +9566,18 @@
                             dailyTasks = {
                                 qiqi: data.dailyTasks.qiqi || [null, null, null],
                                 yiyi: data.dailyTasks.yiyi || [null, null, null],
-                                progress: data.dailyTasks.progress || { qiqi: 0, yiyi: 0 }
+                                progress: data.dailyTasks.progress || { qiqi: 0, yiyi: 0 },
+                                extraTasks: data.dailyTasks.extraTasks || { qiqi: [], yiyi: [] },
+                                clearedCompleted: data.dailyTasks.clearedCompleted || { qiqi: [], yiyi: [] }
                             };
                         } else {
                             // 其他格式，使用默认值
                             dailyTasks = {
                                 qiqi: [null, null, null],
                                 yiyi: [null, null, null],
-                                progress: { qiqi: 0, yiyi: 0 }
+                                progress: { qiqi: 0, yiyi: 0 },
+                                extraTasks: { qiqi: [], yiyi: [] },
+                                clearedCompleted: { qiqi: [], yiyi: [] }
                             };
                         }
                     } else {
@@ -8696,7 +9585,9 @@
                         dailyTasks = {
                             qiqi: [null, null, null],
                             yiyi: [null, null, null],
-                            progress: { qiqi: 0, yiyi: 0 }
+                            progress: { qiqi: 0, yiyi: 0 },
+                            extraTasks: { qiqi: [], yiyi: [] },
+                            clearedCompleted: { qiqi: [], yiyi: [] }
                         };
                     }
                     
@@ -8720,6 +9611,20 @@
                         yiyi: { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0, starIncome: 0 },
                         currentWeek: getCurrentWeekNumber(),
                         weekStart: getWeekStartDate().toDateString()
+                    };
+                    
+                    // 加载任务奖励系统数据
+                    taskRewardSystem = data.taskRewardSystem || {
+                        qiqi: { level: 0, tasksCompleted: 0, pendingReward: 0, lastClaimDate: null },
+                        yiyi: { level: 0, tasksCompleted: 0, pendingReward: 0, lastClaimDate: null }
+                    };
+                    
+                    // 加载积分池数据
+                    pointsPool = data.pointsPool || {
+                        qiqi: { pending: 0, withdrawn: 0, lastWithdrawDate: null, weekStart: null },
+                        yiyi: { pending: 0, withdrawn: 0, lastWithdrawDate: null, weekStart: null },
+                        autoWithdrawTime: '23:30',
+                        lastAutoWithdraw: null
                     };
                     
                     
@@ -8993,6 +9898,9 @@
             
             // 每分钟检查一次每日任务截止时间
             setInterval(checkDailyTaskDeadline, 60 * 1000);
+            
+            // 每分钟检查一次自动提现
+            setInterval(autoWithdrawCheck, 60 * 1000);
             
             // 页面加载时立即检查一次
             checkBountyExpiry();
