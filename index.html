@@ -3597,6 +3597,73 @@
             .task-pool-section {
                 padding: 15px;
             }
+            
+            /* 积分池系统移动端适配 */
+            .points-pool-top-section {
+                margin: 15px 0 !important;
+                padding: 20px 15px !important;
+                border-radius: 15px !important;
+            }
+            
+            .points-pool-top-section h3 {
+                font-size: 1.4em !important;
+            }
+            
+            .points-pool-top-section p {
+                font-size: 0.95em !important;
+            }
+            
+            .points-pool-top-section > div:nth-child(2) {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 15px !important;
+                margin-bottom: 20px !important;
+            }
+            
+            .points-pool-top-section > div:nth-child(2) > div {
+                padding: 20px 15px !important;
+                border-radius: 15px !important;
+            }
+            
+            .points-pool-top-section h5 {
+                font-size: 1.1em !important;
+            }
+            
+            .points-pool-top-section button {
+                padding: 10px 12px !important;
+                font-size: 0.85em !important;
+                border-radius: 10px !important;
+            }
+            
+            /* 移动端复选框优化 */
+            input[type="checkbox"] {
+                width: 20px !important;
+                height: 20px !important;
+                transform: none !important;
+                appearance: none !important;
+                -webkit-appearance: none !important;
+                background: white !important;
+                border: 2px solid #007bff !important;
+                border-radius: 4px !important;
+                position: relative !important;
+                cursor: pointer !important;
+            }
+            
+            input[type="checkbox"]:checked {
+                background: #007bff !important;
+                border-color: #007bff !important;
+            }
+            
+            input[type="checkbox"]:checked::after {
+                content: '✓' !important;
+                position: absolute !important;
+                top: 50% !important;
+                left: 50% !important;
+                transform: translate(-50%, -50%) !important;
+                color: white !important;
+                font-weight: bold !important;
+                font-size: 14px !important;
+            }
 
             .section-header {
                 flex-direction: column;
@@ -3679,6 +3746,11 @@
                                 <button onclick="showPartialWithdrawModal('yiyi')" id="yiyi-withdraw-partial-btn-top" style="background: linear-gradient(45deg, #2196f3, #42a5f5); color: white; border: none; padding: 12px 18px; border-radius: 12px; font-size: 0.95em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3); transition: all 0.3s ease;">✂️ 部分提现</button>
                             </div>
                         </div>
+                    </div>
+                    
+                    <!-- 积分池管理按钮 -->
+                    <div style="text-align: center; margin-bottom: 15px;">
+                        <button onclick="clearPointsPool()" style="background: linear-gradient(45deg, #ff9800, #f57c00); color: white; border: none; padding: 8px 16px; border-radius: 10px; font-size: 0.85em; font-weight: bold; cursor: pointer; box-shadow: 0 3px 10px rgba(255, 152, 0, 0.3);">🗑️ 清空积分池</button>
                     </div>
                 </div>
                 
@@ -4266,17 +4338,37 @@
                         </label>
                     </div>
                     <div style="display: flex; align-items: center; gap: 8px; white-space: nowrap;">
-                        <input type="checkbox" id="pool-task-streak-bonus" style="transform: scale(1.1); vertical-align: middle;">
+                        <input type="checkbox" id="pool-task-streak-bonus" style="transform: scale(1.1); vertical-align: middle;" onchange="toggleStreakInputs()">
                         <label for="pool-task-streak-bonus" style="font-size: 0.9em; color: #555; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 4px;">
                             <span>🔥</span><span>连胜奖励</span>
                         </label>
                     </div>
                 </div>
                 
+                <!-- 连胜奖励自定义设置 -->
+                <div id="streak-custom-settings" style="display: none; margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 10px; border-left: 4px solid #ff5722;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <label for="streak-days" style="font-size: 0.85em; color: #333; margin-bottom: 5px; display: block;">🗓️ 连胜天数：</label>
+                            <input type="number" id="streak-days" min="2" max="30" value="7" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9em;">
+                        </div>
+                        <div>
+                            <label for="streak-points" style="font-size: 0.85em; color: #333; margin-bottom: 5px; display: block;">💎 奖励分数：</label>
+                            <input type="number" id="streak-points" min="1" max="50" value="3" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9em;">
+                        </div>
+                    </div>
+                    <p style="font-size: 0.8em; color: #666; margin: 10px 0 0 0;">📝 连续完成指定天数后获得一次性奖励，然后重置计数</p>
+                </div>
+                
                 <div style="font-size: 0.8em; color: #666; margin-top: 10px; line-height: 1.4;">
                     <div>• <strong>以一抵二：</strong>一个任务算作两个任务</div>
-                    <div>• <strong>连胜奖励：</strong>连续7天完成同一任务额外+5分</div>
+                    <div>• <strong>连胜奖励：</strong>连续7天完成同一任务额外+3分（奖励直接进入积分池）</div>
                     <div>• <strong>次数限制：</strong>每周最多可选择的次数</div>
+                    <div style="margin-top: 8px; padding: 8px; background: #f8f9fa; border-radius: 6px; border-left: 3px solid #28a745;">
+                        <strong>🔥 连胜奖励说明：</strong><br>
+                        第1-6天：无奖励，积累连胜<br>
+                        第7天及以后：每次完成+3分奖励
+                    </div>
                 </div>
             </div>
             
@@ -4285,7 +4377,10 @@
             </div>
 
             <div class="task-pool-list">
-                <h4>任务池 (<span id="pool-count">0</span>个任务)</h4>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h4 style="margin: 0;">任务池 (<span id="pool-count">0</span>个任务)</h4>
+                    <button onclick="clearTaskPool()" style="background: #dc3545; border: none; color: white; padding: 4px 8px; font-size: 0.75em; border-radius: 4px; cursor: pointer;">🗑️ 清空</button>
+                </div>
                 <div id="pool-tasks-list"></div>
             </div>
             </div>
@@ -4470,6 +4565,13 @@
             autoWithdrawTime: '23:30',  // 自动提现时间
             lastAutoWithdraw: null
         };
+        
+        // 连胜奖励重置跟踪系统
+        let streakResetTracker = {
+            qiqi: {}, // 格式: {taskId: 'lastResetDate'}
+            yiyi: {}  // 格式: {taskId: 'lastResetDate'}
+        };
+        
         let historyData = [];
         let bountyCounter = 1;
         let dailyTasksContent = '';
@@ -5630,16 +5732,17 @@
                 return false;
             }
             
-            // 直接领取，无需确认
-            bankData[user].reward += pendingReward;
+            // 奖励进入积分池，不直接添加到总分
+            addToPointsPool(user, pendingReward);
             taskRewardSystem[user].lastClaimDate = today;
             
-            addHistory(`${userName}领取任务完成奖励${pendingReward}分（等级${taskRewardSystem[user].level}）`, 'system');
+            addHistory(`${userName}领取任务完成奖励${pendingReward}分（等级${taskRewardSystem[user].level}），已存入积分池`, 'system');
             
             taskRewardSystem[user].pendingReward = 0;
             saveData();
             refreshBankPage();
             refreshDailyTasks();
+            updatePointsPoolDisplay();
             
             // 创建领取成功特效
             createRewardClaimEffect(user, pendingReward);
@@ -5808,6 +5911,73 @@
             return monday;
         }
 
+        function toggleStreakInputs() {
+            const checkbox = document.getElementById('pool-task-streak-bonus');
+            const settings = document.getElementById('streak-custom-settings');
+            
+            if (checkbox.checked) {
+                settings.style.display = 'block';
+            } else {
+                settings.style.display = 'none';
+            }
+        }
+
+        function clearTaskPool() {
+            if (confirm('⚠️ 确认清空任务池吗？\n\n这将删除：\n• 所有任务池中的任务\n• 用户已选择的每日任务将变为无效\n• 连胜记录将保留\n\n此操作不可恢复！')) {
+                const taskCount = taskPool.length;
+                
+                // 清空任务池
+                taskPool = [];
+                
+                // 清空用户的每日任务选择（因为任务池清空了，这些任务变成无效）
+                dailyTasks.qiqi = [null, null, null];
+                dailyTasks.yiyi = [null, null, null];
+                dailyTasks.progress = { qiqi: 0, yiyi: 0 };
+                
+                // 清空超额任务
+                dailyTasks.extraTasks = { qiqi: [], yiyi: [] };
+                
+                addHistory(`管理员清空任务池，删除了${taskCount}个任务，用户每日任务已重置`, 'system');
+                
+                saveData();
+                refreshTaskPoolDisplay();
+                refreshDailyTasks();
+                updateTaskPoolPreview();
+                
+                alert(`🗑️ 任务池已清空！\n删除了${taskCount}个任务，用户每日任务已重置。`);
+            }
+        }
+
+        function clearPointsPool() {
+            if (confirm('⚠️ 确认清空积分池吗？\n\n这将清空：\n• 七七和一一的所有待提现积分\n• 本周已提现记录\n• 连胜重置记录\n\n此操作不可恢复！')) {
+                const qiqiPending = pointsPool.qiqi.pending;
+                const yiyiPending = pointsPool.yiyi.pending;
+                const qiqiWithdrawn = pointsPool.qiqi.withdrawn;
+                const yiyiWithdrawn = pointsPool.yiyi.withdrawn;
+                
+                // 清空积分池
+                pointsPool = {
+                    qiqi: { pending: 0, withdrawn: 0, lastWithdrawDate: null, weekStart: null },
+                    yiyi: { pending: 0, withdrawn: 0, lastWithdrawDate: null, weekStart: null },
+                    autoWithdrawTime: '23:30',
+                    lastAutoWithdraw: null
+                };
+                
+                // 清空连胜重置记录
+                streakResetTracker = {
+                    qiqi: {},
+                    yiyi: {}
+                };
+                
+                addHistory(`管理员清空积分池，七七待提现${qiqiPending}分+已提现${qiqiWithdrawn}分，一一待提现${yiyiPending}分+已提现${yiyiWithdrawn}分`, 'system');
+                
+                saveData();
+                updatePointsPoolDisplay();
+                
+                alert(`🗑️ 积分池已清空！\n七七清空：待提现${qiqiPending}分+已提现${qiqiWithdrawn}分\n一一清空：待提现${yiyiPending}分+已提现${yiyiWithdrawn}分`);
+            }
+        }
+
         function globalDataClear() {
             if (confirm('⚠️ 确认要清除所有数据吗？\n\n这将删除：\n• 所有任务数据\n• 银行积分数据\n• 积分池数据\n• 任务奖励系统数据\n• 历史记录\n• 所有设置和配置\n\n此操作不可恢复！')) {
                 // 清除所有本地存储
@@ -5821,7 +5991,7 @@
                 weeklyData = { qiqi: 0, yiyi: 0, lastResetDate: new Date().toISOString() };
                 monthlyStarBonus = { qiqi: 0, yiyi: 0, lastBonusDate: new Date().toISOString() };
                 taskList = { qiqi: [], yiyi: [] };
-                taskPool = [];
+                // taskPool = []; // 保留任务池，不清除
                 taskCounter = 1;
                 historyData = [];
                 penaltyHistory = [];
@@ -5847,6 +6017,12 @@
                     yiyi: { pending: 0, withdrawn: 0, lastWithdrawDate: null, weekStart: null },
                     autoWithdrawTime: '23:30',
                     lastAutoWithdraw: null
+                };
+                
+                // 重置连胜跟踪器
+                streakResetTracker = {
+                    qiqi: {},
+                    yiyi: {}
                 };
                 
                 // 保存空数据并刷新所有页面
@@ -6120,13 +6296,16 @@
             }
 
             // 更新总积分显示卡片
-            const qiqiTotal = bankData.qiqi.reward + bankData.qiqi.penalty + bankData.qiqi.publish + bankData.qiqi.obtain + bankData.qiqi.trade + bankData.qiqi.dailyIncome + bankData.qiqi.dailyPenalty;
-            const yiyiTotal = bankData.yiyi.reward + bankData.yiyi.penalty + bankData.yiyi.publish + bankData.yiyi.obtain + bankData.yiyi.trade + bankData.yiyi.dailyIncome + bankData.yiyi.dailyPenalty;
+            const qiqiTotal = (bankData.qiqi.reward || 0) + (bankData.qiqi.penalty || 0) + (bankData.qiqi.publish || 0) + (bankData.qiqi.obtain || 0) + (bankData.qiqi.trade || 0) + (bankData.qiqi.dailyIncome || 0) + (bankData.qiqi.dailyPenalty || 0);
+            const yiyiTotal = (bankData.yiyi.reward || 0) + (bankData.yiyi.penalty || 0) + (bankData.yiyi.publish || 0) + (bankData.yiyi.obtain || 0) + (bankData.yiyi.trade || 0) + (bankData.yiyi.dailyIncome || 0) + (bankData.yiyi.dailyPenalty || 0);
             
-            document.getElementById('qiqi-total-score').textContent = qiqiTotal;
-            document.getElementById('yiyi-total-score').textContent = yiyiTotal;
-            document.getElementById('qiqi-total-stars').innerHTML = generateStars(qiqiTotal);
-            document.getElementById('yiyi-total-stars').innerHTML = generateStars(yiyiTotal);
+            const safeTotalQiqi = isNaN(qiqiTotal) ? 0 : qiqiTotal;
+            const safeTotalYiyi = isNaN(yiyiTotal) ? 0 : yiyiTotal;
+            
+            document.getElementById('qiqi-total-score').textContent = safeTotalQiqi;
+            document.getElementById('yiyi-total-score').textContent = safeTotalYiyi;
+            document.getElementById('qiqi-total-stars').innerHTML = generateStars(safeTotalQiqi);
+            document.getElementById('yiyi-total-stars').innerHTML = generateStars(safeTotalYiyi);
             
             // 调试信息：显示快照状态和历史记录检查
             const snapshotDates = Object.keys(dailyTaskSnapshots);
@@ -6200,6 +6379,103 @@
             });
         }
 
+        // 个人清空按钮函数
+        function clearBountyHistory() {
+            requireAuth(() => {
+                if (confirm('确定要清空所有悬赏记录吗？此操作无法撤销！')) {
+                    bountyTasks = [];
+                    saveData();
+                    displayBountyTasks();
+                    alert('悬赏记录已清空');
+                }
+            });
+        }
+
+        function clearPenaltyHistory() {
+            requireAuth(() => {
+                if (confirm('确定要清空所有扣分记录吗？此操作无法撤销！')) {
+                    historyData = historyData.filter(item => item.type !== 'penalty');
+                    saveData();
+                    refreshHistoryPage();
+                    alert('扣分记录已清空');
+                }
+            });
+        }
+
+        function clearRewardHistory() {
+            requireAuth(() => {
+                if (confirm('确定要清空所有奖励记录吗？此操作无法撤销！')) {
+                    historyData = historyData.filter(item => item.type !== 'reward');
+                    saveData();
+                    refreshHistoryPage();
+                    alert('奖励记录已清空');
+                }
+            });
+        }
+
+        function clearHistoryData() {
+            requireAuth(() => {
+                if (confirm('确定要清空所有历史记录吗？此操作无法撤销！')) {
+                    historyData = [];
+                    saveData();
+                    refreshHistoryPage();
+                    alert('历史记录已清空');
+                }
+            });
+        }
+
+        function clearQiqiDailyTasks() {
+            requireAuth(() => {
+                if (confirm('确定要清空七七的每日任务吗？此操作无法撤销！')) {
+                    dailyTasks.qiqi = [null, null, null];
+                    dailyTasks.progress.qiqi = 0;
+                    dailyTasks.extraTasks.qiqi = [];
+                    saveData();
+                    refreshDailyTasks();
+                    alert('七七的每日任务已清空');
+                }
+            });
+        }
+
+        function clearYiyiDailyTasks() {
+            requireAuth(() => {
+                if (confirm('确定要清空一一的每日任务吗？此操作无法撤销！')) {
+                    dailyTasks.yiyi = [null, null, null];
+                    dailyTasks.progress.yiyi = 0;
+                    dailyTasks.extraTasks.yiyi = [];
+                    saveData();
+                    refreshDailyTasks();
+                    alert('一一的每日任务已清空');
+                }
+            });
+        }
+
+        function clearCustomStreakData() {
+            requireAuth(() => {
+                if (confirm('确定要清空所有自定义连胜数据吗？此操作无法撤销！\n\n将清空：\n• 所有任务的连胜记录\n• 连胜设置保持不变')) {
+                    // 清空所有任务的连胜记录
+                    taskPool.forEach(task => {
+                        if (task.streakData) {
+                            task.streakData = { qiqi: 0, yiyi: 0 };
+                        }
+                    });
+                    
+                    // 清空悬赏任务的连胜记录
+                    bountyTasks.forEach(bounty => {
+                        if (bounty.streakData) {
+                            bounty.streakData = { qiqi: 0, yiyi: 0 };
+                        }
+                    });
+                    
+                    saveData();
+                    refreshTaskPoolDisplay();
+                    displayBountyTasks();
+                    
+                    alert('自定义连胜数据已清空');
+                }
+            });
+        }
+
         // 清零所有积分功能
         function clearAllPoints() {
             requireAuth(() => {
@@ -6250,8 +6526,8 @@
                         details: {
                             beforeClear: beforeClearData,
                             changes: [
-                                `七七：总分 ${qiqiTotal} → 0（奖:${beforeClearData.qiqi.reward}→0, 罚:${beforeClearData.qiqi.penalty}→0, 发布:${beforeClearData.qiqi.publish || 0}→0, 获取:${beforeClearData.qiqi.obtain || 0}→0, 交易:${beforeClearData.qiqi.trade}→0, 日收入:${beforeClearData.qiqi.dailyIncome || 0}→0, 日惩罚:${beforeClearData.qiqi.dailyPenalty || 0}→0）`,
-                                `一一：总分 ${yiyiTotal} → 0（奖:${beforeClearData.yiyi.reward}→0, 罚:${beforeClearData.yiyi.penalty}→0, 发布:${beforeClearData.yiyi.publish || 0}→0, 获取:${beforeClearData.yiyi.obtain || 0}→0, 交易:${beforeClearData.yiyi.trade}→0, 日收入:${beforeClearData.yiyi.dailyIncome || 0}→0, 日惩罚:${beforeClearData.yiyi.dailyPenalty || 0}→0）`
+                                `七七：总分 ${safeTotalQiqi} → 0（奖:${beforeClearData.qiqi.reward || 0}→0, 罚:${beforeClearData.qiqi.penalty || 0}→0, 发布:${beforeClearData.qiqi.publish || 0}→0, 获取:${beforeClearData.qiqi.obtain || 0}→0, 交易:${beforeClearData.qiqi.trade || 0}→0, 日收入:${beforeClearData.qiqi.dailyIncome || 0}→0, 日惩罚:${beforeClearData.qiqi.dailyPenalty || 0}→0）`,
+                                `一一：总分 ${safeTotalYiyi} → 0（奖:${beforeClearData.yiyi.reward || 0}→0, 罚:${beforeClearData.yiyi.penalty || 0}→0, 发布:${beforeClearData.yiyi.publish || 0}→0, 获取:${beforeClearData.yiyi.obtain || 0}→0, 交易:${beforeClearData.yiyi.trade || 0}→0, 日收入:${beforeClearData.yiyi.dailyIncome || 0}→0, 日惩罚:${beforeClearData.yiyi.dailyPenalty || 0}→0）`
                             ]
                         }
                     };
@@ -6310,6 +6586,17 @@
             const doubleValue = document.getElementById('pool-task-double-value').checked;
             const streakBonus = document.getElementById('pool-task-streak-bonus').checked;
             
+            // 获取自定义连胜设置
+            let streakConfig = null;
+            if (streakBonus) {
+                const streakDays = parseInt(document.getElementById('streak-days').value) || 7;
+                const streakPoints = parseInt(document.getElementById('streak-points').value) || 3;
+                streakConfig = {
+                    days: streakDays,
+                    points: streakPoints
+                };
+            }
+            
             if (!taskName) {
                 alert('请输入任务标题');
                 return;
@@ -6329,7 +6616,8 @@
                 exclusive: exclusive || null,          // 专属：'qiqi', 'yiyi', 或 null
                 weeklyLimit: weeklyLimit,              // 每周次数限制
                 doubleValue: doubleValue,              // 以一抵二
-                streakBonus: streakBonus               // 连胜奖励
+                streakBonus: streakBonus,              // 连胜奖励开关
+                streakConfig: streakConfig             // 连胜奖励配置 {days: number, points: number}
             };
 
             taskPool.push(newTask);
@@ -6344,6 +6632,9 @@
             document.getElementById('pool-task-weekly-limit').value = '';
             document.getElementById('pool-task-double-value').checked = false;
             document.getElementById('pool-task-streak-bonus').checked = false;
+            document.getElementById('streak-days').value = '7';
+            document.getElementById('streak-points').value = '3';
+            document.getElementById('streak-custom-settings').style.display = 'none';
             
             alert('任务添加成功！');
         }
@@ -6380,6 +6671,17 @@
                 document.getElementById('pool-task-double-value').checked = task.doubleValue || false;
                 document.getElementById('pool-task-streak-bonus').checked = task.streakBonus || false;
                 
+                // 设置连胜自定义配置
+                if (task.streakBonus && task.streakConfig) {
+                    document.getElementById('streak-days').value = task.streakConfig.days || 7;
+                    document.getElementById('streak-points').value = task.streakConfig.points || 3;
+                    document.getElementById('streak-custom-settings').style.display = 'block';
+                } else {
+                    document.getElementById('streak-days').value = '7';
+                    document.getElementById('streak-points').value = '3';
+                    document.getElementById('streak-custom-settings').style.display = 'none';
+                }
+                
                 // 修改按钮文字和事件
                 const addButton = document.querySelector('.task-pool-modal-box .btn-primary');
                 addButton.textContent = '更新任务';
@@ -6406,6 +6708,17 @@
             const weeklyLimit = parseInt(document.getElementById('pool-task-weekly-limit').value) || null;
             const doubleValue = document.getElementById('pool-task-double-value').checked;
             const streakBonus = document.getElementById('pool-task-streak-bonus').checked;
+            
+            // 获取自定义连胜设置
+            let streakConfig = null;
+            if (streakBonus) {
+                const streakDays = parseInt(document.getElementById('streak-days').value) || 7;
+                const streakPoints = parseInt(document.getElementById('streak-points').value) || 3;
+                streakConfig = {
+                    days: streakDays,
+                    points: streakPoints
+                };
+            }
 
             if (!name) {
                 alert('请输入任务名称');
@@ -6424,6 +6737,7 @@
                 weeklyLimit: weeklyLimit,
                 doubleValue: doubleValue,
                 streakBonus: streakBonus,
+                streakConfig: streakConfig,
                 updatedAt: new Date().toISOString()
             };
 
@@ -6729,14 +7043,15 @@
             
             // 连胜奖励
             if (task.streakBonus) {
-                let streakText = '🔥 连胜奖励';
+                const config = task.streakConfig || { days: 7, points: 3 };
+                let streakText = `🔥 连胜奖励(${config.days}天+${config.points}分)`;
                 
                 // 如果提供了用户信息，显示当前连胜天数
                 if (user && task.id) {
                     const streakDays = getTaskStreakDays(user, task.id);
                     if (streakDays > 0) {
-                        streakText = `🔥 连胜第${streakDays + 1}天`;
-                        if (streakDays >= 6) {
+                        streakText = `🔥 连胜第${streakDays + 1}天/${config.days}天`;
+                        if (streakDays >= config.days - 1) {
                             streakText += ' (奖励就绪!)';
                         }
                     }
@@ -6981,10 +7296,26 @@
                 }
                 
                 // 处理连胜奖励
-                if (poolTask && poolTask.streakBonus) {
+                if (poolTask && poolTask.streakBonus && poolTask.streakConfig) {
                     const streakDays = getTaskStreakDays(user, task.poolTaskId);
-                    if (streakDays >= 6) { // 连续7天（包括今天）
-                        bonusPoints = 5;
+                    const requiredDays = poolTask.streakConfig.days - 1; // 减1因为今天是第N天
+                    
+                    if (streakDays >= requiredDays) {
+                        // 检查是否已经获得过这次连胜奖励
+                        const lastResetDate = streakResetTracker[user][task.poolTaskId];
+                        const today = new Date().toDateString();
+                        
+                        if (!lastResetDate || lastResetDate !== today) {
+                            bonusPoints = poolTask.streakConfig.points;
+                            
+                            // 记录奖励发放并重置连胜
+                            streakResetTracker[user][task.poolTaskId] = today;
+                            
+                            // 重置该任务的连胜记录
+                            if (streakData[user] && streakData[user][task.poolTaskId]) {
+                                delete streakData[user][task.poolTaskId];
+                            }
+                        }
                     }
                 }
                 
@@ -7228,10 +7559,26 @@
                 }
                 
                 // 处理连胜奖励
-                if (poolTask && poolTask.streakBonus) {
+                if (poolTask && poolTask.streakBonus && poolTask.streakConfig) {
                     const streakDays = getTaskStreakDays(user, task.poolTaskId);
-                    if (streakDays >= 6) {
-                        bonusPoints = 5;
+                    const requiredDays = poolTask.streakConfig.days - 1; // 减1因为今天是第N天
+                    
+                    if (streakDays >= requiredDays) {
+                        // 检查是否已经获得过这次连胜奖励
+                        const lastResetDate = streakResetTracker[user][task.poolTaskId];
+                        const today = new Date().toDateString();
+                        
+                        if (!lastResetDate || lastResetDate !== today) {
+                            bonusPoints = poolTask.streakConfig.points;
+                            
+                            // 记录奖励发放并重置连胜
+                            streakResetTracker[user][task.poolTaskId] = today;
+                            
+                            // 重置该任务的连胜记录
+                            if (streakData[user] && streakData[user][task.poolTaskId]) {
+                                delete streakData[user][task.poolTaskId];
+                            }
+                        }
                     }
                 }
                 
@@ -7386,8 +7733,10 @@
                 if (task.exclusive && task.exclusive !== user) return; // 跳过不属于该用户的专属任务
                 
                 const streakDays = getTaskStreakDays(user, task.id);
+                const config = task.streakConfig || { days: 7, points: 3 };
+                
                 if (streakDays > 0) {
-                    const status = streakDays >= 6 ? '🔥就绪' : `${streakDays + 1}天`;
+                    const status = streakDays >= config.days - 1 ? `🔥就绪+${config.points}分` : `${streakDays + 1}/${config.days}天`;
                     streakStats.push(`${task.name}(${status})`);
                 }
             });
@@ -7410,9 +7759,9 @@
             
             // 更新连胜奖励统计显示
             if (streakStats.length > 0) {
-                streakStatsElement.innerHTML = `<strong>🔥 连胜奖励：</strong>${streakStats.join('，')}`;
+                streakStatsElement.innerHTML = `<strong>🔥 连胜奖励：</strong>${streakStats.join('，')}<br><small style="color: #28a745; font-weight: normal;">💡 连续完成任务达到设定天数可获得一次性奖励（进入积分池），然后重置计数</small>`;
             } else {
-                streakStatsElement.innerHTML = `<strong>🔥 连胜奖励：</strong><span style="color: #999;">暂无连胜任务</span>`;
+                streakStatsElement.innerHTML = `<strong>🔥 连胜奖励：</strong><span style="color: #999;">暂无连胜任务</span><br><small style="color: #666; font-weight: normal;">💡 连续完成任务达到设定天数可获得一次性奖励（进入积分池），然后重置计数</small>`;
             }
             
             // 更新每周限制统计显示
@@ -8416,6 +8765,7 @@
                 weeklyStats, // 保存周度积分统计数据
                 taskRewardSystem, // 保存任务奖励系统数据
                 pointsPool, // 保存积分池数据
+                streakResetTracker, // 保存连胜重置跟踪器
                 lastUpdated: new Date().toISOString()
             };
             localStorage.setItem('pointSystemV2', JSON.stringify(data));
@@ -9625,6 +9975,12 @@
                         yiyi: { pending: 0, withdrawn: 0, lastWithdrawDate: null, weekStart: null },
                         autoWithdrawTime: '23:30',
                         lastAutoWithdraw: null
+                    };
+                    
+                    // 加载连胜重置跟踪器
+                    streakResetTracker = data.streakResetTracker || {
+                        qiqi: {},
+                        yiyi: {}
                     };
                     
                     
