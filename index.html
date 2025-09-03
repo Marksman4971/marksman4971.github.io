@@ -4141,6 +4141,7 @@
                     <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #dee2e6;">
                         <button class="modal-btn btn-primary" onclick="manualSyncData()" style="margin-right: 10px;">🔄 立即同步</button>
                         <button class="modal-btn btn-secondary" onclick="showSyncDebugInfo()">🔍 同步状态</button>
+                        <button class="modal-btn btn-secondary" onclick="debugPointsPoolSync()" style="margin-left: 10px;">🔧 积分池调试</button>
                     </div>
                 </div>
                 
@@ -9764,6 +9765,15 @@
                         dailyTaskSnapshots = cloudData.dailyTaskSnapshots || {};
                         penaltySystemStartDate = cloudData.penaltySystemStartDate || null;
                         
+                        // 恢复周度积分统计数据
+                        weeklyStats = cloudData.weeklyStats || [];
+                        
+                        // 恢复连胜重置跟踪器数据
+                        streakResetTracker = cloudData.streakResetTracker || {
+                            qiqi: {}, 
+                            yiyi: {}
+                        };
+                        
                         
                         // 检查是否需要每日重置
                         checkDailyReset();
@@ -9825,6 +9835,53 @@
         }
 
         // 手动同步数据
+        // 积分池同步调试函数
+        async function debugPointsPoolSync() {
+            try {
+                console.log('=== 积分池调试信息 ===');
+                console.log('本地积分池数据:', JSON.stringify(pointsPool, null, 2));
+                
+                if (!isFirebaseReady) {
+                    alert('Firebase未初始化，无法检查云端数据');
+                    return;
+                }
+                
+                const snapshot = await window.firebaseDb.get(window.firebaseDb.ref(window.firebaseDb.database, 'pointSystemV2/pointsPool'));
+                
+                if (snapshot.exists()) {
+                    const cloudPointsPool = snapshot.val();
+                    console.log('云端积分池数据:', JSON.stringify(cloudPointsPool, null, 2));
+                    
+                    let debugInfo = '=== 积分池同步调试 ===\n\n';
+                    debugInfo += '本地数据:\n';
+                    debugInfo += `七七待提现: ${pointsPool.qiqi.pending}分\n`;
+                    debugInfo += `七七已提现: ${pointsPool.qiqi.withdrawn}分\n`;
+                    debugInfo += `一一待提现: ${pointsPool.yiyi.pending}分\n`;
+                    debugInfo += `一一已提现: ${pointsPool.yiyi.withdrawn}分\n\n`;
+                    
+                    debugInfo += '云端数据:\n';
+                    debugInfo += `七七待提现: ${cloudPointsPool.qiqi?.pending || 0}分\n`;
+                    debugInfo += `七七已提现: ${cloudPointsPool.qiqi?.withdrawn || 0}分\n`;
+                    debugInfo += `一一待提现: ${cloudPointsPool.yiyi?.pending || 0}分\n`;
+                    debugInfo += `一一已提现: ${cloudPointsPool.yiyi?.withdrawn || 0}分\n\n`;
+                    
+                    if (JSON.stringify(pointsPool) !== JSON.stringify(cloudPointsPool)) {
+                        debugInfo += '⚠️ 数据不同步！建议点击"立即同步"按钮';
+                    } else {
+                        debugInfo += '✅ 数据已同步';
+                    }
+                    
+                    alert(debugInfo);
+                } else {
+                    alert('云端暂无积分池数据，这可能是同步问题的原因！\n建议点击"立即同步"按钮上传当前数据。');
+                }
+                
+            } catch (error) {
+                console.error('积分池调试失败:', error);
+                alert('调试失败: ' + error.message);
+            }
+        }
+
         async function manualSyncData() {
             if (!isFirebaseReady) {
                 alert('Firebase未初始化，无法同步');
@@ -9850,6 +9907,12 @@
                     lastResetDate,
                     weeklyData,
                     monthlyStarBonus,
+                    dailyTaskSnapshots, // 添加任务状态快照
+                    penaltySystemStartDate, // 添加惩罚系统开始日期
+                    weeklyStats, // 添加周度积分统计数据
+                    taskRewardSystem, // 添加任务奖励系统数据
+                    pointsPool, // 添加积分池数据！！！这是关键
+                    streakResetTracker, // 添加连胜重置跟踪器
                     lastUpdated: new Date().toISOString()
                 };
 
