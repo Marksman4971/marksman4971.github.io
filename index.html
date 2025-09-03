@@ -4552,24 +4552,17 @@
             yiyi: { level: 0, tasksCompleted: 0, pendingReward: 0, lastClaimDate: null }
         };
         
-        // 积分池系统 - 增强保护
+        // 积分池系统 - 简化版本，只记录25分目标进度
         let pointsPool = {
             qiqi: { 
-                pending: 0,        // 可提现积分
-                withdrawn: 0,      // 已提现积分（本周累计）
-                lastWithdrawDate: null,
-                weekStart: null
+                weeklyProgress: 0,  // 本周完成任务获得积分（朝向25分目标）
+                weekStart: null     // 周开始时间
             },
             yiyi: { 
-                pending: 0,        // 可提现积分
-                withdrawn: 0,      // 已提现积分（本周累计）
-                lastWithdrawDate: null,
-                weekStart: null
+                weeklyProgress: 0,  // 本周完成任务获得积分（朝向25分目标）
+                weekStart: null     // 周开始时间
             },
-            autoWithdrawTime: '23:30',  // 自动提现时间
-            lastAutoWithdraw: null,
-            protectionLevel: 'HIGH',    // 保护级别：HIGH/MEDIUM/LOW
-            lastUpdateTime: null        // 最后更新时间
+            lastUpdateTime: null    // 最后更新时间
         };
         
         // 连胜奖励重置跟踪系统
@@ -5814,7 +5807,7 @@
             }, 2000);
         }
 
-        // 积分池功能
+        // 积分池功能 - 简化版本：直接加到总分，记录25分目标进度
         function addToPointsPool(user, points) {
             // 检查是否需要重置周数据
             const today = new Date();
@@ -5822,107 +5815,71 @@
             
             if (!pointsPool[user].weekStart || new Date(pointsPool[user].weekStart) < weekStart) {
                 pointsPool[user].weekStart = weekStart.toISOString();
-                pointsPool[user].withdrawn = 0; // 新周重置已提现积分
+                pointsPool[user].weeklyProgress = 0; // 新周重置进度
             }
             
-            pointsPool[user].pending += points;
-            pointsPool.lastUpdateTime = new Date().toISOString(); // 记录更新时间
+            // 直接将积分加到总分
+            bankData[user].dailyIncome += points;
+            addWeeklyPoints(user, points);
             
-            // 自动备份：当积分增加时自动创建备份
-            if (points > 0) {
-                try {
-                    const autoBackup = {
-                        pointsPool: JSON.parse(JSON.stringify(pointsPool)),
-                        backupTime: new Date().toISOString(),
-                        backupBy: 'auto',
-                        trigger: `${user}获得${points}分`
-                    };
-                    localStorage.setItem('pointsPoolAutoBackup', JSON.stringify(autoBackup));
-                    console.log('🔄 自动备份创建成功:', autoBackup.trigger);
-                } catch (error) {
-                    console.error('自动备份失败:', error);
-                }
-            }
+            // 记录25分目标进度
+            pointsPool[user].weeklyProgress += points;
+            pointsPool.lastUpdateTime = new Date().toISOString();
+            
+            // 添加历史记录
+            const userName = user === 'qiqi' ? '七七' : '一一';
+            addHistory(`${userName}完成任务获得${points}分，直接加入总分`, 'reward');
+            
+            console.log(`✅ ${userName}获得${points}分已直接加入总分，本周进度: ${pointsPool[user].weeklyProgress}/25`);
         }
 
         function calculatePenalty(user) {
-            const totalWithdrawn = pointsPool[user].withdrawn;
-            if (totalWithdrawn < 25) {
-                return (25 - totalWithdrawn) * 2; // 每少一分扣两分
+            const weeklyProgress = pointsPool[user].weeklyProgress || 0;
+            if (weeklyProgress < 25) {
+                return (25 - weeklyProgress) * 2; // 每少一分扣两分
             }
             return 0;
         }
 
+        // 提现功能已简化，积分直接进入总分，无需提现操作
         function withdrawPoints(user, amount = null) {
-            if (amount === null) {
-                amount = pointsPool[user].pending; // 全部提现
-            }
-            
-            if (amount <= 0 || amount > pointsPool[user].pending) {
-                alert('提现金额无效！');
-                return false;
-            }
-            
             const userName = user === 'qiqi' ? '七七' : '一一';
-            
-            // 执行提现
-            pointsPool[user].pending -= amount;
-            pointsPool[user].withdrawn += amount;
-            pointsPool[user].lastWithdrawDate = new Date().toISOString();
-            
-            // 添加到总积分
-            bankData[user].dailyIncome += amount;
-            addWeeklyPoints(user, amount);
-            
-            addHistory(`${userName}从积分池提现${amount}分`, 'system');
-            
-            saveData();
-            refreshDailyTasks();
-            refreshBankPage();
-            
-            return true;
+            alert(`${userName}的积分已直接加入总分，无需提现操作！`);
+            return false;
         }
 
         function autoWithdrawCheck() {
             const now = new Date();
-            const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-            const today = now.toDateString();
             const isWeekEnd = now.getDay() === 0; // 周日
             
-            if (isWeekEnd && currentTime === pointsPool.autoWithdrawTime && pointsPool.lastAutoWithdraw !== today) {
+            if (isWeekEnd) {
+                // 周日检查是否需要实施惩罚
                 ['qiqi', 'yiyi'].forEach(user => {
-                    if (pointsPool[user].pending > 0) {
-                        autoWithdrawUser(user);
-                    }
+                    checkWeeklyPenalty(user);
                 });
-                pointsPool.lastAutoWithdraw = today;
-                saveData();
             }
         }
 
-        function autoWithdrawUser(user) {
-            const pendingPoints = pointsPool[user].pending;
+        function checkWeeklyPenalty(user) {
+            const weeklyProgress = pointsPool[user].weeklyProgress || 0;
             const userName = user === 'qiqi' ? '七七' : '一一';
             
-            // 自动提现所有积分
-            pointsPool[user].pending = 0;
-            pointsPool[user].withdrawn += pendingPoints;
-            
             // 计算惩罚
-            const totalWithdrawn = pointsPool[user].withdrawn;
             const penalty = calculatePenalty(user);
-            
-            // 添加到总积分
-            bankData[user].dailyIncome += pendingPoints;
-            addWeeklyPoints(user, pendingPoints);
             
             // 应用惩罚
             if (penalty > 0) {
                 bankData[user].reward -= penalty;
-                addHistory(`${userName}自动提现${pendingPoints}分，本周总计${totalWithdrawn}分，低于25分惩罚-${penalty}分`, 'system');
+                addHistory(`${userName}本周完成${weeklyProgress}分，低于25分目标，惩罚-${penalty}分`, 'penalty');
+                console.log(`⚠️ ${userName}本周进度不足，被扣${penalty}分`);
             } else {
-                addHistory(`${userName}自动提现${pendingPoints}分，本周总计${totalWithdrawn}分`, 'system');
+                addHistory(`${userName}本周完成${weeklyProgress}分，达成25分目标`, 'system');
+                console.log(`✅ ${userName}本周达标，无惩罚`);
             }
+            
+            // 重置周进度
+            pointsPool[user].weeklyProgress = 0;
+            pointsPool[user].weekStart = getWeekStartDate().toISOString();
         }
 
         function getWeekStartDate() {
@@ -5993,10 +5950,9 @@
                 
                 // 清空积分池
                 pointsPool = {
-                    qiqi: { pending: 0, withdrawn: 0, lastWithdrawDate: null, weekStart: null },
-                    yiyi: { pending: 0, withdrawn: 0, lastWithdrawDate: null, weekStart: null },
-                    autoWithdrawTime: '23:30',
-                    lastAutoWithdraw: null
+                    qiqi: { weeklyProgress: 0, weekStart: null },
+                    yiyi: { weeklyProgress: 0, weekStart: null },
+                    lastUpdateTime: null
                 };
                 
                 // 清空连胜重置记录
@@ -6049,10 +6005,9 @@
                 
                 // 重置积分池
                 pointsPool = {
-                    qiqi: { pending: 0, withdrawn: 0, lastWithdrawDate: null, weekStart: null },
-                    yiyi: { pending: 0, withdrawn: 0, lastWithdrawDate: null, weekStart: null },
-                    autoWithdrawTime: '23:30',
-                    lastAutoWithdraw: null
+                    qiqi: { weeklyProgress: 0, weekStart: null },
+                    yiyi: { weeklyProgress: 0, weekStart: null },
+                    lastUpdateTime: null
                 };
                 
                 // 重置连胜跟踪器
@@ -6112,43 +6067,46 @@
                     // 检查用户数据完整性
                     if (!pointsPool[user]) {
                         console.error(`❌ 用户${user}的积分池数据不存在`);
-                        pointsPool[user] = { pending: 0, withdrawn: 0, lastWithdrawDate: null, weekStart: null };
+                        pointsPool[user] = { weeklyProgress: 0, weekStart: null };
                     }
                     
-                    const pending = pointsPool[user].pending || 0;
-                    const withdrawn = pointsPool[user].withdrawn || 0;
-                    const totalWeekly = pending + withdrawn;
-                    const projectedPenalty = totalWeekly < 25 ? (25 - totalWeekly) * 2 : 0;
+                    const weeklyProgress = pointsPool[user].weeklyProgress || 0;
+                    const remaining = Math.max(0, 25 - weeklyProgress);
+                    const projectedPenalty = remaining > 0 ? remaining * 2 : 0;
                     
-                    console.log(`✅ ${user}: pending=${pending}, withdrawn=${withdrawn}, total=${totalWeekly}`);
+                    console.log(`✅ ${user}: 周进度=${weeklyProgress}, 还差=${remaining}分, 预计扣分=${projectedPenalty}`);
                 
-                // 更新顶部新版本显示
+                // 更新显示界面
                 const poolInfoTopEl = document.getElementById(`${user}-pool-info-top`);
                 const withdrawAllTopBtn = document.getElementById(`${user}-withdraw-all-btn-top`);
                 const withdrawPartialTopBtn = document.getElementById(`${user}-withdraw-partial-btn-top`);
                 
                 if (poolInfoTopEl) {
-                    let riskWarning = '';
-                    if (projectedPenalty > 0) {
-                        riskWarning = `<div style="color: #d32f2f; font-weight: bold; margin-top: 5px; font-size: 0.8em;">⚠️ 预计扣分 ${projectedPenalty} 分！</div>`;
+                    let statusMsg = '';
+                    let statusColor = '';
+                    
+                    if (weeklyProgress >= 25) {
+                        statusMsg = '✅ 已达成目标！';
+                        statusColor = '#4caf50';
+                    } else {
+                        statusMsg = `⚠️ 还差 ${remaining}分，预计扣${projectedPenalty}分`;
+                        statusColor = '#d32f2f';
                     }
                     
                     poolInfoTopEl.innerHTML = `
-                        <div style="color: #1976d2;">💰 可提现积分: <strong>${pending}分</strong></div>
-                        <div style="color: #4caf50;">✅ 已提现积分: <strong>${withdrawn}分</strong></div>
-                        <div style="color: #666;">📊 本周总计: <strong>${totalWeekly}分</strong> (需25分)</div>
-                        ${riskWarning}
+                        <div style="color: #1976d2;">📊 本周进度: <strong>${weeklyProgress}/25分</strong></div>
+                        <div style="color: ${statusColor}; font-weight: bold; margin-top: 5px;">${statusMsg}</div>
+                        <div style="color: #666; font-size: 0.85em; margin-top: 3px;">📝 积分直接进入总分，无需提现</div>
                     `;
                 }
                 
+                // 隐藏提现按钮（无需提现功能）
                 if (withdrawAllTopBtn) {
-                    withdrawAllTopBtn.disabled = pending === 0;
-                    withdrawAllTopBtn.style.opacity = pending === 0 ? '0.5' : '1';
+                    withdrawAllTopBtn.style.display = 'none';
                 }
                 
                 if (withdrawPartialTopBtn) {
-                    withdrawPartialTopBtn.disabled = pending === 0;
-                    withdrawPartialTopBtn.style.opacity = pending === 0 ? '0.5' : '1';
+                    withdrawPartialTopBtn.style.display = 'none';
                 }
                 
                 // 保留原有显示元素更新（如果存在）
@@ -6998,26 +6956,26 @@
                                 // 本地总积分更高，使用本地数据
                                 pending: localPool.qiqi?.pending || 0,
                                 withdrawn: localPool.qiqi?.withdrawn || 0,
-                                lastWithdrawDate: localPool.qiqi?.lastWithdrawDate,
+                                lastWithdrawDate: localPool.qiqi?.lastWithdrawDate || null,
                                 weekStart: localPool.qiqi?.weekStart
                             } : {
                                 // 云端总积分更高，使用云端数据
                                 pending: cloudPool.qiqi?.pending || 0,
                                 withdrawn: cloudPool.qiqi?.withdrawn || 0,
-                                lastWithdrawDate: cloudPool.qiqi?.lastWithdrawDate,
+                                lastWithdrawDate: cloudPool.qiqi?.lastWithdrawDate || null,
                                 weekStart: cloudPool.qiqi?.weekStart
                             },
                             yiyi: localTotal.yiyi >= cloudTotal.yiyi ? {
                                 // 本地总积分更高，使用本地数据
                                 pending: localPool.yiyi?.pending || 0,
                                 withdrawn: localPool.yiyi?.withdrawn || 0,
-                                lastWithdrawDate: localPool.yiyi?.lastWithdrawDate,
+                                lastWithdrawDate: localPool.yiyi?.lastWithdrawDate || null,
                                 weekStart: localPool.yiyi?.weekStart
                             } : {
                                 // 云端总积分更高，使用云端数据
                                 pending: cloudPool.yiyi?.pending || 0,
                                 withdrawn: cloudPool.yiyi?.withdrawn || 0,
-                                lastWithdrawDate: cloudPool.yiyi?.lastWithdrawDate,
+                                lastWithdrawDate: cloudPool.yiyi?.lastWithdrawDate || null,
                                 weekStart: cloudPool.yiyi?.weekStart
                             },
                             autoWithdrawTime: cloudPool.autoWithdrawTime || localPool.autoWithdrawTime || '23:30',
@@ -9846,26 +9804,26 @@
                                     // 本地总积分更高，使用本地数据
                                     pending: localPool.qiqi?.pending || 0,
                                     withdrawn: localPool.qiqi?.withdrawn || 0,
-                                    lastWithdrawDate: localPool.qiqi?.lastWithdrawDate,
+                                    lastWithdrawDate: localPool.qiqi?.lastWithdrawDate || null,
                                     weekStart: localPool.qiqi?.weekStart
                                 } : {
                                     // 云端总积分更高，使用云端数据
                                     pending: cloudPool.qiqi?.pending || 0,
                                     withdrawn: cloudPool.qiqi?.withdrawn || 0,
-                                    lastWithdrawDate: cloudPool.qiqi?.lastWithdrawDate,
+                                    lastWithdrawDate: cloudPool.qiqi?.lastWithdrawDate || null,
                                     weekStart: cloudPool.qiqi?.weekStart
                                 },
                                 yiyi: localTotal.yiyi >= cloudTotal.yiyi ? {
                                     // 本地总积分更高，使用本地数据
                                     pending: localPool.yiyi?.pending || 0,
                                     withdrawn: localPool.yiyi?.withdrawn || 0,
-                                    lastWithdrawDate: localPool.yiyi?.lastWithdrawDate,
+                                    lastWithdrawDate: localPool.yiyi?.lastWithdrawDate || null,
                                     weekStart: localPool.yiyi?.weekStart
                                 } : {
                                     // 云端总积分更高，使用云端数据
                                     pending: cloudPool.yiyi?.pending || 0,
                                     withdrawn: cloudPool.yiyi?.withdrawn || 0,
-                                    lastWithdrawDate: cloudPool.yiyi?.lastWithdrawDate,
+                                    lastWithdrawDate: cloudPool.yiyi?.lastWithdrawDate || null,
                                     weekStart: cloudPool.yiyi?.weekStart
                                 },
                                 autoWithdrawTime: cloudPool.autoWithdrawTime || localPool.autoWithdrawTime || '23:30',
@@ -10225,26 +10183,26 @@
                             // 本地总积分更高，使用本地数据
                             pending: localPoints.qiqi.pending || 0,
                             withdrawn: localPoints.qiqi.withdrawn || 0,
-                            lastWithdrawDate: localPoints.qiqi.lastWithdrawDate,
+                            lastWithdrawDate: localPoints.qiqi.lastWithdrawDate || null,
                             weekStart: localPoints.qiqi.weekStart
                         } : {
                             // 云端总积分更高，使用云端数据
                             pending: cloudPoints.qiqi?.pending || 0,
                             withdrawn: cloudPoints.qiqi?.withdrawn || 0,
-                            lastWithdrawDate: cloudPoints.qiqi?.lastWithdrawDate,
+                            lastWithdrawDate: cloudPoints.qiqi?.lastWithdrawDate || null,
                             weekStart: cloudPoints.qiqi?.weekStart
                         },
                         yiyi: localTotal.yiyi >= cloudTotal.yiyi ? {
                             // 本地总积分更高，使用本地数据
                             pending: localPoints.yiyi.pending || 0,
                             withdrawn: localPoints.yiyi.withdrawn || 0,
-                            lastWithdrawDate: localPoints.yiyi.lastWithdrawDate,
+                            lastWithdrawDate: localPoints.yiyi.lastWithdrawDate || null,
                             weekStart: localPoints.yiyi.weekStart
                         } : {
                             // 云端总积分更高，使用云端数据
                             pending: cloudPoints.yiyi?.pending || 0,
                             withdrawn: cloudPoints.yiyi?.withdrawn || 0,
-                            lastWithdrawDate: cloudPoints.yiyi?.lastWithdrawDate,
+                            lastWithdrawDate: cloudPoints.yiyi?.lastWithdrawDate || null,
                             weekStart: cloudPoints.yiyi?.weekStart
                         },
                         autoWithdrawTime: localPoints.autoWithdrawTime || '23:30',
@@ -10426,10 +10384,9 @@
                     
                     // 加载积分池数据
                     pointsPool = data.pointsPool || {
-                        qiqi: { pending: 0, withdrawn: 0, lastWithdrawDate: null, weekStart: null },
-                        yiyi: { pending: 0, withdrawn: 0, lastWithdrawDate: null, weekStart: null },
-                        autoWithdrawTime: '23:30',
-                        lastAutoWithdraw: null
+                        qiqi: { weeklyProgress: 0, weekStart: null },
+                        yiyi: { weeklyProgress: 0, weekStart: null },
+                        lastUpdateTime: null
                     };
                     
                     // 加载连胜重置跟踪器
