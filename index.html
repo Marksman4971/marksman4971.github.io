@@ -3750,6 +3750,7 @@
                     
                     <!-- 积分池管理按钮 -->
                     <div style="text-align: center; margin-bottom: 15px;">
+                        <button onclick="manualSyncData()" style="background: linear-gradient(45deg, #9c27b0, #ba68c8); color: white; border: none; padding: 8px 16px; border-radius: 10px; font-size: 0.85em; font-weight: bold; cursor: pointer; box-shadow: 0 3px 10px rgba(156, 39, 176, 0.3); margin-right: 5px;">🔄 立即同步</button>
                         <button onclick="clearPointsPool()" style="background: linear-gradient(45deg, #ff9800, #f57c00); color: white; border: none; padding: 8px 16px; border-radius: 10px; font-size: 0.85em; font-weight: bold; cursor: pointer; box-shadow: 0 3px 10px rgba(255, 152, 0, 0.3); margin-right: 5px;">🗑️ 清空积分池</button>
                         <button onclick="manualSetPointsPool()" style="background: linear-gradient(45deg, #4caf50, #66bb6a); color: white; border: none; padding: 8px 16px; border-radius: 10px; font-size: 0.85em; font-weight: bold; cursor: pointer; box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3); margin-right: 5px;">⚙️ 手动设置积分</button>
                         <button onclick="backupPointsPool()" style="background: linear-gradient(45deg, #2196f3, #42a5f5); color: white; border: none; padding: 8px 16px; border-radius: 10px; font-size: 0.85em; font-weight: bold; cursor: pointer; box-shadow: 0 3px 10px rgba(33, 150, 243, 0.3);">💾 备份恢复</button>
@@ -10172,39 +10173,135 @@
             }
 
             try {
-                // 先上传当前数据
-                const currentData = {
-                    bountyData,
-                    bankData,
-                    historyData,
-                    bountyCounter,
-                    dailyTasksContent,
-                    dailyTasks,
-                    taskPool,
-                    taskCounter,
-                    lastResetDate,
-                    weeklyData,
-                    monthlyStarBonus,
-                    dailyTaskSnapshots, // 添加任务状态快照
-                    penaltySystemStartDate, // 添加惩罚系统开始日期
-                    weeklyStats, // 添加周度积分统计数据
-                    taskRewardSystem, // 添加任务奖励系统数据
-                    pointsPool, // 添加积分池数据！！！这是关键
-                    streakResetTracker, // 添加连胜重置跟踪器
-                    lastUpdated: new Date().toISOString()
-                };
-
-                await window.firebaseDb.set(window.firebaseDb.ref(window.firebaseDb.database, 'pointSystemV2'), currentData);
-                console.log('手动上传数据成功');
-
-                // 然后下载最新数据
-                await autoDownloadFromFirebase();
+                // 先检查云端数据
+                const snapshot = await window.firebaseDb.get(window.firebaseDb.ref(window.firebaseDb.database, 'pointSystemV2'));
                 
-                alert('数据同步成功！');
+                if (snapshot.exists()) {
+                    const cloudData = snapshot.val();
+                    const cloudPoints = cloudData.pointsPool;
+                    const localPoints = pointsPool;
+                    
+                    // 检查积分池数据差异
+                    if (cloudPoints && (
+                        cloudPoints.qiqi?.pending !== localPoints.qiqi.pending ||
+                        cloudPoints.yiyi?.pending !== localPoints.yiyi.pending ||
+                        cloudPoints.qiqi?.withdrawn !== localPoints.qiqi.withdrawn ||
+                        cloudPoints.yiyi?.withdrawn !== localPoints.yiyi.withdrawn
+                    )) {
+                        let compareMsg = '🔄 检测到设备间数据差异！\n\n';
+                        compareMsg += '📱 本地设备数据:\n';
+                        compareMsg += `七七: 待提现${localPoints.qiqi.pending}分, 已提现${localPoints.qiqi.withdrawn}分\n`;
+                        compareMsg += `一一: 待提现${localPoints.yiyi.pending}分, 已提现${localPoints.yiyi.withdrawn}分\n\n`;
+                        compareMsg += '☁️ 云端数据:\n';
+                        compareMsg += `七七: 待提现${cloudPoints.qiqi?.pending || 0}分, 已提现${cloudPoints.qiqi?.withdrawn || 0}分\n`;
+                        compareMsg += `一一: 待提现${cloudPoints.yiyi?.pending || 0}分, 已提现${cloudPoints.yiyi?.withdrawn || 0}分\n\n`;
+                        compareMsg += '请选择同步方式:\n';
+                        compareMsg += '1 = 📤 上传本地数据到云端\n';
+                        compareMsg += '2 = 📥 下载云端数据到本地\n';
+                        compareMsg += '3 = 🔄 智能合并(取最高积分)\n';
+                        compareMsg += '其他 = ❌ 取消同步';
+                        
+                        const choice = prompt(compareMsg);
+                        
+                        switch(choice) {
+                            case '1':
+                                // 上传本地数据
+                                const localData = {
+                                    bountyData, bankData, historyData, bountyCounter,
+                                    dailyTasksContent, dailyTasks, taskPool, taskCounter,
+                                    lastResetDate, weeklyData, monthlyStarBonus,
+                                    dailyTaskSnapshots, penaltySystemStartDate, weeklyStats,
+                                    taskRewardSystem, pointsPool, streakResetTracker,
+                                    lastUpdated: new Date().toISOString()
+                                };
+                                await window.firebaseDb.set(window.firebaseDb.ref(window.firebaseDb.database, 'pointSystemV2'), localData);
+                                alert('✅ 本地数据已上传到云端！');
+                                break;
+                                
+                            case '2':
+                                // 下载云端数据
+                                await autoDownloadFromFirebase();
+                                alert('✅ 云端数据已下载到本地！');
+                                break;
+                                
+                            case '3':
+                                // 智能合并 - 取较高值
+                                const mergedPoints = {
+                                    qiqi: {
+                                        pending: Math.max(localPoints.qiqi.pending, cloudPoints.qiqi?.pending || 0),
+                                        withdrawn: Math.max(localPoints.qiqi.withdrawn, cloudPoints.qiqi?.withdrawn || 0),
+                                        lastWithdrawDate: cloudPoints.qiqi?.lastWithdrawDate || localPoints.qiqi.lastWithdrawDate,
+                                        weekStart: cloudPoints.qiqi?.weekStart || localPoints.qiqi.weekStart
+                                    },
+                                    yiyi: {
+                                        pending: Math.max(localPoints.yiyi.pending, cloudPoints.yiyi?.pending || 0),
+                                        withdrawn: Math.max(localPoints.yiyi.withdrawn, cloudPoints.yiyi?.withdrawn || 0),
+                                        lastWithdrawDate: cloudPoints.yiyi?.lastWithdrawDate || localPoints.yiyi.lastWithdrawDate,
+                                        weekStart: cloudPoints.yiyi?.weekStart || localPoints.yiyi.weekStart
+                                    },
+                                    autoWithdrawTime: localPoints.autoWithdrawTime,
+                                    lastAutoWithdraw: localPoints.lastAutoWithdraw,
+                                    protectionLevel: localPoints.protectionLevel,
+                                    lastUpdateTime: new Date().toISOString()
+                                };
+                                
+                                pointsPool = mergedPoints;
+                                
+                                const mergedData = {
+                                    bountyData, bankData, historyData, bountyCounter,
+                                    dailyTasksContent, dailyTasks, taskPool, taskCounter,
+                                    lastResetDate, weeklyData, monthlyStarBonus,
+                                    dailyTaskSnapshots, penaltySystemStartDate, weeklyStats,
+                                    taskRewardSystem, pointsPool: mergedPoints, streakResetTracker,
+                                    lastUpdated: new Date().toISOString()
+                                };
+                                
+                                await window.firebaseDb.set(window.firebaseDb.ref(window.firebaseDb.database, 'pointSystemV2'), mergedData);
+                                saveData();
+                                updatePointsPoolDisplay();
+                                
+                                alert(`✅ 智能合并完成！\n七七: 待提现${mergedPoints.qiqi.pending}分, 已提现${mergedPoints.qiqi.withdrawn}分\n一一: 待提现${mergedPoints.yiyi.pending}分, 已提现${mergedPoints.yiyi.withdrawn}分`);
+                                break;
+                                
+                            default:
+                                alert('❌ 同步已取消');
+                                return;
+                        }
+                    } else {
+                        // 数据相同，正常同步
+                        const currentData = {
+                            bountyData, bankData, historyData, bountyCounter,
+                            dailyTasksContent, dailyTasks, taskPool, taskCounter,
+                            lastResetDate, weeklyData, monthlyStarBonus,
+                            dailyTaskSnapshots, penaltySystemStartDate, weeklyStats,
+                            taskRewardSystem, pointsPool, streakResetTracker,
+                            lastUpdated: new Date().toISOString()
+                        };
+                        await window.firebaseDb.set(window.firebaseDb.ref(window.firebaseDb.database, 'pointSystemV2'), currentData);
+                        await autoDownloadFromFirebase();
+                        alert('✅ 数据同步成功！');
+                    }
+                } else {
+                    // 云端无数据，直接上传
+                    const currentData = {
+                        bountyData, bankData, historyData, bountyCounter,
+                        dailyTasksContent, dailyTasks, taskPool, taskCounter,
+                        lastResetDate, weeklyData, monthlyStarBonus,
+                        dailyTaskSnapshots, penaltySystemStartDate, weeklyStats,
+                        taskRewardSystem, pointsPool, streakResetTracker,
+                        lastUpdated: new Date().toISOString()
+                    };
+                    await window.firebaseDb.set(window.firebaseDb.ref(window.firebaseDb.database, 'pointSystemV2'), currentData);
+                    alert('✅ 本地数据已上传到云端！');
+                }
+                
+                updateLastSyncTime();
+                updateConnectionStatus(true, '手动同步完成');
+                console.log('手动同步操作完成');
                 
             } catch (error) {
                 console.error('手动同步失败:', error);
-                alert('数据同步失败：' + error.message);
+                alert('❌ 数据同步失败：' + error.message);
             }
         }
 
