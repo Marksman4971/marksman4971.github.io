@@ -4562,7 +4562,8 @@
                 weeklyProgress: 0,  // 本周完成任务获得积分（朝向25分目标）
                 weekStart: null     // 周开始时间
             },
-            lastUpdateTime: null    // 最后更新时间
+            lastUpdateTime: null,   // 最后更新时间
+            lastPenaltyCheck: null  // 最后执行惩罚检查的日期（防重复）
         };
         
         // 连胜奖励重置跟踪系统
@@ -5851,12 +5852,15 @@
         function autoWithdrawCheck() {
             const now = new Date();
             const isWeekEnd = now.getDay() === 0; // 周日
+            const today = now.toDateString();
             
-            if (isWeekEnd) {
-                // 周日检查是否需要实施惩罚
+            if (isWeekEnd && pointsPool.lastPenaltyCheck !== today) {
+                // 周日检查是否需要实施惩罚，防止重复执行
                 ['qiqi', 'yiyi'].forEach(user => {
                     checkWeeklyPenalty(user);
                 });
+                pointsPool.lastPenaltyCheck = today;
+                saveData(); // 保存防重复标记
             }
         }
 
@@ -6941,47 +6945,37 @@
                         const cloudPool = cloudData.pointsPool;
                         const localPool = pointsPool;
                         
-                        // 智能合并 - 按总积分取最优状态，防止重复计分
+                        // 智能合并 - 按周进度取最优状态
                         const localTotal = {
-                            qiqi: (localPool.qiqi?.pending || 0) + (localPool.qiqi?.withdrawn || 0),
-                            yiyi: (localPool.yiyi?.pending || 0) + (localPool.yiyi?.withdrawn || 0)
+                            qiqi: localPool.qiqi?.weeklyProgress || 0,
+                            yiyi: localPool.yiyi?.weeklyProgress || 0
                         };
                         const cloudTotal = {
-                            qiqi: (cloudPool.qiqi?.pending || 0) + (cloudPool.qiqi?.withdrawn || 0),
-                            yiyi: (cloudPool.yiyi?.pending || 0) + (cloudPool.yiyi?.withdrawn || 0)
+                            qiqi: cloudPool.qiqi?.weeklyProgress || 0,
+                            yiyi: cloudPool.yiyi?.weeklyProgress || 0
                         };
                         
                         pointsPool = {
                             qiqi: localTotal.qiqi >= cloudTotal.qiqi ? {
-                                // 本地总积分更高，使用本地数据
-                                pending: localPool.qiqi?.pending || 0,
-                                withdrawn: localPool.qiqi?.withdrawn || 0,
-                                lastWithdrawDate: localPool.qiqi?.lastWithdrawDate || null,
+                                // 本地周进度更高，使用本地数据
+                                weeklyProgress: localPool.qiqi?.weeklyProgress || 0,
                                 weekStart: localPool.qiqi?.weekStart
                             } : {
-                                // 云端总积分更高，使用云端数据
-                                pending: cloudPool.qiqi?.pending || 0,
-                                withdrawn: cloudPool.qiqi?.withdrawn || 0,
-                                lastWithdrawDate: cloudPool.qiqi?.lastWithdrawDate || null,
+                                // 云端周进度更高，使用云端数据
+                                weeklyProgress: cloudPool.qiqi?.weeklyProgress || 0,
                                 weekStart: cloudPool.qiqi?.weekStart
                             },
                             yiyi: localTotal.yiyi >= cloudTotal.yiyi ? {
-                                // 本地总积分更高，使用本地数据
-                                pending: localPool.yiyi?.pending || 0,
-                                withdrawn: localPool.yiyi?.withdrawn || 0,
-                                lastWithdrawDate: localPool.yiyi?.lastWithdrawDate || null,
+                                // 本地周进度更高，使用本地数据
+                                weeklyProgress: localPool.yiyi?.weeklyProgress || 0,
                                 weekStart: localPool.yiyi?.weekStart
                             } : {
-                                // 云端总积分更高，使用云端数据
-                                pending: cloudPool.yiyi?.pending || 0,
-                                withdrawn: cloudPool.yiyi?.withdrawn || 0,
-                                lastWithdrawDate: cloudPool.yiyi?.lastWithdrawDate || null,
+                                // 云端周进度更高，使用云端数据
+                                weeklyProgress: cloudPool.yiyi?.weeklyProgress || 0,
                                 weekStart: cloudPool.yiyi?.weekStart
                             },
-                            autoWithdrawTime: cloudPool.autoWithdrawTime || localPool.autoWithdrawTime || '23:30',
-                            lastAutoWithdraw: cloudPool.lastAutoWithdraw || localPool.lastAutoWithdraw,
-                            protectionLevel: 'HIGH',
-                            lastUpdateTime: new Date().toISOString()
+                            lastUpdateTime: new Date().toISOString(),
+                            lastPenaltyCheck: cloudPool.lastPenaltyCheck || localPool.lastPenaltyCheck
                         };
                         console.log('🔄 自动智能合并完成：永远取最高分');
                     }
