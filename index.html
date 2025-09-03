@@ -6063,11 +6063,28 @@
         }
 
         function updatePointsPoolDisplay() {
-            ['qiqi', 'yiyi'].forEach(user => {
-                const pending = pointsPool[user].pending;
-                const withdrawn = pointsPool[user].withdrawn;
-                const totalWeekly = pending + withdrawn;
-                const projectedPenalty = totalWeekly < 25 ? (25 - totalWeekly) * 2 : 0;
+            try {
+                console.log('🔄 开始更新积分池显示');
+                
+                // 检查积分池数据完整性
+                if (!pointsPool) {
+                    console.error('❌ 积分池数据不存在');
+                    return;
+                }
+                
+                ['qiqi', 'yiyi'].forEach(user => {
+                    // 检查用户数据完整性
+                    if (!pointsPool[user]) {
+                        console.error(`❌ 用户${user}的积分池数据不存在`);
+                        pointsPool[user] = { pending: 0, withdrawn: 0, lastWithdrawDate: null, weekStart: null };
+                    }
+                    
+                    const pending = pointsPool[user].pending || 0;
+                    const withdrawn = pointsPool[user].withdrawn || 0;
+                    const totalWeekly = pending + withdrawn;
+                    const projectedPenalty = totalWeekly < 25 ? (25 - totalWeekly) * 2 : 0;
+                    
+                    console.log(`✅ ${user}: pending=${pending}, withdrawn=${withdrawn}, total=${totalWeekly}`);
                 
                 // 更新顶部新版本显示
                 const poolInfoTopEl = document.getElementById(`${user}-pool-info-top`);
@@ -6128,7 +6145,17 @@
                     withdrawPartialBtn.style.opacity = pending > 0 ? '1' : '0.5';
                 }
             });
+            
+            console.log('✅ 积分池显示更新完成');
+        } catch (error) {
+            console.error('❌ 积分池显示更新失败:', error);
+            // 如果出错，尝试重新同步数据
+            if (typeof syncWithFirebase === 'function') {
+                console.log('🔄 尝试重新同步Firebase数据');
+                syncWithFirebase();
+            }
         }
+    }
 
         function updateTaskRewardDisplay() {
             ['qiqi', 'yiyi'].forEach(user => {
