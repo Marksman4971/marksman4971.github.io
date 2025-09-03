@@ -3750,8 +3750,9 @@
                     
                     <!-- 积分池管理按钮 -->
                     <div style="text-align: center; margin-bottom: 15px;">
-                        <button onclick="clearPointsPool()" style="background: linear-gradient(45deg, #ff9800, #f57c00); color: white; border: none; padding: 8px 16px; border-radius: 10px; font-size: 0.85em; font-weight: bold; cursor: pointer; box-shadow: 0 3px 10px rgba(255, 152, 0, 0.3); margin-right: 10px;">🗑️ 清空积分池</button>
-                        <button onclick="manualSetPointsPool()" style="background: linear-gradient(45deg, #4caf50, #66bb6a); color: white; border: none; padding: 8px 16px; border-radius: 10px; font-size: 0.85em; font-weight: bold; cursor: pointer; box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);">⚙️ 手动设置积分</button>
+                        <button onclick="clearPointsPool()" style="background: linear-gradient(45deg, #ff9800, #f57c00); color: white; border: none; padding: 8px 16px; border-radius: 10px; font-size: 0.85em; font-weight: bold; cursor: pointer; box-shadow: 0 3px 10px rgba(255, 152, 0, 0.3); margin-right: 5px;">🗑️ 清空积分池</button>
+                        <button onclick="manualSetPointsPool()" style="background: linear-gradient(45deg, #4caf50, #66bb6a); color: white; border: none; padding: 8px 16px; border-radius: 10px; font-size: 0.85em; font-weight: bold; cursor: pointer; box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3); margin-right: 5px;">⚙️ 手动设置积分</button>
+                        <button onclick="backupPointsPool()" style="background: linear-gradient(45deg, #2196f3, #42a5f5); color: white; border: none; padding: 8px 16px; border-radius: 10px; font-size: 0.85em; font-weight: bold; cursor: pointer; box-shadow: 0 3px 10px rgba(33, 150, 243, 0.3);">💾 备份恢复</button>
                     </div>
                 </div>
                 
@@ -5825,6 +5826,22 @@
             
             pointsPool[user].pending += points;
             pointsPool.lastUpdateTime = new Date().toISOString(); // 记录更新时间
+            
+            // 自动备份：当积分增加时自动创建备份
+            if (points > 0) {
+                try {
+                    const autoBackup = {
+                        pointsPool: JSON.parse(JSON.stringify(pointsPool)),
+                        backupTime: new Date().toISOString(),
+                        backupBy: 'auto',
+                        trigger: `${user}获得${points}分`
+                    };
+                    localStorage.setItem('pointsPoolAutoBackup', JSON.stringify(autoBackup));
+                    console.log('🔄 自动备份创建成功:', autoBackup.trigger);
+                } catch (error) {
+                    console.error('自动备份失败:', error);
+                }
+            }
         }
 
         function calculatePenalty(user) {
@@ -9980,6 +9997,122 @@
             }
         }
 
+        // 积分池备份恢复功能
+        function backupPointsPool() {
+            const actions = [
+                '1. 💾 创建积分池备份',
+                '2. 📥 恢复积分池备份',
+                '3. 🔍 查看当前备份'
+            ];
+            
+            const choice = prompt('💾 积分池备份恢复系统\n\n请选择操作：\n' + actions.join('\n') + '\n\n请输入数字(1-3):');
+            
+            switch(choice) {
+                case '1':
+                    createPointsPoolBackup();
+                    break;
+                case '2':
+                    restorePointsPoolBackup();
+                    break;
+                case '3':
+                    showPointsPoolBackup();
+                    break;
+                default:
+                    if (choice) alert('❌ 无效选择！请输入1-3之间的数字。');
+            }
+        }
+        
+        function createPointsPoolBackup() {
+            try {
+                const backup = {
+                    pointsPool: JSON.parse(JSON.stringify(pointsPool)),
+                    backupTime: new Date().toISOString(),
+                    backupBy: 'manual'
+                };
+                
+                localStorage.setItem('pointsPoolBackup', JSON.stringify(backup));
+                
+                let info = `💾 积分池备份已创建！\n\n`;
+                info += `七七待提现: ${pointsPool.qiqi.pending}分\n`;
+                info += `七七已提现: ${pointsPool.qiqi.withdrawn}分\n`;
+                info += `一一待提现: ${pointsPool.yiyi.pending}分\n`;
+                info += `一一已提现: ${pointsPool.yiyi.withdrawn}分\n`;
+                info += `备份时间: ${new Date().toLocaleString()}`;
+                
+                alert(info);
+                console.log('积分池备份创建成功:', backup);
+            } catch (error) {
+                alert('❌ 备份创建失败：' + error.message);
+            }
+        }
+        
+        function restorePointsPoolBackup() {
+            try {
+                const backupData = localStorage.getItem('pointsPoolBackup');
+                if (!backupData) {
+                    alert('❌ 未找到积分池备份！请先创建备份。');
+                    return;
+                }
+                
+                const backup = JSON.parse(backupData);
+                const backupTime = new Date(backup.backupTime).toLocaleString();
+                
+                let confirmMsg = `📥 确认恢复积分池备份？\n\n`;
+                confirmMsg += `备份时间: ${backupTime}\n\n`;
+                confirmMsg += `备份数据:\n`;
+                confirmMsg += `七七待提现: ${backup.pointsPool.qiqi.pending}分\n`;
+                confirmMsg += `七七已提现: ${backup.pointsPool.qiqi.withdrawn}分\n`;
+                confirmMsg += `一一待提现: ${backup.pointsPool.yiyi.pending}分\n`;
+                confirmMsg += `一一已提现: ${backup.pointsPool.yiyi.withdrawn}分\n\n`;
+                confirmMsg += `当前数据将被覆盖！`;
+                
+                if (confirm(confirmMsg)) {
+                    const oldData = JSON.parse(JSON.stringify(pointsPool));
+                    pointsPool = backup.pointsPool;
+                    pointsPool.lastUpdateTime = new Date().toISOString();
+                    
+                    addHistory(`管理员从备份恢复积分池(${backupTime})`, 'system');
+                    saveData();
+                    updatePointsPoolDisplay();
+                    
+                    alert(`✅ 积分池已从备份恢复！\n备份时间: ${backupTime}`);
+                    console.log('积分池恢复成功:', { old: oldData, restored: pointsPool });
+                }
+            } catch (error) {
+                alert('❌ 恢复失败：' + error.message);
+            }
+        }
+        
+        function showPointsPoolBackup() {
+            try {
+                const backupData = localStorage.getItem('pointsPoolBackup');
+                if (!backupData) {
+                    alert('❌ 未找到积分池备份！');
+                    return;
+                }
+                
+                const backup = JSON.parse(backupData);
+                const backupTime = new Date(backup.backupTime).toLocaleString();
+                
+                let info = `🔍 积分池备份信息\n\n`;
+                info += `备份时间: ${backupTime}\n\n`;
+                info += `备份数据:\n`;
+                info += `七七待提现: ${backup.pointsPool.qiqi.pending}分\n`;
+                info += `七七已提现: ${backup.pointsPool.qiqi.withdrawn}分\n`;
+                info += `一一待提现: ${backup.pointsPool.yiyi.pending}分\n`;
+                info += `一一已提现: ${backup.pointsPool.yiyi.withdrawn}分\n\n`;
+                info += `当前数据:\n`;
+                info += `七七待提现: ${pointsPool.qiqi.pending}分\n`;
+                info += `七七已提现: ${pointsPool.qiqi.withdrawn}分\n`;
+                info += `一一待提现: ${pointsPool.yiyi.pending}分\n`;
+                info += `一一已提现: ${pointsPool.yiyi.withdrawn}分`;
+                
+                alert(info);
+            } catch (error) {
+                alert('❌ 查看备份失败：' + error.message);
+            }
+        }
+
         // 积分池同步调试函数
         async function debugPointsPoolSync() {
             try {
@@ -10532,7 +10665,31 @@
                 setTimeout(() => {
                     if (isFirebaseReady && isOnline) {
                         console.log('移动端延迟同步启动');
-                        autoDownloadFromFirebase();
+                        // 检查本地是否有积分池数据，如果有则保护
+                        const hasLocalPoints = (pointsPool.qiqi.pending > 0 || pointsPool.yiyi.pending > 0);
+                        if (hasLocalPoints) {
+                            console.log('🛡️ 移动端检测到本地积分，启用保护模式同步');
+                            // 先上传本地数据，再下载
+                            const localData = {
+                                bountyData,
+                                bankData,
+                                historyData,
+                                penaltyHistory,
+                                taskList,
+                                taskPool,
+                                dailyTasks,
+                                pointsPool,
+                                weeklyData,
+                                monthlyStarBonus,
+                                taskRewardSystem,
+                                dailyTaskSnapshots,
+                                streakResetTracker,
+                                lastUpdated: new Date().toISOString()
+                            };
+                            autoUploadToFirebase(localData);
+                        } else {
+                            autoDownloadFromFirebase();
+                        }
                     }
                 }, 2000);
             }
