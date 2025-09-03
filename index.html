@@ -3750,7 +3750,8 @@
                     
                     <!-- 积分池管理按钮 -->
                     <div style="text-align: center; margin-bottom: 15px;">
-                        <button onclick="clearPointsPool()" style="background: linear-gradient(45deg, #ff9800, #f57c00); color: white; border: none; padding: 8px 16px; border-radius: 10px; font-size: 0.85em; font-weight: bold; cursor: pointer; box-shadow: 0 3px 10px rgba(255, 152, 0, 0.3);">🗑️ 清空积分池</button>
+                        <button onclick="clearPointsPool()" style="background: linear-gradient(45deg, #ff9800, #f57c00); color: white; border: none; padding: 8px 16px; border-radius: 10px; font-size: 0.85em; font-weight: bold; cursor: pointer; box-shadow: 0 3px 10px rgba(255, 152, 0, 0.3); margin-right: 10px;">🗑️ 清空积分池</button>
+                        <button onclick="manualSetPointsPool()" style="background: linear-gradient(45deg, #4caf50, #66bb6a); color: white; border: none; padding: 8px 16px; border-radius: 10px; font-size: 0.85em; font-weight: bold; cursor: pointer; box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);">⚙️ 手动设置积分</button>
                     </div>
                 </div>
                 
@@ -4549,7 +4550,7 @@
             yiyi: { level: 0, tasksCompleted: 0, pendingReward: 0, lastClaimDate: null }
         };
         
-        // 积分池系统
+        // 积分池系统 - 增强保护
         let pointsPool = {
             qiqi: { 
                 pending: 0,        // 可提现积分
@@ -4564,7 +4565,9 @@
                 weekStart: null
             },
             autoWithdrawTime: '23:30',  // 自动提现时间
-            lastAutoWithdraw: null
+            lastAutoWithdraw: null,
+            protectionLevel: 'HIGH',    // 保护级别：HIGH/MEDIUM/LOW
+            lastUpdateTime: null        // 最后更新时间
         };
         
         // 连胜奖励重置跟踪系统
@@ -5821,6 +5824,7 @@
             }
             
             pointsPool[user].pending += points;
+            pointsPool.lastUpdateTime = new Date().toISOString(); // 记录更新时间
         }
 
         function calculatePenalty(user) {
@@ -5950,7 +5954,20 @@
         }
 
         function clearPointsPool() {
-            if (confirm('⚠️ 确认清空积分池吗？\n\n这将清空：\n• 七七和一一的所有待提现积分\n• 本周已提现记录\n• 连胜重置记录\n\n此操作不可恢复！')) {
+            // 添加密码保护
+            const password = prompt('⚠️ 积分池清空需要管理员权限！\n\n请输入管理员密码：');
+            if (!password) {
+                alert('操作已取消');
+                return;
+            }
+            
+            // 验证密码（可以设置为你想要的密码）
+            if (password !== '960818') {
+                alert('❌ 密码错误！无法清空积分池。');
+                return;
+            }
+            
+            if (confirm('⚠️ 管理员权限已验证！\n\n确认清空积分池吗？\n\n这将清空：\n• 七七和一一的所有待提现积分\n• 本周已提现记录\n• 连胜重置记录\n\n此操作不可恢复！')) {
                 const qiqiPending = pointsPool.qiqi.pending;
                 const yiyiPending = pointsPool.yiyi.pending;
                 const qiqiWithdrawn = pointsPool.qiqi.withdrawn;
@@ -6943,13 +6960,49 @@
                         yiyi: { level: 0, tasksCompleted: 0, pendingReward: 0, lastClaimDate: null }
                     };
                     
-                    // 恢复积分池数据
-                    pointsPool = cloudData.pointsPool || {
-                        qiqi: { pending: 0, withdrawn: 0, lastWithdrawDate: null, weekStart: null },
-                        yiyi: { pending: 0, withdrawn: 0, lastWithdrawDate: null, weekStart: null },
-                        autoWithdrawTime: '23:30',
-                        lastAutoWithdraw: null
-                    };
+                    // 恢复积分池数据 - 添加保护机制
+                    if (cloudData.pointsPool) {
+                        // 只有当云端积分池数据有意义时才同步
+                        const cloudPool = cloudData.pointsPool;
+                        const localPool = pointsPool;
+                        
+                        // 如果云端数据包含积分且本地数据也有积分，使用较高的值
+                        if (cloudPool.qiqi && cloudPool.yiyi) {
+                            // 时间保护：如果本地数据更新时间较新，优先保护本地数据
+                            const localUpdateTime = new Date(localPool.lastUpdateTime || 0);
+                            const cloudUpdateTime = new Date(cloudPool.lastUpdateTime || 0);
+                            
+                            if (localPool.protectionLevel === 'HIGH' && 
+                                localUpdateTime > cloudUpdateTime && 
+                                (localPool.qiqi.pending > 0 || localPool.yiyi.pending > 0)) {
+                                console.log('🛡️ 高级保护：本地数据较新且有积分，跳过云端同步');
+                                return;
+                            }
+                            pointsPool = {
+                                qiqi: {
+                                    pending: Math.max(localPool.qiqi.pending || 0, cloudPool.qiqi.pending || 0),
+                                    withdrawn: Math.max(localPool.qiqi.withdrawn || 0, cloudPool.qiqi.withdrawn || 0),
+                                    lastWithdrawDate: cloudPool.qiqi.lastWithdrawDate || localPool.qiqi.lastWithdrawDate,
+                                    weekStart: cloudPool.qiqi.weekStart || localPool.qiqi.weekStart
+                                },
+                                yiyi: {
+                                    pending: Math.max(localPool.yiyi.pending || 0, cloudPool.yiyi.pending || 0),
+                                    withdrawn: Math.max(localPool.yiyi.withdrawn || 0, cloudPool.yiyi.withdrawn || 0),
+                                    lastWithdrawDate: cloudPool.yiyi.lastWithdrawDate || localPool.yiyi.lastWithdrawDate,
+                                    weekStart: cloudPool.yiyi.weekStart || localPool.yiyi.weekStart
+                                },
+                                autoWithdrawTime: cloudPool.autoWithdrawTime || '23:30',
+                                lastAutoWithdraw: cloudPool.lastAutoWithdraw || localPool.lastAutoWithdraw
+                            };
+                            console.log('🛡️ 积分池数据保护性同步：取本地和云端的最大值');
+                        } else if (localPool.qiqi.pending > 0 || localPool.yiyi.pending > 0) {
+                            // 如果本地有积分但云端没有，保持本地数据
+                            console.log('🛡️ 积分池保护：本地数据优先（云端数据异常）');
+                        } else {
+                            // 只有在本地无积分时才使用云端数据
+                            pointsPool = cloudPool;
+                        }
+                    }
                     
                     // 恢复每日任务数据
                     if (cloudData.dailyTasks && Array.isArray(cloudData.dailyTasks.qiqi) && Array.isArray(cloudData.dailyTasks.yiyi)) {
@@ -9749,13 +9802,49 @@
                             yiyi: { level: 0, tasksCompleted: 0, pendingReward: 0, lastClaimDate: null }
                         };
                         
-                        // 恢复积分池数据
-                        pointsPool = cloudData.pointsPool || {
-                            qiqi: { pending: 0, withdrawn: 0, lastWithdrawDate: null, weekStart: null },
-                            yiyi: { pending: 0, withdrawn: 0, lastWithdrawDate: null, weekStart: null },
-                            autoWithdrawTime: '23:30',
-                            lastAutoWithdraw: null
-                        };
+                        // 恢复积分池数据 - 添加保护机制
+                        if (cloudData.pointsPool) {
+                            // 只有当云端积分池数据有意义时才同步
+                            const cloudPool = cloudData.pointsPool;
+                            const localPool = pointsPool;
+                            
+                            // 如果云端数据包含积分且本地数据也有积分，使用较高的值
+                            if (cloudPool.qiqi && cloudPool.yiyi) {
+                                // 时间保护：如果本地数据更新时间较新，优先保护本地数据
+                                const localUpdateTime = new Date(localPool.lastUpdateTime || 0);
+                                const cloudUpdateTime = new Date(cloudPool.lastUpdateTime || 0);
+                                
+                                if (localPool.protectionLevel === 'HIGH' && 
+                                    localUpdateTime > cloudUpdateTime && 
+                                    (localPool.qiqi.pending > 0 || localPool.yiyi.pending > 0)) {
+                                    console.log('🛡️ 高级保护：本地数据较新且有积分，跳过云端同步');
+                                    return;
+                                }
+                                pointsPool = {
+                                    qiqi: {
+                                        pending: Math.max(localPool.qiqi.pending || 0, cloudPool.qiqi.pending || 0),
+                                        withdrawn: Math.max(localPool.qiqi.withdrawn || 0, cloudPool.qiqi.withdrawn || 0),
+                                        lastWithdrawDate: cloudPool.qiqi.lastWithdrawDate || localPool.qiqi.lastWithdrawDate,
+                                        weekStart: cloudPool.qiqi.weekStart || localPool.qiqi.weekStart
+                                    },
+                                    yiyi: {
+                                        pending: Math.max(localPool.yiyi.pending || 0, cloudPool.yiyi.pending || 0),
+                                        withdrawn: Math.max(localPool.yiyi.withdrawn || 0, cloudPool.yiyi.withdrawn || 0),
+                                        lastWithdrawDate: cloudPool.yiyi.lastWithdrawDate || localPool.yiyi.lastWithdrawDate,
+                                        weekStart: cloudPool.yiyi.weekStart || localPool.yiyi.weekStart
+                                    },
+                                    autoWithdrawTime: cloudPool.autoWithdrawTime || '23:30',
+                                    lastAutoWithdraw: cloudPool.lastAutoWithdraw || localPool.lastAutoWithdraw
+                                };
+                                console.log('🛡️ 积分池数据保护性同步：取本地和云端的最大值');
+                            } else if (localPool.qiqi.pending > 0 || localPool.yiyi.pending > 0) {
+                                // 如果本地有积分但云端没有，保持本地数据
+                                console.log('🛡️ 积分池保护：本地数据优先（云端数据异常）');
+                            } else {
+                                // 只有在本地无积分时才使用云端数据
+                                pointsPool = cloudPool;
+                            }
+                        }
                         
                         // 恢复每周和月度数据
                         weeklyData = cloudData.weeklyData || { qiqi: 0, yiyi: 0, lastResetDate: new Date().toISOString() };
@@ -9835,6 +9924,62 @@
         }
 
         // 手动同步数据
+        // 手动设置积分池功能
+        function manualSetPointsPool() {
+            // 添加密码保护
+            const password = prompt('⚙️ 手动设置积分池需要管理员权限！\n\n请输入管理员密码：');
+            if (!password) {
+                alert('操作已取消');
+                return;
+            }
+            
+            // 验证密码
+            if (password !== 'admin2024') {
+                alert('❌ 密码错误！无法设置积分池。');
+                return;
+            }
+            
+            let settingsText = '🔧 积分池手动设置\n\n';
+            settingsText += `当前状态:\n`;
+            settingsText += `七七待提现: ${pointsPool.qiqi.pending}分\n`;
+            settingsText += `七七已提现: ${pointsPool.qiqi.withdrawn}分\n`;
+            settingsText += `一一待提现: ${pointsPool.yiyi.pending}分\n`;
+            settingsText += `一一已提现: ${pointsPool.yiyi.withdrawn}分\n\n`;
+            settingsText += `请输入新的积分值（格式：qiqi待提现,qiqi已提现,yiyi待提现,yiyi已提现）\n`;
+            settingsText += `例如：10,5,8,3`;
+            
+            const newValues = prompt(settingsText);
+            if (!newValues) return;
+            
+            try {
+                const [qiqiPending, qiqiWithdrawn, yiyiPending, yiyiWithdrawn] = newValues.split(',').map(v => parseInt(v.trim()) || 0);
+                
+                if (confirm(`确认设置积分池？\n\n七七: 待提现${qiqiPending}分, 已提现${qiqiWithdrawn}分\n一一: 待提现${yiyiPending}分, 已提现${yiyiWithdrawn}分`)) {
+                    const oldData = {
+                        qiqiPending: pointsPool.qiqi.pending,
+                        qiqiWithdrawn: pointsPool.qiqi.withdrawn,
+                        yiyiPending: pointsPool.yiyi.pending,
+                        yiyiWithdrawn: pointsPool.yiyi.withdrawn
+                    };
+                    
+                    pointsPool.qiqi.pending = qiqiPending;
+                    pointsPool.qiqi.withdrawn = qiqiWithdrawn;
+                    pointsPool.yiyi.pending = yiyiPending;
+                    pointsPool.yiyi.withdrawn = yiyiWithdrawn;
+                    pointsPool.lastUpdateTime = new Date().toISOString(); // 记录手动更新时间
+                    
+                    addHistory(`管理员手动设置积分池：七七(${oldData.qiqiPending}→${qiqiPending},${oldData.qiqiWithdrawn}→${qiqiWithdrawn}) 一一(${oldData.yiyiPending}→${yiyiPending},${oldData.yiyiWithdrawn}→${yiyiWithdrawn})`, 'system');
+                    
+                    saveData();
+                    updatePointsPoolDisplay();
+                    
+                    alert('✅ 积分池设置完成！');
+                }
+            } catch (error) {
+                alert('❌ 输入格式错误！请使用正确格式：数字,数字,数字,数字');
+            }
+        }
+
         // 积分池同步调试函数
         async function debugPointsPoolSync() {
             try {
