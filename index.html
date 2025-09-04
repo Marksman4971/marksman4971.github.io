@@ -4688,6 +4688,7 @@
         let isFirebaseReady = false;
         let isOnline = false;
         let lastSyncTime = null;
+        let isDataSynchronized = false; // 标记数据是否已同步
         
         // 密码保护相关变量
         const ADMIN_PASSWORD = '240310'; // 这里设置你的密码
@@ -8194,7 +8195,7 @@
                 // 添加历史记录
                 const multiplierText = multiplier === 1 ? '' : multiplier === 2 ? '(加倍)' : '(超级加倍)';
                 const specialText = [];
-                if (actualTaskCount > 1) specialText.push(`以一抵二`);
+                if (actualTaskCount === 2) specialText.push(`以一抵二`);
                 if (bonusPoints > 0) specialText.push(`连胜奖励+${bonusPoints}分`);
                 const specialInfo = specialText.length > 0 ? `(${specialText.join(', ')})` : '';
                 
@@ -10278,17 +10279,41 @@
                         updateLastSyncTime();
                         updateConnectionStatus(true, '数据同步完成');
                         console.log('自动同步云端数据成功');
+                        
+                        // 标记数据已同步，并初始化应用组件
+                        isDataSynchronized = true;
+                        if (typeof window.initializeAppComponents === 'function') {
+                            window.initializeAppComponents();
+                        }
                     } else {
                         updateConnectionStatus(true, '本地数据为最新版本');
                         console.log('本地数据较新，跳过同步，当前任务池:', taskPool.length, '个任务');
+                        
+                        // 即使跳过同步，也要标记已检查过云端数据
+                        isDataSynchronized = true;
+                        if (typeof window.initializeAppComponents === 'function') {
+                            window.initializeAppComponents();
+                        }
                     }
                 } else {
                     updateConnectionStatus(true, '云端暂无数据');
                     console.log('云端暂无数据');
+                    
+                    // 云端无数据时，使用本地数据并初始化应用
+                    isDataSynchronized = true;
+                    if (typeof window.initializeAppComponents === 'function') {
+                        window.initializeAppComponents();
+                    }
                 }
             } catch (error) {
                 console.error('自动同步失败:', error);
                 updateConnectionStatus(false, '自动同步失败：' + error.message);
+                
+                // 同步失败时，使用本地数据并初始化应用
+                isDataSynchronized = true;
+                if (typeof window.initializeAppComponents === 'function') {
+                    window.initializeAppComponents();
+                }
             }
         }
 
@@ -11001,17 +11026,32 @@
         // 页面加载完成后初始化
         document.addEventListener('DOMContentLoaded', function() {
             checkAuthentication(); // 检查认证状态
-            loadData();
+            
+            // 延迟加载本地数据，等待可能的云端同步
+            setTimeout(() => {
+                if (!isDataSynchronized) {
+                    console.log('未检测到云端同步，加载本地数据');
+                    loadData();
+                    initializeAppComponents();
+                }
+            }, 3000);
+            
+            // 立即初始化非数据依赖的组件
             initializePenaltySystem(); // 初始化惩罚系统
-            checkWeeklyReset(); // 检查周度重置
-            refreshBankPage();
-            refreshHistoryPage();
-            refreshBountyList();
-            refreshDailyTasks(); // 初始化每日任务显示
-            refreshExtraTasks(); // 初始化超额任务显示
-            updateTaskStats(); // 初始化任务统计显示
-            updateTaskPoolPreview(); // 初始化任务池预览
-            refreshTaskPoolDisplay(); // 初始化任务池管理显示
+            
+            // 初始化应用组件函数
+            window.initializeAppComponents = function() {
+                checkWeeklyReset(); // 检查周度重置
+                refreshBankPage();
+                refreshHistoryPage();
+                refreshBountyList();
+                refreshDailyTasks(); // 初始化每日任务显示
+                refreshExtraTasks(); // 初始化超额任务显示
+                updateTaskStats(); // 初始化任务统计显示
+                updateTaskPoolPreview(); // 初始化任务池预览
+                refreshTaskPoolDisplay(); // 初始化任务池管理显示
+                console.log('应用组件初始化完成');
+            };
             
             // 调试信息
             console.log('页面初始化完成，任务池状态:', taskPool.length, '个任务');
@@ -11066,7 +11106,7 @@
             // 在移动端延迟一下再尝试同步，确保网络稳定
             if (navigator.userAgent.includes('Mobile')) {
                 setTimeout(() => {
-                    if (isFirebaseReady && isOnline) {
+                    if (isFirebaseReady && isOnline && !isDataSynchronized) {
                         console.log('移动端延迟同步启动');
                         // 检查本地是否有积分池数据，如果有则保护
                         const hasLocalPoints = (pointsPool.qiqi.pending > 0 || pointsPool.yiyi.pending > 0);
@@ -11090,9 +11130,12 @@
                                 lastUpdated: new Date().toISOString()
                             };
                             autoUploadToFirebase(localData);
+                            isDataSynchronized = true;
                         } else {
                             autoDownloadFromFirebase();
                         }
+                    } else if (isDataSynchronized) {
+                        console.log('移动端：数据已同步，跳过延迟同步');
                     }
                 }, 2000);
             }
