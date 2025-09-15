@@ -2418,6 +2418,12 @@
             text-align: center;
         }
 
+        .progress-label {
+            font-size: 0.9em;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
         .daily-progress h4 {
             margin-bottom: 10px;
             color: #2c3e50;
@@ -2642,31 +2648,41 @@
 
         .task-actions {
             margin-top: 10px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
         .multiplier-btn {
-            padding: 4px 8px;
-            margin: 0 2px;
+            padding: 8px 12px;
             border: none;
-            border-radius: 4px;
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 0.8em;
+            font-size: 0.9em;
+            font-weight: 600;
             transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
 
         .multiplier-btn.normal {
             background: #28a745;
             color: white;
+            flex: 1 1 30%;
+            min-width: 96px;
         }
 
         .multiplier-btn.double {
             background: #ffc107;
             color: #212529;
+            flex: 1 1 30%;
+            min-width: 96px;
         }
 
         .multiplier-btn.triple {
             background: #dc3545;
             color: white;
+            flex: 1 1 30%;
+            min-width: 96px;
         }
 
         .multiplier-btn.abandon {
@@ -2961,12 +2977,13 @@
             background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
             color: white;
             border-radius: 15px 15px 0 0;
-            padding: 20px 30px;
-            margin: -20px -30px 25px -30px;
+            padding: 24px 36px;
+            margin: -20px -36px 25px -36px;
             box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 12px;
         }
 
         .task-pool-modal-box .modal-close-btn {
@@ -2983,6 +3000,7 @@
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
+            margin-left: 8px;
         }
 
         .task-pool-modal-box .modal-close-btn:hover {
@@ -3056,6 +3074,37 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
         }
+
+        /* 任务统计徽章样式 */
+        .stat-group { margin: 8px 0; }
+        .stat-title {
+            font-weight: 700;
+            font-size: 0.9em;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        .stat-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .stat-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 0.85em;
+            font-weight: 600;
+            border: 1px solid #e9ecef;
+            background: #f8f9fa;
+            color: #2c3e50;
+        }
+        .stat-badge.progress { background: #e7f1ff; border-color: #cfe2ff; color: #0d6efd; }
+        .stat-badge.ready { background: #e8f5e9; border-color: #c8e6c9; color: #2e7d32; }
+        .stat-badge.ok { background: #e6fffb; border-color: #b2f5ea; color: #0b8f87; }
+        .stat-badge.full { background: #fff3cd; border-color: #ffeeba; color: #856404; }
+        .stat-empty { color: #999; font-size: 0.85em; }
 
         .task-pool-modal-box .modal-actions {
             margin-top: 20px;
@@ -3718,39 +3767,128 @@
             <div id="daily" class="page active">
                 <h2>📅 每日任务</h2>
                 
-                <!-- 积分池系统 - 置顶显示 -->
-                <div class="points-pool-top-section" style="margin: 25px 0; padding: 30px; background: linear-gradient(135deg, #fff8e1 0%, #f3e5f5 50%, #e8f5e8 100%); border-radius: 25px; border: 3px solid #ff9800; box-shadow: 0 15px 40px rgba(255, 152, 0, 0.25);">
+                <!-- 每周目标系统 - 双人版本 -->
+                <div class="weekly-target-top-section" style="margin: 25px 0; padding: 30px; background: linear-gradient(135deg, #fff8e1 0%, #f3e5f5 50%, #e8f5e8 100%); border-radius: 25px; border: 3px solid #ff9800; box-shadow: 0 15px 40px rgba(255, 152, 0, 0.25);">
                     <div style="text-align: center; margin-bottom: 30px;">
-                        <h3 style="color: #f57c00; margin: 0; font-size: 1.8em; text-shadow: 0 3px 6px rgba(245, 124, 0, 0.4); font-weight: bold;">💰 积分池系统 🏛️</h3>
-                        <p style="color: #e65100; margin: 12px 0 0 0; font-size: 1.1em; font-weight: 600; text-shadow: 0 1px 2px rgba(230, 81, 0, 0.3);">📝 每日任务积分暂存，每周日23:30自动提现！🕕</p>
+                        <h3 style="color: #f57c00; margin: 0; font-size: 1.8em; text-shadow: 0 3px 6px rgba(245, 124, 0, 0.4); font-weight: bold;">🎯 每周目标系统 📊</h3>
+                        
+                        <div id="current-week-title" style="color: #1976d2; font-size: 1.3em; font-weight: bold; margin-top: 10px;">加载中…</div>
                     </div>
                     
-                    <!-- 用户积分池网格显示 -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 25px;">
-                        <!-- 七七的积分池 -->
-                        <div style="padding: 25px; background: linear-gradient(135deg, #e3f2fd 0%, #f8f4ff 100%); border-radius: 20px; border: 3px solid #2196f3; box-shadow: 0 8px 25px rgba(33, 150, 243, 0.2);">
-                            <h5 style="color: #1976d2; margin: 0 0 15px 0; font-size: 1.3em; text-align: center; font-weight: bold; text-shadow: 0 2px 4px rgba(25, 118, 210, 0.3);">👦 七七的积分池 💎</h5>
-                            <div id="qiqi-pool-info-top" style="font-size: 1.0em; line-height: 1.6; margin-bottom: 18px;"></div>
-                            <div style="display: flex; gap: 12px; justify-content: center;">
-                                <button onclick="withdrawPoints('qiqi')" id="qiqi-withdraw-all-btn-top" style="background: linear-gradient(45deg, #4caf50, #66bb6a); color: white; border: none; padding: 12px 18px; border-radius: 12px; font-size: 0.95em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3); transition: all 0.3s ease;">💸 全部提现</button>
-                                <button onclick="showPartialWithdrawModal('qiqi')" id="qiqi-withdraw-partial-btn-top" style="background: linear-gradient(45deg, #2196f3, #42a5f5); color: white; border: none; padding: 12px 18px; border-radius: 12px; font-size: 0.95em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3); transition: all 0.3s ease;">✂️ 部分提现</button>
+                    <!-- 双人目标对比 -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
+                        
+                        <!-- 七七的目标 -->
+                        <div id="qiqi-weekly-target" style="padding: 25px; background: linear-gradient(135deg, #e8f5e8 0%, #f1f8e9 100%); border-radius: 20px; border: 3px solid #4caf50; box-shadow: 0 8px 25px rgba(76, 175, 80, 0.2);">
+                            <div style="text-align: center; margin-bottom: 15px;">
+                                <h4 style="color: #2e7d32; margin: 0; font-size: 1.3em; font-weight: bold;">👦 七七</h4>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                                <div style="text-align: center;">
+                                    <div style="font-size: 0.9em; color: #666; margin-bottom: 5px;">🎯 目标</div>
+                                    <div style="font-size: 1.5em; font-weight: bold; color: #388e3c;"><span id="qiqi-week-target">35</span>分</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="font-size: 0.9em; color: #666; margin-bottom: 5px;">📈 已获得</div>
+                                    <div style="font-size: 1.5em; font-weight: bold; color: #4caf50;"><span id="qiqi-week-earned">28</span>分</div>
+                                </div>
+                            </div>
+                            
+                            <!-- 七七进度条 -->
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                                    <span style="font-size: 0.9em; font-weight: bold; color: #333;">进度</span>
+                                    <span id="qiqi-progress-percentage" style="font-size: 0.9em; font-weight: bold; color: #4caf50;">80%</span>
+                                </div>
+                                <div style="width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden;">
+                                    <div id="qiqi-progress-bar-fill" style="height: 100%; background: linear-gradient(90deg, #4caf50, #66bb6a); width: 80%; transition: width 0.3s ease;"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- 预计扣分（七七） -->
+                            <div style="margin-bottom: 12px; text-align: center;">
+                                <span style="font-size: 0.9em; color: #d32f2f; font-weight: bold;">预计扣分：</span>
+                                <span id="qiqi-est-penalty" style="font-size: 1em; color: #999; font-weight: bold;">0</span>
+                                <span style="font-size: 0.9em; color: #999;">分</span>
+                            </div>
+
+                            <!-- 七七每日得分 -->
+                            <div style="margin-bottom: 15px;">
+                                <div style="text-align: center; font-size: 0.9em; font-weight: bold; color: #333; margin-bottom: 8px;">本周每日得分</div>
+                                <div id="qiqi-daily-scores-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;">
+                                    <!-- 动态生成 -->
+                                </div>
                             </div>
                         </div>
                         
-                        <!-- 一一的积分池 -->
-                        <div style="padding: 25px; background: linear-gradient(135deg, #e8f5e8 0%, #f0f9ff 100%); border-radius: 20px; border: 3px solid #4caf50; box-shadow: 0 8px 25px rgba(76, 175, 80, 0.2);">
-                            <h5 style="color: #388e3c; margin: 0 0 15px 0; font-size: 1.3em; text-align: center; font-weight: bold; text-shadow: 0 2px 4px rgba(56, 142, 60, 0.3);">👧 一一的积分池 💎</h5>
-                            <div id="yiyi-pool-info-top" style="font-size: 1.0em; line-height: 1.6; margin-bottom: 18px;"></div>
-                            <div style="display: flex; gap: 12px; justify-content: center;">
-                                <button onclick="withdrawPoints('yiyi')" id="yiyi-withdraw-all-btn-top" style="background: linear-gradient(45deg, #4caf50, #66bb6a); color: white; border: none; padding: 12px 18px; border-radius: 12px; font-size: 0.95em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3); transition: all 0.3s ease;">💸 全部提现</button>
-                                <button onclick="showPartialWithdrawModal('yiyi')" id="yiyi-withdraw-partial-btn-top" style="background: linear-gradient(45deg, #2196f3, #42a5f5); color: white; border: none; padding: 12px 18px; border-radius: 12px; font-size: 0.95em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3); transition: all 0.3s ease;">✂️ 部分提现</button>
+                        <!-- 一一的目标 -->
+                        <div id="yiyi-weekly-target" style="padding: 25px; background: linear-gradient(135deg, #e3f2fd 0%, #f8f4ff 100%); border-radius: 20px; border: 3px solid #2196f3; box-shadow: 0 8px 25px rgba(33, 150, 243, 0.2);">
+                            <div style="text-align: center; margin-bottom: 15px;">
+                                <h4 style="color: #1565c0; margin: 0; font-size: 1.3em; font-weight: bold;">👧 一一</h4>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                                <div style="text-align: center;">
+                                    <div style="font-size: 0.9em; color: #666; margin-bottom: 5px;">🎯 目标</div>
+                                    <div style="font-size: 1.5em; font-weight: bold; color: #1976d2;"><span id="yiyi-week-target">35</span>分</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="font-size: 0.9em; color: #666; margin-bottom: 5px;">📈 已获得</div>
+                                    <div style="font-size: 1.5em; font-weight: bold; color: #2196f3;"><span id="yiyi-week-earned">32</span>分</div>
+                                </div>
+                            </div>
+                            
+                            <!-- 一一进度条 -->
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                                    <span style="font-size: 0.9em; font-weight: bold; color: #333;">进度</span>
+                                    <span id="yiyi-progress-percentage" style="font-size: 0.9em; font-weight: bold; color: #2196f3;">91%</span>
+                                </div>
+                                <div style="width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden;">
+                                    <div id="yiyi-progress-bar-fill" style="height: 100%; background: linear-gradient(90deg, #2196f3, #42a5f5); width: 91%; transition: width 0.3s ease;"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- 预计扣分（一一） -->
+                            <div style="margin-bottom: 12px; text-align: center;">
+                                <span style="font-size: 0.9em; color: #d32f2f; font-weight: bold;">预计扣分：</span>
+                                <span id="yiyi-est-penalty" style="font-size: 1em; color: #999; font-weight: bold;">0</span>
+                                <span style="font-size: 0.9em; color: #999;">分</span>
+                            </div>
+
+                            <!-- 一一每日得分 -->
+                            <div style="margin-bottom: 15px;">
+                                <div style="text-align: center; font-size: 0.9em; font-weight: bold; color: #333; margin-bottom: 8px;">本周每日得分</div>
+                                <div id="yiyi-daily-scores-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;">
+                                    <!-- 动态生成 -->
+                                </div>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- 积分池管理按钮 -->
-                    <div style="text-align: center; margin-bottom: 15px;">
-                        <button onclick="clearPointsPool()" style="background: linear-gradient(45deg, #ff9800, #f57c00); color: white; border: none; padding: 8px 16px; border-radius: 10px; font-size: 0.85em; font-weight: bold; cursor: pointer; box-shadow: 0 3px 10px rgba(255, 152, 0, 0.3);">🗑️ 清空积分池</button>
+                    <!-- 全局状态信息 -->
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px;">
+                        <div style="text-align: center; padding: 12px; background: rgba(255, 193, 7, 0.1); border-radius: 10px;">
+                            <div style="color: #ff9800; font-weight: bold;">⏰ 截止时间</div>
+                            <div style="font-size: 1.1em; color: #f57c00; font-weight: bold;">周日晚上</div>
+                            <div style="font-size: 0.9em; color: #757575;"><span id="days-left">2</span>天后</div>
+                        </div>
+                        <div style="text-align: center; padding: 12px; background: rgba(76, 175, 80, 0.1); border-radius: 10px;">
+                            <div style="color: #4caf50; font-weight: bold;">🏆 领先者</div>
+                            <div style="font-size: 1.1em; color: #388e3c; font-weight: bold;" id="leader-name">一一</div>
+                        </div>
+                        <div style="text-align: center; padding: 12px; background: rgba(244, 67, 54, 0.1); border-radius: 10px;">
+                            <div style="color: #f44336; font-weight: bold;">⚠️ 惩罚规则</div>
+                            <div style="font-size: 0.9em; color: #d32f2f; font-weight: bold;">差距×2扣分</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 操作按钮 -->
+                    <div style="text-align: center; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                        <button onclick="showTargetSettingModal()" style="background: linear-gradient(45deg, #4caf50, #66bb6a); color: white; border: none; padding: 12px 20px; border-radius: 12px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3); transition: all 0.3s ease;">🔧 设置目标</button>
+                        <button onclick="showWeeklyCustom()" style="background: linear-gradient(45deg, #2196f3, #42a5f5); color: white; border: none; padding: 12px 20px; border-radius: 12px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3); transition: all 0.3s ease;">🛠️ 自定义</button>
+                        <button onclick="settleWeeklyTargets()" style="background: linear-gradient(45deg, #e53935, #f4511e); color: white; border: none; padding: 12px 20px; border-radius: 12px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(244, 81, 30, 0.3); transition: all 0.3s ease;">🧮 周末结算</button>
                     </div>
                 </div>
                 
@@ -3776,24 +3914,20 @@
                         <div class="user-title">七七</div>
                     </div>
                     <div class="daily-progress">
-                        <h4>今日进度: <span id="qiqi-progress">0/3</span></h4>
+                        <div class="progress-label" style="margin-bottom:6px; color:#2c3e50; font-weight:600; font-size:0.9em;">
+                            <span id="qiqi-progress">0/3</span>
+                        </div>
                         <div class="progress-bar">
                             <div class="progress-fill" id="qiqi-progress-fill" style="width: 0%"></div>
                         </div>
-                        <!-- 预计积分和倒计时 -->
+                        <!-- 倒计时与奖励领取 -->
                         <div class="daily-stats" style="margin-top: 12px; font-size: 0.9em;">
-                            <div class="expected-points" id="qiqi-expected-points" style="color: #28a745; font-weight: bold; margin-bottom: 5px;">
-                                预计获得积分: +0分
-                            </div>
-                            <div class="daily-countdown" id="daily-countdown" style="color: #dc3545; font-weight: bold;">
-                                任务截止: 23:30:00
-                            </div>
                             <div class="task-reward-claim" id="qiqi-reward-claim" style="margin-top: 8px;">
                                 <!-- 奖励领取按钮将通过JavaScript动态添加 -->
                             </div>
                         </div>
                     </div>
-                    <div class="daily-tasks-grid" id="qiqi-daily-tasks">
+                    <div class="daily-tasks-grid" id="qiqi-daily-tasks" style="display: none;">
                         <div class="task-slot empty" onclick="selectDailyTask('qiqi', 0)">
                             <div class="slot-content">点击选择任务</div>
                         </div>
@@ -3807,13 +3941,16 @@
                     
                     <!-- 七七的超额补充任务区 -->
                     <div class="extra-tasks-section" id="qiqi-extra-section" style="margin-top: 15px; padding: 15px; background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%); border-radius: 10px; border: 2px solid #007bff;">
-                        <div class="extra-tasks-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                            <h4 style="color: #007bff; margin: 0; font-size: 1.1em;">✨ 超额补充任务</h4>
-                            <button class="btn btn-sm" onclick="openExtraTaskSelect('qiqi')" style="background: #007bff; color: white; border: none; padding: 5px 10px; border-radius: 5px; font-size: 0.8em;">+ 添加任务</button>
+                        <div class="extra-tasks-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px;">
+                            <h4 style="color: #007bff; margin: 0; font-size: 1.1em;">🗓️ 每日任务</h4>
+                            <div>
+                                <button class="btn btn-sm" onclick="openExtraTaskSelect('qiqi')" style="background: #007bff; color: white; border: none; padding: 5px 10px; border-radius: 5px; font-size: 0.8em; margin-right: 6px;">+ 添加任务</button>
+                                <button class="btn btn-sm" onclick="clearCompletedDailyTasks('qiqi')" style="background: #6c757d; color: white; border: none; padding: 5px 10px; border-radius: 5px; font-size: 0.8em;">清除已完成</button>
+                            </div>
                         </div>
                         <div class="extra-tasks-grid" id="qiqi-extra-tasks">
-                            <div class="extra-task-placeholder" style="text-align: center; color: #666; font-size: 0.9em; padding: 20px;">
-                                点击"+ 添加任务"从任务池选择额外任务获得积分
+                            <div class="extra-task-placeholder" onclick="openExtraTaskSelect('qiqi')" style="text-align: center; color: #666; font-size: 0.9em; padding: 20px; cursor: pointer; user-select: none;">
+                                点击此处从任务池选择每日任务
                             </div>
                         </div>
                         <div class="extra-tasks-stats" style="margin-top: 10px; font-size: 0.8em; color: #666;">
@@ -3836,24 +3973,20 @@
                         <div class="user-title">一一</div>
                     </div>
                     <div class="daily-progress">
-                        <h4>今日进度: <span id="yiyi-progress">0/3</span></h4>
+                        <div class="progress-label" style="margin-bottom:6px; color:#2c3e50; font-weight:600; font-size:0.9em;">
+                            <span id="yiyi-progress">0/3</span>
+                        </div>
                         <div class="progress-bar">
                             <div class="progress-fill" id="yiyi-progress-fill" style="width: 0%"></div>
                         </div>
-                        <!-- 预计积分和倒计时 -->
+                        <!-- 倒计时与奖励领取 -->
                         <div class="daily-stats" style="margin-top: 12px; font-size: 0.9em;">
-                            <div class="expected-points" id="yiyi-expected-points" style="color: #28a745; font-weight: bold; margin-bottom: 5px;">
-                                预计获得积分: +0分
-                            </div>
-                            <div class="daily-countdown-duplicate" style="color: #dc3545; font-weight: bold;">
-                                任务截止: 23:30:00
-                            </div>
                             <div class="task-reward-claim" id="yiyi-reward-claim" style="margin-top: 8px;">
                                 <!-- 奖励领取按钮将通过JavaScript动态添加 -->
                             </div>
                         </div>
                     </div>
-                    <div class="daily-tasks-grid" id="yiyi-daily-tasks">
+                    <div class="daily-tasks-grid" id="yiyi-daily-tasks" style="display: none;">
                         <div class="task-slot empty" onclick="selectDailyTask('yiyi', 0)">
                             <div class="slot-content">点击选择任务</div>
                         </div>
@@ -3867,13 +4000,16 @@
                     
                     <!-- 一一的超额补充任务区 -->
                     <div class="extra-tasks-section" id="yiyi-extra-section" style="margin-top: 15px; padding: 15px; background: linear-gradient(135deg, #e8f5e8 0%, #f1f8e9 100%); border-radius: 10px; border: 2px solid #28a745;">
-                        <div class="extra-tasks-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                            <h4 style="color: #28a745; margin: 0; font-size: 1.1em;">✨ 超额补充任务</h4>
-                            <button class="btn btn-sm" onclick="openExtraTaskSelect('yiyi')" style="background: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 5px; font-size: 0.8em;">+ 添加任务</button>
+                        <div class="extra-tasks-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px;">
+                            <h4 style="color: #28a745; margin: 0; font-size: 1.1em;">🗓️ 每日任务</h4>
+                            <div>
+                                <button class="btn btn-sm" onclick="openExtraTaskSelect('yiyi')" style="background: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 5px; font-size: 0.8em; margin-right: 6px;">+ 添加任务</button>
+                                <button class="btn btn-sm" onclick="clearCompletedDailyTasks('yiyi')" style="background: #6c757d; color: white; border: none; padding: 5px 10px; border-radius: 5px; font-size: 0.8em;">清除已完成</button>
+                            </div>
                         </div>
                         <div class="extra-tasks-grid" id="yiyi-extra-tasks">
-                            <div class="extra-task-placeholder" style="text-align: center; color: #666; font-size: 0.9em; padding: 20px;">
-                                点击"+ 添加任务"从任务池选择额外任务获得积分
+                            <div class="extra-task-placeholder" onclick="openExtraTaskSelect('yiyi')" style="text-align: center; color: #666; font-size: 0.9em; padding: 20px; cursor: pointer; user-select: none;">
+                                点击此处从任务池选择每日任务
                             </div>
                         </div>
                         <div class="extra-tasks-stats" style="margin-top: 10px; font-size: 0.8em; color: #666;">
@@ -3891,22 +4027,22 @@
                 </div>
 
                 <!-- 任务统计区域 -->
-                <div class="task-stats-section" style="margin-top: 20px; padding: 20px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 12px; border: 1px solid #dee2e6;">
+                <div class="task-stats-section" style="margin-top: 20px; padding: 24px; background: #fff; border-radius: 16px; border: 1px solid #e9ecef; box-shadow: 0 8px 24px rgba(0,0,0,0.06);">
                     <h4 style="color: #495057; margin-bottom: 15px; text-align: center;">📊 任务完成统计</h4>
                     
                     <!-- 七七的统计 -->
-                    <div class="user-stats-section" style="margin-bottom: 15px; padding: 15px; background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%); border-radius: 8px; border-left: 4px solid #007bff;">
-                        <h5 style="color: #007bff; margin-bottom: 10px;">👦 七七的任务统计</h5>
-                        <div id="qiqi-task-stats" style="font-size: 0.9em; line-height: 1.4;">
+                    <div class="user-stats-section" style="margin-bottom: 16px; padding: 16px; background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%); border-radius: 12px; border: 1px solid #e9ecef;">
+                        <h5 style="color: #2c3e50; margin-bottom: 12px; font-weight: 700; display:flex; align-items:center; gap:6px;">👦 七七的任务统计</h5>
+                        <div id="qiqi-task-stats" style="font-size: 0.92em; line-height: 1.6;">
                             <div id="qiqi-streak-stats" style="margin-bottom: 8px;"></div>
                             <div id="qiqi-weekly-stats"></div>
                         </div>
                     </div>
                     
                     <!-- 一一的统计 -->
-                    <div class="user-stats-section" style="margin-bottom: 15px; padding: 15px; background: linear-gradient(135deg, #e8f5e8 0%, #f1f8e9 100%); border-radius: 8px; border-left: 4px solid #28a745;">
-                        <h5 style="color: #28a745; margin-bottom: 10px;">👧 一一的任务统计</h5>
-                        <div id="yiyi-task-stats" style="font-size: 0.9em; line-height: 1.4;">
+                    <div class="user-stats-section" style="margin-bottom: 16px; padding: 16px; background: linear-gradient(135deg, #ffffff 0%, #f8fff8 100%); border-radius: 12px; border: 1px solid #e9ecef;">
+                        <h5 style="color: #2c3e50; margin-bottom: 12px; font-weight: 700; display:flex; align-items:center; gap:6px;">👧 一一的任务统计</h5>
+                        <div id="yiyi-task-stats" style="font-size: 0.92em; line-height: 1.6;">
                             <div id="yiyi-streak-stats" style="margin-bottom: 8px;"></div>
                             <div id="yiyi-weekly-stats"></div>
                         </div>
@@ -3922,14 +4058,20 @@
                     <div class="user-reward-section" style="margin-bottom: 20px; padding: 20px; background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%); border-radius: 15px; border: 2px solid #2196f3; box-shadow: 0 6px 20px rgba(33, 150, 243, 0.2);">
                         <h5 style="color: #1976d2; margin-bottom: 12px; font-size: 1.1em; display: flex; align-items: center; justify-content: center;">👦 七七的奖励等级 ⭐</h5>
                         <div id="qiqi-reward-info" style="font-size: 0.95em; line-height: 1.5; margin-bottom: 15px; text-align: center;"></div>
-                        <button class="modal-btn btn-primary" id="qiqi-upgrade-btn" onclick="upgradeRewardLevel('qiqi')" style="font-size: 0.9em; padding: 8px 15px; border-radius: 10px; background: linear-gradient(45deg, #2196f3, #21cbf3); border: none; box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3); transition: all 0.3s ease;">🚀 升级</button>
+                        <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+                            <button class="modal-btn btn-primary" id="qiqi-upgrade-btn" onclick="upgradeRewardLevel('qiqi')" style="font-size: 0.9em; padding: 8px 15px; border-radius: 10px; background: linear-gradient(45deg, #2196f3, #21cbf3); border: none; box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3); transition: all 0.3s ease;">🚀 升级</button>
+                            <button class="modal-btn btn-secondary" onclick="resetRewardLevel('qiqi')" style="font-size: 0.9em; padding: 8px 15px; border-radius: 10px; background: #6c757d; color: #fff; border: none;">↩ 重置等级</button>
+                        </div>
                     </div>
                     
                     <!-- 一一的奖励等级 -->
                     <div class="user-reward-section" style="margin-bottom: 20px; padding: 20px; background: linear-gradient(135deg, #e8f5e8 0%, #f1f8e9 100%); border-radius: 15px; border: 2px solid #4caf50; box-shadow: 0 6px 20px rgba(76, 175, 80, 0.2);">
                         <h5 style="color: #388e3c; margin-bottom: 12px; font-size: 1.1em; display: flex; align-items: center; justify-content: center;">👧 一一的奖励等级 ⭐</h5>
                         <div id="yiyi-reward-info" style="font-size: 0.95em; line-height: 1.5; margin-bottom: 15px; text-align: center;"></div>
-                        <button class="modal-btn btn-primary" id="yiyi-upgrade-btn" onclick="upgradeRewardLevel('yiyi')" style="font-size: 0.9em; padding: 8px 15px; border-radius: 10px; background: linear-gradient(45deg, #4caf50, #8bc34a); border: none; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3); transition: all 0.3s ease;">🚀 升级</button>
+                        <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+                            <button class="modal-btn btn-primary" id="yiyi-upgrade-btn" onclick="upgradeRewardLevel('yiyi')" style="font-size: 0.9em; padding: 8px 15px; border-radius: 10px; background: linear-gradient(45deg, #4caf50, #8bc34a); border: none; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3); transition: all 0.3s ease;">🚀 升级</button>
+                            <button class="modal-btn btn-secondary" onclick="resetRewardLevel('yiyi')" style="font-size: 0.9em; padding: 8px 15px; border-radius: 10px; background: #6c757d; color: #fff; border: none;">↩ 重置等级</button>
+                        </div>
                     </div>
                 </div>
 
@@ -4170,7 +4312,7 @@
                             <th>获取</th>
                             <th>交易</th>
                             <th>日收</th>
-                            <th>日罚</th>
+                            <th>周罚</th>
                             <th>星收</th>
                             <th>总分</th>
                         </tr>
@@ -4307,6 +4449,11 @@
                 <label for="pool-task-description">详细说明</label>
                 <textarea id="pool-task-description" class="modal-input" placeholder="输入任务的详细说明" maxlength="200" rows="3"></textarea>
             </div>
+
+            <div class="form-group">
+                <label for="pool-task-base-points">基础积分（默认1分）</label>
+                <input type="number" id="pool-task-base-points" class="modal-input" placeholder="1" min="0" step="1" value="1">
+            </div>
             
             <!-- 特殊属性设置 -->
             <div class="form-group">
@@ -4357,7 +4504,7 @@
                             <input type="number" id="streak-points" min="1" max="50" value="3" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9em;">
                         </div>
                     </div>
-                    <p style="font-size: 0.8em; color: #666; margin: 10px 0 0 0;">📝 连续完成指定天数后获得一次性奖励，然后重置计数</p>
+                    
                 </div>
                 
                 <div style="font-size: 0.8em; color: #666; margin-top: 10px; line-height: 1.4;">
@@ -4538,6 +4685,33 @@
 
     <!-- JavaScript代码 -->
     <script>
+        function showToast(message, duration = 1200) {
+            try {
+                const toast = document.createElement('div');
+                toast.textContent = message;
+                toast.style.cssText = `
+                    position: fixed;
+                    left: 50%;
+                    bottom: 8%;
+                    transform: translateX(-50%);
+                    background: rgba(0,0,0,0.8);
+                    color: #fff;
+                    padding: 10px 16px;
+                    border-radius: 16px;
+                    font-size: 0.95em;
+                    z-index: 10001;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                    opacity: 0;
+                    transition: opacity 200ms ease;
+                `;
+                document.body.appendChild(toast);
+                requestAnimationFrame(() => { toast.style.opacity = '1'; });
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 200);
+                }, duration);
+            } catch (e) { console.warn('toast failed', e); }
+        }
         // 全局变量
         let bountyData = [];
         let bankData = { qiqi: { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0 }, yiyi: { reward: 0, penalty: 0, publish: 0, obtain: 0, trade: 0, dailyIncome: 0, dailyPenalty: 0 } };
@@ -4581,6 +4755,7 @@
         // 严格惩罚系统 - 记录截止时刻的任务状态
         let dailyTaskSnapshots = {}; // 格式: {"Mon Dec 30 2024": {qiqi: [...], yiyi: [...]}}
         let penaltySystemStartDate = null; // 惩罚系统开始日期
+        let lastDailyTasksCleanup = null; // 上一次“每日任务清理（清除已完成）”的日期字符串
         
         // 周度积分统计系统
         const SYSTEM_START_DATE = new Date('2025-06-01'); // 系统开始日期：2025年6月1日
@@ -5427,8 +5602,11 @@
                 weeklyData = { qiqi: 0, yiyi: 0, lastResetDate: new Date().toISOString() };
             }
             
-                        weeklyData[user] += points;
+            weeklyData[user] += points;
             saveData();
+            
+            // 同时更新每周目标系统的今日得分
+            updateWeeklyTargetFromTask(user, points);
         }
 
         function calculateStarCounts(points) {
@@ -5566,17 +5744,28 @@
             return level + 1;
         }
 
+        function getUserWeeklyTotal(user) {
+            try {
+                const w = weeklyStats && weeklyStats[user] ? weeklyStats[user] : null;
+                if (!w) return 0;
+                const total = (w.reward || 0) + (w.penalty || 0) + (w.publish || 0) + (w.obtain || 0) + (w.trade || 0) + (w.dailyIncome || 0) + (w.dailyPenalty || 0) + (w.starIncome || 0);
+                return isNaN(total) ? 0 : total;
+            } catch (e) {
+                return 0;
+            }
+        }
+
         function canUpgradeRewardLevel(user) {
             const currentLevel = taskRewardSystem[user].level;
             const upgradeCost = getUpgradeCost(currentLevel);
-            const userTotal = bankData[user].reward + bankData[user].penalty + bankData[user].publish + bankData[user].obtain + bankData[user].trade + bankData[user].dailyIncome + bankData[user].dailyPenalty;
+            const userTotal = getUserWeeklyTotal(user);
             return userTotal >= upgradeCost;
         }
 
         function upgradeRewardLevel(user) {
             const currentLevel = taskRewardSystem[user].level;
             const upgradeCost = getUpgradeCost(currentLevel);
-            const userTotal = bankData[user].reward + bankData[user].penalty + bankData[user].publish + bankData[user].obtain + bankData[user].trade + bankData[user].dailyIncome + bankData[user].dailyPenalty;
+            const userTotal = getUserWeeklyTotal(user);
             const userName = user === 'qiqi' ? '七七' : '一一';
             const newLevel = currentLevel + 1;
             const newReward = getTaskCompletionReward(newLevel);
@@ -5588,7 +5777,10 @@
             
             // 简化升级流程，减少确认步骤
             if (confirm(`升级${userName}的任务奖励等级？\n消耗${upgradeCost}积分 → ${currentLevel}级升至${newLevel}级\n奖励提升：${currentLevel + 1}分 → ${newReward}分`)) {
-                bankData[user].reward -= upgradeCost;
+                // 从本周奖励项中扣除升级费用，保持与总分一致
+                if (weeklyStats && weeklyStats[user]) {
+                    weeklyStats[user].reward = (weeklyStats[user].reward || 0) - upgradeCost;
+                }
                 taskRewardSystem[user].level++;
                 
                 addHistory(`${userName}升级任务奖励等级到${newLevel}级，消耗${upgradeCost}积分，现在完成3个任务可获得${newReward}分奖励`, 'system');
@@ -5600,6 +5792,20 @@
                 return true;
             }
             return false;
+        }
+
+        function resetRewardLevel(user) {
+            try {
+                const userName = user === 'qiqi' ? '七七' : '一一';
+                // 仅重置等级，不影响当前累计进度与待领奖励，也不影响总分
+                taskRewardSystem[user].level = 0;
+                saveData();
+                updateTaskRewardDisplay();
+                if (typeof showToast === 'function') showToast(`${userName} 等级已重置为0级`);
+            } catch (e) {
+                console.error('重置等级失败:', e);
+                alert('重置失败，请重试');
+            }
         }
 
         function createCelebrationEffect(user) {
@@ -5689,27 +5895,21 @@
         }
 
         function checkTaskCompletionReward(user, actualTaskCount = 1) {
-            const today = new Date().toDateString();
-            const lastClaimDate = taskRewardSystem[user].lastClaimDate;
-            
-            // 如果今天已经领取过奖励，不再增加进度
-            if (lastClaimDate === today) {
-                return 0;
-            }
-            
-            taskRewardSystem[user].tasksCompleted += actualTaskCount;
-            
-            if (taskRewardSystem[user].tasksCompleted >= 3) {
-                const rewardPoints = getTaskCompletionReward(taskRewardSystem[user].level);
-                taskRewardSystem[user].pendingReward += rewardPoints;
-                taskRewardSystem[user].tasksCompleted = 0;
-                
-                const userName = user === 'qiqi' ? '七七' : '一一';
-                
-                // 创建庆祝特效
-                createCelebrationEffect(user);
-                
-                return rewardPoints;
+            // 取消按天限制：每累计3个任务就增加一次奖励；支持溢出进度（取模累积）
+            const level = taskRewardSystem[user].level;
+            const before = taskRewardSystem[user].tasksCompleted || 0;
+            const total = before + (actualTaskCount || 0);
+            const rewardTimes = Math.floor(total / 3);
+            const remainder = total % 3;
+
+            taskRewardSystem[user].tasksCompleted = remainder;
+            if (rewardTimes > 0) {
+                const rewardPerBatch = getTaskCompletionReward(level);
+                const addPoints = rewardPerBatch * rewardTimes;
+                taskRewardSystem[user].pendingReward += addPoints;
+                // 庆祝效果触发一次即可
+                try { createCelebrationEffect(user); } catch (e) { console.warn('celebration failed', e); }
+                return addPoints;
             }
             return 0;
         }
@@ -5723,18 +5923,9 @@
                 return false;
             }
             
-            // 检查是否今天已经领取过
-            const today = new Date().toDateString();
-            const lastClaimDate = taskRewardSystem[user].lastClaimDate;
-            
-            if (lastClaimDate === today) {
-                alert(`${userName}今天已经领取过奖励了！明天再来吧~ 🌅`);
-                return false;
-            }
-            
             // 奖励进入积分池，不直接添加到总分
             addToPointsPool(user, pendingReward);
-            taskRewardSystem[user].lastClaimDate = today;
+            // 不再限制每日一次；保留 lastClaimDate 不再使用
             
             addHistory(`${userName}领取任务完成奖励${pendingReward}分（等级${taskRewardSystem[user].level}），已存入积分池`, 'system');
             
@@ -5810,16 +6001,8 @@
 
         // 积分池功能
         function addToPointsPool(user, points) {
-            // 检查是否需要重置周数据
-            const today = new Date();
-            const weekStart = getWeekStartDate();
-            
-            if (!pointsPool[user].weekStart || new Date(pointsPool[user].weekStart) < weekStart) {
-                pointsPool[user].weekStart = weekStart.toISOString();
-                pointsPool[user].withdrawn = 0; // 新周重置已提现积分
-            }
-            
-            pointsPool[user].pending += points;
+            // 已取消积分池逻辑：直接累计到周度统计，保持兼容保留空实现。
+            return;
         }
 
         function calculatePenalty(user) {
@@ -5831,33 +6014,8 @@
         }
 
         function withdrawPoints(user, amount = null) {
-            if (amount === null) {
-                amount = pointsPool[user].pending; // 全部提现
-            }
-            
-            if (amount <= 0 || amount > pointsPool[user].pending) {
-                alert('提现金额无效！');
-                return false;
-            }
-            
-            const userName = user === 'qiqi' ? '七七' : '一一';
-            
-            // 执行提现
-            pointsPool[user].pending -= amount;
-            pointsPool[user].withdrawn += amount;
-            pointsPool[user].lastWithdrawDate = new Date().toISOString();
-            
-            // 添加到总积分
-            bankData[user].dailyIncome += amount;
-            addWeeklyPoints(user, amount);
-            
-            addHistory(`${userName}从积分池提现${amount}分`, 'system');
-            
-            saveData();
-            refreshDailyTasks();
-            refreshBankPage();
-            
-            return true;
+            alert('积分池与提现功能已关闭：任务积分已直接累计到总分。');
+            return false;
         }
 
         function autoWithdrawCheck() {
@@ -5878,6 +6036,7 @@
         }
 
         function autoWithdrawUser(user) {
+            return;
             const pendingPoints = pointsPool[user].pending;
             const userName = user === 'qiqi' ? '七七' : '一一';
             
@@ -6137,27 +6296,18 @@
                 const pendingReward = taskRewardSystem[user].pendingReward;
                 const currentReward = getTaskCompletionReward(level);
                 const nextUpgradeCost = getUpgradeCost(level);
-                const userTotal = bankData[user].reward + bankData[user].penalty + bankData[user].publish + bankData[user].obtain + bankData[user].trade + bankData[user].dailyIncome + bankData[user].dailyPenalty;
+                const userTotal = getUserWeeklyTotal(user);
                 const canUpgrade = canUpgradeRewardLevel(user);
                 
-                // 更新每日任务区域的领取按钮
+                // 更新每日任务区域的领取按钮（移除每日仅一次限制）
                 const rewardClaimEl = document.getElementById(`${user}-reward-claim`);
                 if (rewardClaimEl) {
-                    const today = new Date().toDateString();
-                    const lastClaimDate = taskRewardSystem[user].lastClaimDate;
-                    const hasClaimedToday = lastClaimDate === today;
-                    
-                    if (pendingReward > 0 && !hasClaimedToday) {
+                    if (pendingReward > 0) {
                         rewardClaimEl.innerHTML = `
                             <button class="reward-claim-btn" onclick="claimTaskReward('${user}')" 
                                     style="font-size: 0.9em; padding: 10px 15px; width: 100%; border-radius: 20px; cursor: pointer;">
                                 🎉 领取 ${pendingReward} 分奖励! 🎁
                             </button>`;
-                    } else if (hasClaimedToday) {
-                        rewardClaimEl.innerHTML = `
-                            <div style="text-align: center; color: #6c757d; font-size: 0.8em; padding: 8px; background: #f8f9fa; border-radius: 10px; border: 1px solid #dee2e6;">
-                                ✅ 今日已领取奖励 🌅
-                            </div>`;
                     } else {
                         rewardClaimEl.innerHTML = '';
                     }
@@ -6166,15 +6316,9 @@
                 // 更新详细信息区域
                 const rewardInfoEl = document.getElementById(`${user}-reward-info`);
                 if (rewardInfoEl) {
-                    const today = new Date().toDateString();
-                    const lastClaimDate = taskRewardSystem[user].lastClaimDate;
-                    const hasClaimedToday = lastClaimDate === today;
-                    
                     let claimButton = '';
-                    if (pendingReward > 0 && !hasClaimedToday) {
+                    if (pendingReward > 0) {
                         claimButton = `<button class="reward-claim-btn" onclick="claimTaskReward('${user}')" style="margin-top: 10px; font-size: 0.9em; padding: 8px 15px; border-radius: 15px; cursor: pointer;">🎉 领取 ${pendingReward} 分奖励! 🎁</button>`;
-                    } else if (hasClaimedToday) {
-                        claimButton = `<div style="margin-top: 10px; text-align: center; color: #6c757d; font-size: 0.85em; padding: 8px; background: #f8f9fa; border-radius: 10px; border: 1px solid #dee2e6;">✅ 今日已领取奖励 🌅</div>`;
                     }
                     
                     rewardInfoEl.innerHTML = `
@@ -6263,7 +6407,8 @@
 
             tbody.innerHTML = rows.map(row => {
                 const weeklyData = weeklyStats[row.user];
-                const total = (row.data.reward || 0) + (row.data.penalty || 0) + (row.data.publish || 0) + (row.data.obtain || 0) + (row.data.trade || 0) + (row.data.dailyIncome || 0) + (row.data.dailyPenalty || 0);
+                // 使用周度统计计算总分，避免与“周收入/周罚”列不一致
+                const total = (weeklyData.reward || 0) + (weeklyData.penalty || 0) + (weeklyData.publish || 0) + (weeklyData.obtain || 0) + (weeklyData.trade || 0) + (weeklyData.dailyIncome || 0) + (weeklyData.dailyPenalty || 0) + (weeklyData.starIncome || 0);
                 const safeTotal = isNaN(total) ? 0 : total;
                 const starEarnings = calculateStarEarnings(safeTotal) || '0分';
                 
@@ -6295,9 +6440,9 @@
                 weeklyData = { qiqi: 0, yiyi: 0, lastResetDate: new Date().toISOString() };
             }
 
-            // 更新总积分显示卡片
-            const qiqiTotal = (bankData.qiqi.reward || 0) + (bankData.qiqi.penalty || 0) + (bankData.qiqi.publish || 0) + (bankData.qiqi.obtain || 0) + (bankData.qiqi.trade || 0) + (bankData.qiqi.dailyIncome || 0) + (bankData.qiqi.dailyPenalty || 0);
-            const yiyiTotal = (bankData.yiyi.reward || 0) + (bankData.yiyi.penalty || 0) + (bankData.yiyi.publish || 0) + (bankData.yiyi.obtain || 0) + (bankData.yiyi.trade || 0) + (bankData.yiyi.dailyIncome || 0) + (bankData.yiyi.dailyPenalty || 0);
+            // 更新总积分显示卡片（以周度统计为准，保持与表格一致）
+            const qiqiTotal = (weeklyStats.qiqi.reward || 0) + (weeklyStats.qiqi.penalty || 0) + (weeklyStats.qiqi.publish || 0) + (weeklyStats.qiqi.obtain || 0) + (weeklyStats.qiqi.trade || 0) + (weeklyStats.qiqi.dailyIncome || 0) + (weeklyStats.qiqi.dailyPenalty || 0) + (weeklyStats.qiqi.starIncome || 0);
+            const yiyiTotal = (weeklyStats.yiyi.reward || 0) + (weeklyStats.yiyi.penalty || 0) + (weeklyStats.yiyi.publish || 0) + (weeklyStats.yiyi.obtain || 0) + (weeklyStats.yiyi.trade || 0) + (weeklyStats.yiyi.dailyIncome || 0) + (weeklyStats.yiyi.dailyPenalty || 0) + (weeklyStats.yiyi.starIncome || 0);
             
             const safeTotalQiqi = isNaN(qiqiTotal) ? 0 : qiqiTotal;
             const safeTotalYiyi = isNaN(yiyiTotal) ? 0 : yiyiTotal;
@@ -6581,6 +6726,7 @@
         function addPoolTask() {
             const taskName = document.getElementById('pool-task-name').value.trim();
             const taskDescription = document.getElementById('pool-task-description').value.trim();
+            const basePoints = parseInt(document.getElementById('pool-task-base-points').value) || 1;
             const exclusive = document.getElementById('pool-task-exclusive').value;
             const weeklyLimit = parseInt(document.getElementById('pool-task-weekly-limit').value) || null;
             const doubleValue = document.getElementById('pool-task-double-value').checked;
@@ -6612,6 +6758,7 @@
                 name: taskName,
                 description: taskDescription,
                 createdAt: new Date().toISOString(),
+                basePoints: basePoints,
                 // 特殊属性
                 exclusive: exclusive || null,          // 专属：'qiqi', 'yiyi', 或 null
                 weeklyLimit: weeklyLimit,              // 每周次数限制
@@ -6628,6 +6775,7 @@
             // 清空表单
             document.getElementById('pool-task-name').value = '';
             document.getElementById('pool-task-description').value = '';
+            document.getElementById('pool-task-base-points').value = '1';
             document.getElementById('pool-task-exclusive').value = '';
             document.getElementById('pool-task-weekly-limit').value = '';
             document.getElementById('pool-task-double-value').checked = false;
@@ -6636,7 +6784,10 @@
             document.getElementById('streak-points').value = '3';
             document.getElementById('streak-custom-settings').style.display = 'none';
             
-            alert('任务添加成功！');
+            // 静默提示创建成功
+            if (typeof showToast === 'function') {
+                try { showToast(`已创建任务："${newTask.name}"`); } catch (e) { /* ignore */ }
+            }
         }
 
         function removePoolTask(taskId) {
@@ -7029,6 +7180,11 @@
         function getTaskSpecialAttributes(task, user = null) {
             const attributes = [];
             
+            // 基础积分
+            if (typeof task.basePoints === 'number') {
+                attributes.push(`<span class="task-attribute" style="background:#fff3cd;color:#8a6d3b;border-color:#ffeeba;">⭐ 基础+${task.basePoints}分</span>`);
+            }
+            
             // 专属属性
             if (task.exclusive === 'qiqi') {
                 attributes.push('<span class="task-attribute exclusive-qiqi">🎯 七七专属</span>');
@@ -7214,12 +7370,16 @@
         function selectTaskFromPool(poolTaskId, taskName) {
             const user = currentEditingUser;
             const slotIndex = currentEditingSlot;
+            const poolTask = taskPool.find(t => t.id === poolTaskId);
+            const basePoints = poolTask && typeof poolTask.basePoints === 'number' ? poolTask.basePoints : 1;
 
             dailyTasks[user][slotIndex] = {
                 poolTaskId: poolTaskId,
                 name: taskName,
+                basePoints: basePoints,
                 completed: false,
                 multiplier: 1,
+                awardedPoints: 0,
                 completedAt: null
             };
 
@@ -7286,7 +7446,8 @@
                 if (!task || task.completed) return;
 
                 const poolTask = taskPool.find(pt => pt.id === task.poolTaskId);
-                let points = multiplier;
+                const base = (poolTask && typeof poolTask.basePoints === 'number') ? poolTask.basePoints : (task.basePoints || 1);
+                let points = base * multiplier;
                 let bonusPoints = 0;
                 let actualTaskCount = 1;
                 
@@ -7320,18 +7481,20 @@
                 }
                 
                 const totalPoints = points + bonusPoints;
-                
+
                 task.completed = true;
                 task.multiplier = multiplier;
+                task.awardedPoints = points;
                 task.completedAt = new Date().toISOString();
                 task.actualTaskCount = actualTaskCount;
                 task.bonusPoints = bonusPoints;
                 
-                // 积分先进入积分池，不直接添加到总分
+                // 积分先进入积分池
                 addToPointsPool(user, totalPoints);
                 
-                // 更新周度跟踪
+                // 更新周度跟踪 + 每周目标当天得分（即时反映到周目标，不用等提现）
                 updateWeeklyPointTracking(user, 'dailyIncome', totalPoints);
+                try { updateWeeklyTargetFromTask(user, totalPoints); } catch (e) { console.warn('周目标更新失败', e); }
                 
                 // 检查任务完成奖励（传递实际任务计数）
                 const bonusReward = checkTaskCompletionReward(user, actualTaskCount);
@@ -7369,12 +7532,15 @@
                 // 每次完成任务时也检查待处理的惩罚
                 setTimeout(() => processSnapshotPenalties(), 100);
                 
-                // 特殊属性提示
-                let completionMessage = `任务完成！+${totalPoints}积分`;
-                if (actualTaskCount === 2) completionMessage += '\n💪 以一抵二效果生效！';
-                if (bonusPoints > 0) completionMessage += `\n🔥 连胜奖励+${bonusPoints}分！`;
-                
-                alert(completionMessage);
+                // 非阻塞提示（可选）
+                try {
+                    if (typeof showToast === 'function') {
+                        let msg = `+${totalPoints}分`;
+                        if (actualTaskCount === 2) msg += ' ｜以一抵二';
+                        if (bonusPoints > 0) msg += ` ｜连胜+${bonusPoints}`;
+                        showToast(msg);
+                    }
+                } catch (e) { /* ignore */ }
             });
         }
 
@@ -7417,10 +7583,13 @@
 
         // 超额补充任务相关函数
         function openExtraTaskSelect(user) {
-            // 获取可选择的任务（与任务池共享，可以重复选择）
-            const availableTasks = taskPool.filter(task => 
-                (task.exclusive === user || !task.exclusive)
-            );
+            // 获取可选择的任务（与任务池共享），排除当日已完成和当日已在列表中的未完成任务
+            const availableTasks = taskPool.filter(task => {
+                const allowByExclusive = (task.exclusive === user || !task.exclusive);
+                const notCompletedToday = !hasTaskCompletedToday(user, task.id);
+                const notAlreadySelected = !(dailyTasks.extraTasks && Array.isArray(dailyTasks.extraTasks[user]) && dailyTasks.extraTasks[user].some(t => t.poolTaskId === task.id && !t.completed));
+                return allowByExclusive && notCompletedToday && notAlreadySelected;
+            });
 
             if (availableTasks.length === 0) {
                 alert('任务池中没有可选择的任务！请先在任务池管理中添加任务。');
@@ -7462,7 +7631,7 @@
                         justify-content: space-between;
                         align-items: center;
                     ">
-                        <h3 style="margin: 0; font-size: 1.1em;">✨ ${userName}选择超额任务</h3>
+                        <h3 style="margin: 0; font-size: 1.1em;">🗓️ ${userName}选择每日任务</h3>
                         <button class="modal-close-btn" onclick="closeExtraTaskModal()" style="
                             background: rgba(255,255,255,0.2); 
                             border: 1px solid rgba(255,255,255,0.3); 
@@ -7506,12 +7675,19 @@
             if (!task) return;
 
             // 添加到超额任务列表
+            if (!dailyTasks.extraTasks) dailyTasks.extraTasks = { qiqi: [], yiyi: [] };
+            if (!Array.isArray(dailyTasks.extraTasks[user])) dailyTasks.extraTasks[user] = [];
+            // 防重复：已在今日列表且未完成时不再添加
+            const exists = dailyTasks.extraTasks[user].some(t => t.poolTaskId === taskId && !t.completed);
+            if (exists) { showToast('该任务已在今日列表中'); return; }
             const extraTask = {
                 poolTaskId: taskId,
                 name: task.name,
                 description: task.description,
+                basePoints: typeof task.basePoints === 'number' ? task.basePoints : 1,
                 completed: false,
                 multiplier: 1,
+                awardedPoints: 0,
                 completedAt: null,
                 addedAt: new Date().toISOString()
             };
@@ -7519,9 +7695,8 @@
             dailyTasks.extraTasks[user].push(extraTask);
             saveData();
             refreshExtraTasks();
-            closeExtraTaskModal();
-            
-            alert(`已添加超额任务："${task.name}"！`);
+            // 保持选择窗口，使用非阻塞Toast提示
+            showToast(`已添加："${task.name}"`);
         }
 
         function closeExtraTaskModal() {
@@ -7549,7 +7724,8 @@
                 if (!task || task.completed) return;
 
                 const poolTask = taskPool.find(pt => pt.id === task.poolTaskId);
-                let points = multiplier;
+                const base = (poolTask && typeof poolTask.basePoints === 'number') ? poolTask.basePoints : (task.basePoints || 1);
+                let points = base * multiplier;
                 let bonusPoints = 0;
                 let actualTaskCount = 1;
                 
@@ -7586,11 +7762,14 @@
                 
                 task.completed = true;
                 task.multiplier = multiplier;
+                task.awardedPoints = points;
                 task.completedAt = new Date().toISOString();
                 
-                // 积分先进入积分池，不直接添加到总分
+                // 积分先进入积分池（当前为空实现），并直接计入周度日收入与周目标
                 addToPointsPool(user, totalPoints);
-                
+                updateWeeklyPointTracking(user, 'dailyIncome', totalPoints);
+                try { updateWeeklyTargetFromTask(user, totalPoints); } catch (e) { console.warn('周目标更新失败', e); }
+
                 // 检查任务完成奖励（传递实际任务计数）
                 const bonusReward = checkTaskCompletionReward(user, actualTaskCount);
                 
@@ -7601,7 +7780,7 @@
                 if (bonusPoints > 0) specialText.push(`连胜奖励+${bonusPoints}分`);
                 const specialInfo = specialText.length > 0 ? `(${specialText.join(', ')})` : '';
                 
-                addHistory(`${user === 'qiqi' ? '七七' : '一一'}完成超额任务"${task.name}"${multiplierText}${specialInfo} +${totalPoints}积分`, 'system', {
+                addHistory(`${user === 'qiqi' ? '七七' : '一一'}完成每日任务"${task.name}"${multiplierText}${specialInfo} +${totalPoints}积分`, 'system', {
                     user: user,
                     poolTaskId: task.poolTaskId,
                     taskName: task.name,
@@ -7614,20 +7793,50 @@
                 saveData();
                 refreshBankPage();
                 refreshExtraTasks();
+                refreshDailyTasks(); // 立即刷新进度条
                 updateTaskStats(); // 更新任务统计
                 
-                let completionMessage = `✅ 超额任务完成！\n🎯 任务: ${task.name}\n💰 获得积分: +${totalPoints}分`;
-                if (bonusPoints > 0) completionMessage += `\n🔥 连胜奖励+${bonusPoints}分！`;
-                
-                alert(completionMessage);
+                // 非阻塞提示（可选）
+                try {
+                    if (typeof showToast === 'function') {
+                        let msg = `+${totalPoints}分`;
+                        if (actualTaskCount === 2) msg += ' ｜以一抵二';
+                        if (bonusPoints > 0) msg += ` ｜连胜+${bonusPoints}`;
+                        showToast(msg);
+                    }
+                } catch (e) { /* ignore */ }
             });
         }
 
         function removeExtraTask(user, taskIndex) {
-            if (confirm('确定要移除这个超额任务吗？')) {
+            try {
+                if (!dailyTasks.extraTasks || !Array.isArray(dailyTasks.extraTasks[user])) return;
+                const task = dailyTasks.extraTasks[user][taskIndex];
+                if (!task) return;
                 dailyTasks.extraTasks[user].splice(taskIndex, 1);
                 saveData();
                 refreshExtraTasks();
+                if (typeof showToast === 'function') {
+                    showToast(`已移除："${task.name}"`);
+                }
+            } catch (e) {
+                console.error('移除任务失败:', e);
+            }
+        }
+
+        // 一键清除已完成任务（单用户）
+        function clearCompletedDailyTasks(user) {
+            try {
+                if (!dailyTasks.extraTasks || !Array.isArray(dailyTasks.extraTasks[user])) return;
+                const before = dailyTasks.extraTasks[user].length;
+                dailyTasks.extraTasks[user] = dailyTasks.extraTasks[user].filter(t => !t.completed);
+                const removed = before - dailyTasks.extraTasks[user].length;
+                saveData();
+                refreshExtraTasks();
+                alert(`${user === 'qiqi' ? '七七' : '一一'}已清除 ${removed} 条已完成任务`);
+            } catch (e) {
+                console.error('清除已完成任务失败:', e);
+                alert('清除失败，请重试');
             }
         }
 
@@ -7645,44 +7854,56 @@
                 
                 const extraTasks = dailyTasks.extraTasks[user];
                 const completedCount = extraTasks.filter(t => t.completed).length;
-                const totalPoints = extraTasks.reduce((sum, t) => t.completed ? sum + (t.multiplier || 1) : sum, 0);
+                const totalPoints = extraTasks.reduce((sum, t) => t.completed ? sum + (t.awardedPoints || 0) : sum, 0);
                 
                 if (countSpan) countSpan.textContent = completedCount;
                 if (pointsSpan) pointsSpan.textContent = totalPoints;
                 
                 if (extraTasks.length === 0) {
-                    container.innerHTML = '<div class="extra-task-placeholder" style="text-align: center; color: #666; font-size: 0.9em; padding: 20px;">点击"+ 添加任务"从任务池选择额外任务获得积分</div>';
+                    container.innerHTML = `<div class="extra-task-placeholder" onclick="openExtraTaskSelect('${user}')" style="text-align: center; color: #666; font-size: 0.9em; padding: 20px; cursor: pointer; user-select: none;">点击此处从任务池选择每日任务</div>`;
                     return;
                 }
-                
-                container.innerHTML = extraTasks.map((task, index) => {
-                    const poolTask = taskPool.find(pt => pt.id === task.poolTaskId);
-                    const userColor = user === 'qiqi' ? '#007bff' : '#28a745';
-                    
-                    if (task.completed) {
-                        return `
-                            <div class="extra-task-item completed" style="border: 2px solid ${userColor}; background: #f8f9fa; border-radius: 8px; padding: 12px; margin-bottom: 8px;">
-                                <div class="task-name" style="font-weight: bold; margin-bottom: 5px;">${task.name}</div>
-                                ${poolTask ? getTaskSpecialAttributes(poolTask, user) : ''}
-                                <div class="task-status" style="color: ${userColor}; font-size: 0.9em;">✅ 已完成 (+${task.multiplier}分)</div>
-                                <button onclick="removeExtraTask('${user}', ${index})" style="background: #6c757d; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8em; margin-top: 5px;">移除</button>
-                            </div>
-                        `;
-                    } else {
+
+                const pending = extraTasks.map((t, i) => ({ t, i })).filter(x => !x.t.completed);
+                const done = extraTasks.map((t, i) => ({ t, i })).filter(x => x.t.completed);
+
+                let html = '';
+                if (pending.length > 0) {
+                    html += `<div style="font-weight:bold; color:#333; margin:6px 0; font-size:0.95em;">待完成任务</div>`;
+                    html += pending.map(({t, i}) => {
+                        const poolTask = taskPool.find(pt => pt.id === t.poolTaskId);
                         return `
                             <div class="extra-task-item" style="border: 2px solid #e9ecef; border-radius: 8px; padding: 12px; margin-bottom: 8px;">
-                                <div class="task-name" style="font-weight: bold; margin-bottom: 5px;">${task.name}</div>
+                                <div class="task-name" style="font-weight: bold; margin-bottom: 5px;">${t.name}</div>
                                 ${poolTask ? getTaskSpecialAttributes(poolTask, user) : ''}
                                 <div class="task-actions" style="margin-top: 8px;">
-                                    <button onclick="completeExtraTask('${user}', ${index}, 1)" style="background: #28a745; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8em; margin-right: 5px;">完成 +1分</button>
-                                    <button onclick="completeExtraTask('${user}', ${index}, 2)" style="background: #ffc107; color: #212529; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8em; margin-right: 5px;">加倍 +2分</button>
-                                    <button onclick="completeExtraTask('${user}', ${index}, 3)" style="background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8em; margin-right: 5px;">超级 +3分</button>
-                                    <button onclick="removeExtraTask('${user}', ${index})" style="background: #6c757d; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8em;">移除</button>
+                                    <button class="multiplier-btn normal" onclick="completeExtraTask('${user}', ${i}, 1)">✅ 完成 +${poolTask ? (poolTask.basePoints || 1) : 1}</button>
+                                    <button class="multiplier-btn double" onclick="completeExtraTask('${user}', ${i}, 2)">⚡ 加倍 +${poolTask ? (2*(poolTask.basePoints || 1)) : 2}</button>
+                                    <button class="multiplier-btn triple" onclick="completeExtraTask('${user}', ${i}, 3)">🔥 超级 +${poolTask ? (3*(poolTask.basePoints || 1)) : 3}</button>
+                                    <button class="multiplier-btn abandon" onclick="removeExtraTask('${user}', ${i})">移除</button>
                                 </div>
                             </div>
                         `;
-                    }
-                }).join('');
+                    }).join('');
+                }
+
+                if (done.length > 0) {
+                    const userColor = user === 'qiqi' ? '#007bff' : '#28a745';
+                    html += `<div style="font-weight:bold; color:#333; margin:10px 0 6px; font-size:0.95em;">已完成任务</div>`;
+                    html += done.map(({t, i}) => {
+                        const poolTask = taskPool.find(pt => pt.id === t.poolTaskId);
+                        return `
+                            <div class="extra-task-item completed" style="border: 2px solid ${userColor}; background: #f8f9fa; border-radius: 8px; padding: 12px; margin-bottom: 8px;">
+                                <div class="task-name" style="font-weight: bold; margin-bottom: 5px;">${t.name}</div>
+                                ${poolTask ? getTaskSpecialAttributes(poolTask, user) : ''}
+                                <div class="task-status" style="color: ${userColor}; font-size: 0.9em;">✅ 已完成 (+${t.awardedPoints || 0}分)</div>
+                                <button onclick="removeExtraTask('${user}', ${i})" style="background: #6c757d; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8em; margin-top: 5px;">移除</button>
+                            </div>
+                        `;
+                    }).join('');
+                }
+
+                container.innerHTML = html;
             });
         }
 
@@ -7757,19 +7978,30 @@
                 weeklyStats.push(`${task.name}(${status})`);
             });
             
-            // 更新连胜奖励统计显示
-            if (streakStats.length > 0) {
-                streakStatsElement.innerHTML = `<strong>🔥 连胜奖励：</strong>${streakStats.join('，')}<br><small style="color: #28a745; font-weight: normal;">💡 连续完成任务达到设定天数可获得一次性奖励（进入积分池），然后重置计数</small>`;
-            } else {
-                streakStatsElement.innerHTML = `<strong>🔥 连胜奖励：</strong><span style="color: #999;">暂无连胜任务</span><br><small style="color: #666; font-weight: normal;">💡 连续完成任务达到设定天数可获得一次性奖励（进入积分池），然后重置计数</small>`;
-            }
+            // 更新连胜奖励统计显示（徽章样式）
+            const streakBadges = streakTasks.map(task => {
+                if (task.exclusive && task.exclusive !== user) return '';
+                const streakDays = getTaskStreakDays(user, task.id);
+                const config = task.streakConfig || { days: 7, points: 3 };
+                if (streakDays <= 0) return '';
+                const ready = streakDays >= config.days - 1;
+                const text = ready ? `就绪+${config.points}` : `${streakDays + 1}/${config.days}天`;
+                const cls = ready ? 'ready' : 'progress';
+                return `<span class="stat-badge ${cls}">${task.name} ${text}</span>`;
+            }).filter(Boolean).join('');
+            streakStatsElement.innerHTML = `<div class="stat-group"><div class="stat-title">🔥 连胜奖励</div><div class="stat-badges">${streakBadges || '<span class="stat-empty">暂无连胜任务</span>'}</div></div>`;
             
-            // 更新每周限制统计显示
-            if (weeklyStats.length > 0) {
-                weeklyStatsElement.innerHTML = `<strong>🏃 每周限次：</strong>${weeklyStats.join('，')}`;
-            } else {
-                weeklyStatsElement.innerHTML = `<strong>🏃 每周限次：</strong><span style="color: #999;">暂无限次任务</span>`;
-            }
+            // 更新每周限制统计显示（徽章样式）
+            const weeklyBadges = weeklyTasks.map(task => {
+                if (task.exclusive && task.exclusive !== user) return '';
+                const used = weeklyTaskUsage[task.id] || 0;
+                const limit = task.weeklyLimit;
+                const full = used >= limit;
+                const cls = full ? 'full' : 'ok';
+                const text = full ? '已满' : `${used}/${limit}`;
+                return `<span class="stat-badge ${cls}">${task.name} ${text}</span>`;
+            }).filter(Boolean).join('');
+            weeklyStatsElement.innerHTML = `<div class="stat-group"><div class="stat-title">🏃 每周限次</div><div class="stat-badges">${weeklyBadges || '<span class="stat-empty">暂无限次任务</span>'}</div></div>`;
         }
 
         function openTaskModal(user) {
@@ -7864,16 +8096,23 @@
                     // 取消完成
                     task.completed = false;
                     task.completedAt = null;
-                    // 扣除积分
-                    bankData[user].reward -= task.points;
+                    // 从日收入扣除积分
+                    bankData[user].dailyIncome -= task.points;
+                    
+                    // 更新周度跟踪
+                    updateWeeklyPointTracking(user, 'dailyIncome', -task.points);
+                    
                     addHistory(`${user === 'qiqi' ? '七七' : '一一'}取消完成任务"${task.title}" -${task.points}积分`, 'system');
                 } else {
                     // 完成任务
                     task.completed = true;
                     task.completedAt = new Date().toISOString();
-                    // 添加积分（系统奖励）
-                    bankData[user].reward += task.points;
+                    // 添加积分到日收入（和小奖惩一样）
+                    bankData[user].dailyIncome += task.points;
                     addWeeklyPoints(user, task.points);
+                    
+                    // 更新周度跟踪
+                    updateWeeklyPointTracking(user, 'dailyIncome', task.points);
                     
                     // 获取任务的实际计数（检查是否有以一抵二属性）
                     let actualTaskCount = 1;
@@ -7895,6 +8134,7 @@
                 }
 
                 saveData();
+                updateScoreCards(); // 刷新总分显示
                 refreshDailyTasks();
                 refreshBankPage();
             });
@@ -7996,9 +8236,21 @@
                 dailyTasks.extraTasks = { qiqi: [], yiyi: [] };
             }
 
-            // 更新进度
-            dailyTasks.progress.qiqi = dailyTasks.qiqi.filter(t => t && t.completed).length;
-            dailyTasks.progress.yiyi = dailyTasks.yiyi.filter(t => t && t.completed).length;
+            // 更新进度（将每日任务与超额任务统一纳入进度，考虑以一抵二）
+            const calcProgress = (user) => {
+                const dailyCount = dailyTasks[user].reduce((total, t) => {
+                    if (t && t.completed) return total + (t.actualTaskCount || 1);
+                    return total;
+                }, 0);
+                const extraList = (dailyTasks.extraTasks && dailyTasks.extraTasks[user]) ? dailyTasks.extraTasks[user] : [];
+                const extraCount = extraList.reduce((total, t) => {
+                    if (t && t.completed) return total + (t.actualTaskCount || 1);
+                    return total;
+                }, 0);
+                return dailyCount + extraCount;
+            };
+            dailyTasks.progress.qiqi = calcProgress('qiqi');
+            dailyTasks.progress.yiyi = calcProgress('yiyi');
             
             // 刷新七七的任务槽
             const qiqiContainer = document.getElementById('qiqi-daily-tasks');
@@ -8026,7 +8278,7 @@
                                     ${hasDescription ? '<span class="daily-task-expand" style="color: #28a745; font-size: 0.8em; margin-left: 8px;">▼</span>' : ''}
                                 </div>
                                 ${getTaskSpecialAttributes(poolTask, 'qiqi')}
-                                <div class="task-multiplier">✅ 已完成 (+${task.multiplier}分)</div>
+                                <div class="task-multiplier">✅ 已完成 (+${task.awardedPoints || 0}分)</div>
                             </div>
                             ${hasDescription ? `
                                 <div class="daily-task-details" id="daily-qiqi-${i}" style="display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee; font-size: 0.85em; color: #666; line-height: 1.4;">
@@ -8059,9 +8311,9 @@
                                 </div>
                             ` : ''}
                             <div class="task-actions">
-                                <button class="multiplier-btn normal" onclick="completeDailyTask('qiqi', ${i}, 1)">完成 +1分</button>
-                                <button class="multiplier-btn double" onclick="completeDailyTask('qiqi', ${i}, 2)">加倍 +2分</button>
-                                <button class="multiplier-btn triple" onclick="completeDailyTask('qiqi', ${i}, 3)">超级 +3分</button>
+                                <button class="multiplier-btn normal" onclick="completeDailyTask('qiqi', ${i}, 1)">✅ 完成 +${poolTask ? (poolTask.basePoints || 1) : 1}</button>
+                                <button class="multiplier-btn double" onclick="completeDailyTask('qiqi', ${i}, 2)">⚡ 加倍 +${poolTask ? (2*(poolTask.basePoints || 1)) : 2}</button>
+                                <button class="multiplier-btn triple" onclick="completeDailyTask('qiqi', ${i}, 3)">🔥 超级 +${poolTask ? (3*(poolTask.basePoints || 1)) : 3}</button>
                                 <button class="multiplier-btn abandon" onclick="abandonDailyTask('qiqi', ${i})">放弃</button>
                             </div>
                         `;
@@ -8096,7 +8348,7 @@
                                     ${hasDescription ? '<span class="daily-task-expand" style="color: #28a745; font-size: 0.8em; margin-left: 8px;">▼</span>' : ''}
                                 </div>
                                 ${getTaskSpecialAttributes(poolTask, 'yiyi')}
-                                <div class="task-multiplier">✅ 已完成 (+${task.multiplier}分)</div>
+                                <div class="task-multiplier">✅ 已完成 (+${task.awardedPoints || 0}分)</div>
                             </div>
                             ${hasDescription ? `
                                 <div class="daily-task-details" id="daily-yiyi-${i}" style="display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee; font-size: 0.85em; color: #666; line-height: 1.4;">
@@ -8129,9 +8381,9 @@
                                 </div>
                             ` : ''}
                             <div class="task-actions">
-                                <button class="multiplier-btn normal" onclick="completeDailyTask('yiyi', ${i}, 1)">完成 +1分</button>
-                                <button class="multiplier-btn double" onclick="completeDailyTask('yiyi', ${i}, 2)">加倍 +2分</button>
-                                <button class="multiplier-btn triple" onclick="completeDailyTask('yiyi', ${i}, 3)">超级 +3分</button>
+                                <button class="multiplier-btn normal" onclick="completeDailyTask('yiyi', ${i}, 1)">✅ 完成 +${poolTask ? (poolTask.basePoints || 1) : 1}</button>
+                                <button class="multiplier-btn double" onclick="completeDailyTask('yiyi', ${i}, 2)">⚡ 加倍 +${poolTask ? (2*(poolTask.basePoints || 1)) : 2}</button>
+                                <button class="multiplier-btn triple" onclick="completeDailyTask('yiyi', ${i}, 3)">🔥 超级 +${poolTask ? (3*(poolTask.basePoints || 1)) : 3}</button>
                                 <button class="multiplier-btn abandon" onclick="abandonDailyTask('yiyi', ${i})">放弃</button>
                             </div>
                         `;
@@ -8142,32 +8394,27 @@
 
             // 更新进度显示
             ['qiqi', 'yiyi'].forEach(user => {
-                const progress = dailyTasks.progress[user];
                 const level = taskRewardSystem[user].level;
-                const tasksCompleted = taskRewardSystem[user].tasksCompleted;
+                const remainderUnits = taskRewardSystem[user].tasksCompleted || 0; // 本轮未触发奖励的进度（0..2）
                 const pendingReward = taskRewardSystem[user].pendingReward;
-                
-                let progressText = `${progress}/3`;
+
+                // 进度条仅显示当前轮的余数进度，满3后即重置
                 let progressClass = '';
-                
-                if (pendingReward > 0) {
-                    progressText = `<span class="celebration-text">🎉${progress}/3 🎁${pendingReward}分可领取!</span>`;
+                if (pendingReward > 0 && remainderUnits === 0) {
                     progressClass = 'completed';
-                } else if (progress === 3) {
-                    progressText = `<span class="celebration-text">🎉${progress}/3 完成!</span>`;
-                    progressClass = 'completed';
-                } else if (tasksCompleted > 0) {
-                    progressText += ` (奖励进度:${tasksCompleted}/3⭐)`;
                 }
-                
+
                 const progressEl = document.getElementById(`${user}-progress`);
                 if (progressEl) {
-                    progressEl.innerHTML = progressText;
+                    // 若仍存在文本容器，则显示余数/3与可领取提示
+                    const txt = `${remainderUnits}/3` + (pendingReward > 0 ? ` <span style="color:#f39c12">| 🎁 可领取</span>` : '');
+                    progressEl.innerHTML = txt;
                 }
-                
+
                 const progressFillEl = document.getElementById(`${user}-progress-fill`);
                 if (progressFillEl) {
-                    progressFillEl.style.width = `${(progress / 3) * 100}%`;
+                    const width = Math.min((remainderUnits / 3) * 100, 100);
+                    progressFillEl.style.width = `${width}%`;
                     progressFillEl.className = `progress-fill ${progressClass}`;
                 }
             });
@@ -8187,8 +8434,7 @@
             // 更新任务承接详细信息
             updateTaskAcceptanceInfo();
             
-            // 更新预计积分显示
-            updateExpectedPoints();
+            // 预计积分显示已移除
             
             // 更新倒计时显示
             updateDailyCountdown();
@@ -8271,86 +8517,27 @@
             }
         }
 
-        // 更新预计积分显示
-        function updateExpectedPoints() {
-            const users = ['qiqi', 'yiyi'];
-            
-            users.forEach(user => {
-                const userTasks = dailyTasks[user];
-                const selectedTasks = userTasks.filter(task => task !== null);
-                
-                // 计算实际任务数量（考虑以一抵二）
-                let totalTaskCount = 0;
-                selectedTasks.forEach(task => {
-                    const poolTask = taskPool.find(pt => pt.id === task.poolTaskId);
-                    if (poolTask && poolTask.doubleValue) {
-                        totalTaskCount += 2; // 以一抵二
-                    } else {
-                        totalTaskCount += 1;
-                    }
-                });
-                
-                let expectedPoints = 0;
-                let color = '#28a745';
-                let text = '';
-                
-                if (totalTaskCount >= 3) {
-                    // 达到或超过三个任务数量
-                    expectedPoints = Math.min(totalTaskCount, 3) * 1;
-                    if (totalTaskCount > 3) {
-                        text = `预计获得积分: +${expectedPoints}分以上（超额）`;
-                    } else {
-                        text = `预计获得积分: +${expectedPoints}分（最低）`;
-                    }
-                } else {
-                    // 未达到三个任务数量
-                    const missingTasks = 3 - totalTaskCount;
-                    expectedPoints = -(missingTasks * 3);
-                    color = '#dc3545';
-                    
-                    if (missingTasks === 3) {
-                        text = `预计扣除积分: ${expectedPoints}分（未接任务）`;
-                    } else {
-                        text = `预计扣除积分: ${expectedPoints}分（少${missingTasks}个任务）`;
-                    }
-                }
-                
-                const pointsElement = document.getElementById(`${user}-expected-points`);
-                if (pointsElement) {
-                    pointsElement.textContent = text;
-                    pointsElement.style.color = color;
-                }
-            });
-        }
+        // 预计积分显示逻辑已移除
 
         // 更新每日倒计时显示
         function updateDailyCountdown() {
             const now = new Date();
             const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
             const deadline = new Date(today.getTime() + 23.5 * 60 * 60 * 1000); // 今天23:30
-            
             const timeLeft = deadline.getTime() - now.getTime();
-            
+            const mainEl = document.getElementById('daily-countdown');
+            const duplicateElement = document.querySelector('.daily-countdown-duplicate');
+            if (!mainEl && !duplicateElement) return;
             if (timeLeft <= 0) {
-                // 已过截止时间
-                document.getElementById('daily-countdown').textContent = '任务截止: 已结束';
-                const duplicateElement = document.querySelector('.daily-countdown-duplicate');
-                if (duplicateElement) {
-                    duplicateElement.textContent = '任务截止: 已结束';
-                }
+                if (mainEl) mainEl.textContent = '任务截止: 已结束';
+                if (duplicateElement) duplicateElement.textContent = '任务截止: 已结束';
             } else {
-                // 计算剩余时间
                 const hours = Math.floor(timeLeft / (1000 * 60 * 60));
                 const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-                
                 const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                document.getElementById('daily-countdown').textContent = `任务截止: ${timeString}`;
-                
-                const duplicateElement = document.querySelector('.daily-countdown-duplicate');
-                if (duplicateElement) {
-                    duplicateElement.textContent = `任务截止: ${timeString}`;
-                }
+                if (mainEl) mainEl.textContent = `任务截止: ${timeString}`;
+                if (duplicateElement) duplicateElement.textContent = `任务截止: ${timeString}`;
             }
         }
 
@@ -8654,7 +8841,8 @@
             `.trim();
             
             // 添加到积分历史
-            addHistory(summary, 'system', {
+            const summaryText = summary.replace(/日罚/g, '周罚');
+            addHistory(summaryText, 'system', {
                 type: 'weekly_summary',
                 weekNumber: weeklyStats.currentWeek - 1,
                 weekStart: weeklyStats.weekStart,
@@ -8662,7 +8850,7 @@
                 data: JSON.parse(JSON.stringify(weeklyStats))
             });
             
-            console.log('周度积分汇总已生成:', summary);
+            console.log('周度积分汇总已生成:', summaryText);
         }
         
         // 重置周度统计数据
@@ -8719,6 +8907,51 @@
             
             // 处理所有快照的惩罚（延迟执行，确保快照创建后再处理）
             setTimeout(() => processSnapshotPenalties(), 1000);
+
+            // 每日清理：在 23:40 后执行一次，移除当天已完成的任务（仅清除已完成，未完成的保留）
+            if (currentHour === 23 && currentMinute >= 40) {
+                if (lastDailyTasksCleanup !== currentDate) {
+                    clearCompletedDailyTasksForAllUsers();
+                    lastDailyTasksCleanup = currentDate;
+                    try { saveData(); } catch (e) { console.warn('保存每日清理状态失败', e); }
+                }
+            }
+        }
+
+        // 清除当日已完成的每日任务（不影响未完成项）
+        function clearCompletedDailyTasksForAllUsers() {
+            try {
+                ['qiqi','yiyi'].forEach(user => {
+                    if (!dailyTasks.extraTasks || !Array.isArray(dailyTasks.extraTasks[user])) return;
+                    const before = dailyTasks.extraTasks[user].length;
+                    dailyTasks.extraTasks[user] = dailyTasks.extraTasks[user].filter(t => !t.completed);
+                    const after = dailyTasks.extraTasks[user].length;
+                    if (before !== after) {
+                        console.log(`${user} 已完成任务清理: ${before - after} 条`);
+                    }
+                });
+                refreshExtraTasks();
+            } catch (e) {
+                console.error('清除当日已完成任务失败:', e);
+            }
+        }
+
+        // 判断某任务当日是否已完成（用于当天禁止重复接）
+        function hasTaskCompletedToday(user, poolTaskId) {
+            if (!poolTaskId) return false;
+            const today = new Date();
+            const dayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            const dayEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+            return historyData.some(record => {
+                const isTaskCompletion = record.message && (
+                    record.message.includes('完成每日任务') ||
+                    record.message.includes('完成超额任务')
+                );
+                if (!isTaskCompletion || !record.details) return false;
+                if (record.details.user !== user || record.details.poolTaskId !== poolTaskId) return false;
+                const recordDate = new Date(record.timestamp || record.time || record.createdAt || new Date());
+                return recordDate >= dayStart && recordDate < dayEnd;
+            });
         }
 
 
@@ -10234,6 +10467,11 @@
             initializePenaltySystem(); // 初始化惩罚系统
             checkWeeklyReset(); // 检查周度重置
             refreshBankPage();
+            
+            // 延迟初始化目标系统，确保其他数据已加载完成
+            setTimeout(function() {
+                initWeeklyTargetSystem();
+            }, 500);
             refreshHistoryPage();
             refreshBountyList();
             refreshDailyTasks(); // 初始化每日任务显示
@@ -10546,6 +10784,618 @@
                 cancelConfirmInput();
             }
         });
+
+        // =============================================================================
+        // 每周目标系统 - 新功能
+        // =============================================================================
+
+        // 每周目标数据结构 - 支持两个用户
+        var weeklyTargetSystem = {
+            qiqi: {
+                currentTarget: 35,
+                currentEarned: 0,
+                dailyScores: [0,0,0,0,0,0,0], // 周一到周日
+                history: []
+            },
+            yiyi: {
+                currentTarget: 35,
+                currentEarned: 0,
+                dailyScores: [0,0,0,0,0,0,0], // 周一到周日
+                history: []
+            },
+            currentWeek: null,
+            weekStartDate: null,
+            weekEndDate: null,
+            penaltyRate: 2,
+            globalHistory: []
+        };
+
+        // 获取当前周信息 - 周期从周一开始到周日结束
+        function getCurrentWeekInfo() {
+            const now = new Date();
+            // 使用相对 SYSTEM_START_DATE 的周序号
+            const weekNumber = getCurrentWeekNumber(now);
+            
+            // 计算本周开始和结束日期 (周一开始，周日结束)
+            const day = now.getDay();
+            const diff = now.getDate() - day + (day === 0 ? -6 : 1); // 调整到周一
+            const weekStart = new Date(now.getFullYear(), now.getMonth(), diff);
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekStart.getDate() + 6);
+            weekEnd.setHours(23, 59, 59, 999); // 周日晚上23:59:59截止
+            
+            // 计算剩余时间到周日晚上
+            const timeLeft = weekEnd.getTime() - now.getTime();
+            const daysLeft = Math.ceil(timeLeft / (1000 * 60 * 60 * 24));
+            
+            return {
+                year: now.getFullYear(),
+                week: weekNumber,
+                startDate: weekStart,
+                endDate: weekEnd,
+                title: `第${weekNumber}周`,
+                daysLeft: Math.max(0, daysLeft),
+                isActive: timeLeft > 0
+            };
+        }
+
+        // 计算用户每周目标进度
+        function calculateWeeklyProgress(user) {
+            const userData = weeklyTargetSystem[user];
+            if (!userData) return null;
+            
+            const { currentTarget, currentEarned } = userData;
+            const progress = Math.min((currentEarned / currentTarget) * 100, 100);
+            const shortage = Math.max(currentTarget - currentEarned, 0);
+            const penalty = shortage * weeklyTargetSystem.penaltyRate;
+            
+            return {
+                progress: progress,
+                shortage: shortage,
+                penalty: penalty,
+                targetReached: currentEarned >= currentTarget
+            };
+        }
+        
+        // 更新双人每周目标显示
+        function updateWeeklyTargetDisplay() {
+            try {
+                const weekInfo = getCurrentWeekInfo();
+                
+                // 更新周标题
+                const titleElement = document.getElementById('current-week-title');
+                const daysElement = document.getElementById('days-left');
+                
+                if (titleElement) {
+                    titleElement.textContent = `${weekInfo.title} ${weekInfo.isActive ? '(进行中)' : '(已结束)'}`;
+                }
+                if (daysElement) {
+                    daysElement.textContent = weekInfo.daysLeft;
+                }
+                
+                // 更新七七的数据
+                updateUserWeeklyDisplay('qiqi');
+                
+                // 更新一一的数据
+                updateUserWeeklyDisplay('yiyi');
+                
+                // 更新领先者信息
+                updateLeaderInfo();
+            } catch (error) {
+                console.error('更新每周目标显示时出错:', error);
+            }
+        }
+        
+        // 更新单个用户的每周显示
+        function updateUserWeeklyDisplay(user) {
+            try {
+                const userData = weeklyTargetSystem[user];
+                const progress = calculateWeeklyProgress(user);
+                if (!userData || !progress) return;
+                
+                // 从统计页面获取实际周收入并同步到每周目标
+                syncWeeklyEarnedFromStats(user);
+                
+                // 更新目标和已获得分数
+                const targetElement = document.getElementById(`${user}-week-target`);
+                const earnedElement = document.getElementById(`${user}-week-earned`);
+                const percentageElement = document.getElementById(`${user}-progress-percentage`);
+                const barFillElement = document.getElementById(`${user}-progress-bar-fill`);
+                
+                if (targetElement) targetElement.textContent = userData.currentTarget;
+                if (earnedElement) earnedElement.textContent = userData.currentEarned;
+                if (percentageElement) percentageElement.textContent = `${Math.round(progress.progress)}%`;
+                if (barFillElement) barFillElement.style.width = `${progress.progress}%`;
+                
+                // 预计扣分（差一分扣两分）
+                const shortage = Math.max(userData.currentTarget - userData.currentEarned, 0);
+                const estPenalty = shortage * (weeklyTargetSystem.penaltyRate || 2);
+                const estPenaltyElement = document.getElementById(`${user}-est-penalty`);
+                if (estPenaltyElement) {
+                    estPenaltyElement.textContent = estPenalty;
+                    estPenaltyElement.style.color = estPenalty > 0 ? '#d32f2f' : '#999';
+                }
+                
+                // 更新每日得分网格
+                updateDailyScoresGrid(user);
+            } catch (error) {
+                console.error(`更新用户${user}每周显示时出错:`, error);
+            }
+        }
+        
+        // 从统计页面同步周收入到每周目标系统
+        function syncWeeklyEarnedFromStats(user) {
+            // 优先使用已记录的每日得分累加，避免平均分配造成不准确
+            if (weeklyTargetSystem[user] && Array.isArray(weeklyTargetSystem[user].dailyScores)) {
+                const sum = weeklyTargetSystem[user].dailyScores.reduce((s, v) => s + (v || 0), 0);
+                if (sum > 0) {
+                    weeklyTargetSystem[user].currentEarned = sum;
+                    return;
+                }
+            }
+            // 若本地没有每日分布且存在周度统计，则用周度统计填充 currentEarned（不改 dailyScores）
+            if (typeof weeklyStats !== 'undefined' && weeklyStats[user]) {
+                const actualWeeklyEarned = weeklyStats[user].dailyIncome || 0;
+                weeklyTargetSystem[user].currentEarned = actualWeeklyEarned;
+            }
+        }
+        
+        // 更新每日得分网格
+        function updateDailyScoresGrid(user) {
+            const userData = weeklyTargetSystem[user];
+            if (!userData) return;
+            
+            const gridElement = document.getElementById(`${user}-daily-scores-grid`);
+            const weekDays = ['一', '二', '三', '四', '五', '六', '日'];
+            
+            gridElement.innerHTML = '';
+            
+            weekDays.forEach((day, index) => {
+                const dayScore = userData.dailyScores[index] || 0;
+                const dayElement = document.createElement('div');
+                dayElement.style.cssText = `
+                    text-align: center; 
+                    padding: 6px 4px; 
+                    background: ${dayScore > 0 ? '#e8f5e8' : '#f5f5f5'}; 
+                    border-radius: 6px; 
+                    border: 2px solid ${dayScore > 0 ? '#4caf50' : '#ddd'};
+                    font-size: 0.8em;
+                    font-weight: bold;
+                    color: ${dayScore > 0 ? '#2e7d32' : '#666'};
+                `;
+                dayElement.innerHTML = `
+                    <div style="font-size: 0.7em; margin-bottom: 2px;">${day}</div>
+                    <div>${dayScore}</div>
+                `;
+                gridElement.appendChild(dayElement);
+            });
+        }
+        
+        // 更新领先者信息
+        function updateLeaderInfo() {
+            const qiqiEarned = weeklyTargetSystem.qiqi.currentEarned;
+            const yiyiEarned = weeklyTargetSystem.yiyi.currentEarned;
+            const leaderElement = document.getElementById('leader-name');
+            
+            if (qiqiEarned > yiyiEarned) {
+                leaderElement.textContent = '七七';
+                leaderElement.style.color = '#4caf50';
+            } else if (yiyiEarned > qiqiEarned) {
+                leaderElement.textContent = '一一';
+                leaderElement.style.color = '#2196f3';
+            } else {
+                leaderElement.textContent = '并列';
+                leaderElement.style.color = '#ff9800';
+            }
+        }
+        
+        
+        // 从任务完成更新每周目标系统
+        function updateWeeklyTargetFromTask(user, points) {
+            if (!weeklyTargetSystem[user]) return;
+            
+            const now = new Date();
+            const dayOfWeek = now.getDay();
+            const dayIndex = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // 转换为0=周一...6=周日
+            
+            // 添加到今日得分
+            weeklyTargetSystem[user].dailyScores[dayIndex] += points;
+            
+            // 重新计算总得分
+            weeklyTargetSystem[user].currentEarned = weeklyTargetSystem[user].dailyScores.reduce((sum, score) => sum + score, 0);
+            
+            // 保存数据并更新显示
+            saveWeeklyTargetData();
+            updateWeeklyTargetDisplay();
+        }
+        
+        // 保存每周目标数据到localStorage
+        function saveWeeklyTargetData() {
+            try {
+                localStorage.setItem('weeklyTargetSystem', JSON.stringify(weeklyTargetSystem));
+            } catch (e) {
+                console.error('保存每周目标数据失败:', e);
+            }
+        }
+        
+        // 从localStorage加载每周目标数据
+        function loadWeeklyTargetData() {
+            try {
+                const saved = localStorage.getItem('weeklyTargetSystem');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    weeklyTargetSystem = { ...weeklyTargetSystem, ...data };
+                }
+            } catch (e) {
+                console.error('加载每周目标数据失败:', e);
+            }
+        }
+
+        // 显示目标设定模态框 - 支持双人设置
+        function showTargetSettingModal() {
+            // 确保 weeklyTargetSystem 已初始化
+            if (typeof weeklyTargetSystem === 'undefined' || !weeklyTargetSystem) {
+                console.error('weeklyTargetSystem 未初始化');
+                alert('系统正在初始化中，请稍后再试...');
+                return;
+            }
+            
+            const qiqiTarget = weeklyTargetSystem.qiqi ? weeklyTargetSystem.qiqi.currentTarget : 35;
+            const yiyiTarget = weeklyTargetSystem.yiyi ? weeklyTargetSystem.yiyi.currentTarget : 35;
+            
+            const modalHtml = `
+                <div id="target-setting-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 10000;">
+                    <div style="background: white; border-radius: 20px; padding: 30px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;">
+                        <div style="text-align: center; margin-bottom: 25px;">
+                            <h3 style="color: #f57c00; margin: 0; font-size: 1.6em;">🔧 设置双人周目标</h3>
+                        </div>
+                        
+                        <!-- 七七的目标设置 -->
+                        <div style="margin-bottom: 25px; padding: 20px; background: #e8f5e8; border-radius: 15px; border: 2px solid #4caf50;">
+                            <h4 style="color: #2e7d32; margin: 0 0 15px 0;">👦 七七的目标</h4>
+                            <input type="number" id="qiqi-target-input" value="${qiqiTarget}" min="1" max="100" 
+                                style="width: 100%; padding: 12px; border: 2px solid #4caf50; border-radius: 8px; font-size: 1.1em;">
+                        </div>
+                        
+                        <!-- 一一的目标设置 -->
+                        <div style="margin-bottom: 25px; padding: 20px; background: #e3f2fd; border-radius: 15px; border: 2px solid #2196f3;">
+                            <h4 style="color: #1565c0; margin: 0 0 15px 0;">👧 一一的目标</h4>
+                            <input type="number" id="yiyi-target-input" value="${yiyiTarget}" min="1" max="100" 
+                                style="width: 100%; padding: 12px; border: 2px solid #2196f3; border-radius: 8px; font-size: 1.1em;">
+                        </div>
+                        
+                        <div style="margin-bottom: 25px;">
+                            <h4 style="color: #333; margin-bottom: 15px;">🤖 快速设置</h4>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                                <button onclick="setTargetsValue(30)" style="background: #e0e0e0; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 0.9em;">两人30分</button>
+                                <button onclick="setTargetsValue(35)" style="background: #e0e0e0; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 0.9em;">两人35分</button>
+                                <button onclick="setTargetsValue(40)" style="background: #e0e0e0; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 0.9em;">两人40分</button>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 15px; justify-content: center;">
+                            <button onclick="closeTargetSettingModal()" style="background: #666; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer;">取消</button>
+                            <button onclick="confirmTargetSetting()" style="background: #4caf50; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer;">确认设置</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+        }
+
+        // 快速设置双人目标值
+        function setTargetsValue(value) {
+            document.getElementById('qiqi-target-input').value = value;
+            document.getElementById('yiyi-target-input').value = value;
+        }
+
+        // 关闭目标设定模态框
+        function closeTargetSettingModal() {
+            const modal = document.getElementById('target-setting-modal');
+            if (modal) modal.remove();
+        }
+
+        // 确认目标设置
+        function confirmTargetSetting() {
+            const qiqiTarget = Number(document.getElementById('qiqi-target-input').value);
+            const yiyiTarget = Number(document.getElementById('yiyi-target-input').value);
+            
+            if (qiqiTarget > 0 && yiyiTarget > 0) {
+                // 确保 weeklyTargetSystem 已初始化
+                if (typeof weeklyTargetSystem === 'undefined' || !weeklyTargetSystem) {
+                    console.error('weeklyTargetSystem 未初始化');
+                    alert('系统错误，请刷新页面重试');
+                    return;
+                }
+                
+                // 初始化用户数据结构如果不存在
+                if (!weeklyTargetSystem.qiqi) {
+                    weeklyTargetSystem.qiqi = {
+                        currentTarget: 35,
+                        currentEarned: 0,
+                        dailyScores: [0,0,0,0,0,0,0],
+                        history: []
+                    };
+                }
+                if (!weeklyTargetSystem.yiyi) {
+                    weeklyTargetSystem.yiyi = {
+                        currentTarget: 35,
+                        currentEarned: 0,
+                        dailyScores: [0,0,0,0,0,0,0],
+                        history: []
+                    };
+                }
+                
+                weeklyTargetSystem.qiqi.currentTarget = qiqiTarget;
+                weeklyTargetSystem.yiyi.currentTarget = yiyiTarget;
+                
+                saveWeeklyTargetData();
+                updateWeeklyTargetDisplay();
+                closeTargetSettingModal();
+                
+                alert(`✅ 目标已设置！\n👦 七七: ${qiqiTarget}分\n👧 一一: ${yiyiTarget}分`);
+            } else {
+                alert('❌ 请输入有效的目标分数（大于0）');
+            }
+        }
+
+        // 自定义/修改/清零 每周目标记录
+        function showWeeklyCustom() {
+            if (!weeklyTargetSystem) return;
+            const qiqi = weeklyTargetSystem.qiqi || { currentTarget: 35, currentEarned: 0 };
+            const yiyi = weeklyTargetSystem.yiyi || { currentTarget: 35, currentEarned: 0 };
+
+            const modalHtml = `
+                <div id="weekly-custom-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 10000;">
+                    <div style="background: #fff; border-radius: 20px; padding: 24px; width: 92%; max-width: 720px; max-height: 85vh; overflow-y: auto;">
+                        <div style="text-align: center; margin-bottom: 16px;">
+                            <h3 style="margin: 0; color: #1976d2; font-size: 1.4em;">🛠️ 自定义每周目标记录</h3>
+                            <div style="margin-top: 6px; color: #666; font-size: 0.95em;">可修改当前周目标/积分，或清零记录</div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div style="padding: 16px; border: 2px solid #4caf50; border-radius: 12px; background: #f3fbf3;">
+                                <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">👦 七七</div>
+                                <label style="font-size: 0.9em; color: #333;">目标分</label>
+                                <input id="qiqi-custom-target" type="number" min="0" max="200" value="${qiqi.currentTarget || 0}" style="width: 100%; padding: 10px; border: 2px solid #4caf50; border-radius: 8px; margin: 6px 0 10px;">
+                                <label style="font-size: 0.9em; color: #333;">已获分</label>
+                                <input id="qiqi-custom-earned" type="number" min="0" max="9999" value="${qiqi.currentEarned || 0}" style="width: 100%; padding: 10px; border: 2px solid #4caf50; border-radius: 8px; margin-top: 6px;">
+                                <button onclick="zeroUserWeekly('qiqi')" style="margin-top: 10px; background: #e8f5e9; border: 2px solid #81c784; color: #2e7d32; padding: 8px 12px; border-radius: 8px; cursor: pointer; width: 100%;">清零七七本周记录</button>
+                            </div>
+                            <div style="padding: 16px; border: 2px solid #2196f3; border-radius: 12px; background: #f3f9ff;">
+                                <div style="font-weight: bold; color: #1565c0; margin-bottom: 10px;">👧 一一</div>
+                                <label style="font-size: 0.9em; color: #333;">目标分</label>
+                                <input id="yiyi-custom-target" type="number" min="0" max="200" value="${yiyi.currentTarget || 0}" style="width: 100%; padding: 10px; border: 2px solid #2196f3; border-radius: 8px; margin: 6px 0 10px;">
+                                <label style="font-size: 0.9em; color: #333;">已获分</label>
+                                <input id="yiyi-custom-earned" type="number" min="0" max="9999" value="${yiyi.currentEarned || 0}" style="width: 100%; padding: 10px; border: 2px solid #2196f3; border-radius: 8px; margin-top: 6px;">
+                                <button onclick="zeroUserWeekly('yiyi')" style="margin-top: 10px; background: #e3f2fd; border: 2px solid #64b5f6; color: #1565c0; padding: 8px 12px; border-radius: 8px; cursor: pointer; width: 100%;">清零一一本周记录</button>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 16px; padding: 12px; background: #fff3cd; border: 1px solid #ffeeba; border-radius: 10px; color: #8a6d3b;">
+                            提示：修改“已获分”将同步为本周每日分布（周一=该值，其余为0），以保证统计一致。
+                        </div>
+
+                        <div style="display: flex; gap: 12px; justify-content: center; margin-top: 18px; flex-wrap: wrap;">
+                            <button onclick="closeWeeklyCustomModal()" style="background: #666; color: #fff; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer;">取消</button>
+                            <button onclick="confirmWeeklyCustom()" style="background: #4caf50; color: #fff; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer;">保存修改</button>
+                            <button onclick="clearWeeklyRecords()" style="background: #d32f2f; color: #fff; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer;">清零所有每周目标记录</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const div = document.createElement('div');
+            div.innerHTML = modalHtml;
+            document.body.appendChild(div.firstElementChild);
+        }
+
+        function closeWeeklyCustomModal() {
+            const modal = document.getElementById('weekly-custom-modal');
+            if (modal) modal.remove();
+        }
+
+        function zeroUserWeekly(user) {
+            if (!weeklyTargetSystem[user]) return;
+            weeklyTargetSystem[user].currentEarned = 0;
+            weeklyTargetSystem[user].dailyScores = [0,0,0,0,0,0,0];
+            // 注意：不修改 weeklyStats，避免影响总分
+            saveWeeklyTargetData();
+            if (typeof saveData === 'function') saveData();
+            // 立即刷新该用户的显示，确保“已获得”数值同步为0
+            try {
+                updateUserWeeklyDisplay(user);
+                const earnedEl = document.getElementById(`${user}-week-earned`);
+                if (earnedEl) earnedEl.textContent = '0';
+                const percEl = document.getElementById(`${user}-progress-percentage`);
+                if (percEl) percEl.textContent = '0%';
+                const barEl = document.getElementById(`${user}-progress-bar-fill`);
+                if (barEl) barEl.style.width = '0%';
+            } catch (e) { console.warn('局部刷新失败，改为全量刷新:', e); updateWeeklyTargetDisplay(); }
+            alert((user === 'qiqi' ? '七七' : '一一') + '本周记录已清零');
+        }
+
+        function confirmWeeklyCustom() {
+            try {
+                const qiqiTarget = parseInt(document.getElementById('qiqi-custom-target').value) || 0;
+                const qiqiEarned = parseInt(document.getElementById('qiqi-custom-earned').value) || 0;
+                const yiyiTarget = parseInt(document.getElementById('yiyi-custom-target').value) || 0;
+                const yiyiEarned = parseInt(document.getElementById('yiyi-custom-earned').value) || 0;
+
+                if (!weeklyTargetSystem.qiqi) weeklyTargetSystem.qiqi = { currentTarget: 0, currentEarned: 0, dailyScores: [0,0,0,0,0,0,0], history: [] };
+                if (!weeklyTargetSystem.yiyi) weeklyTargetSystem.yiyi = { currentTarget: 0, currentEarned: 0, dailyScores: [0,0,0,0,0,0,0], history: [] };
+
+                weeklyTargetSystem.qiqi.currentTarget = qiqiTarget;
+                weeklyTargetSystem.yiyi.currentTarget = yiyiTarget;
+
+                weeklyTargetSystem.qiqi.currentEarned = qiqiEarned;
+                weeklyTargetSystem.yiyi.currentEarned = yiyiEarned;
+
+                // 同步每日分布（将周一设置为已获分，其余为0，保证一致）
+                weeklyTargetSystem.qiqi.dailyScores = [qiqiEarned,0,0,0,0,0,0];
+                weeklyTargetSystem.yiyi.dailyScores = [yiyiEarned,0,0,0,0,0,0];
+
+                saveWeeklyTargetData();
+                updateWeeklyTargetDisplay();
+                closeWeeklyCustomModal();
+                alert('✅ 修改已保存');
+            } catch (e) {
+                console.error('保存自定义修改失败:', e);
+                alert('保存失败，请重试');
+            }
+        }
+
+        function clearWeeklyRecords() {
+            if (!confirm('⚠️ 确认清零所有每周目标记录？\n这将清空：本周进度、每日分布及历史。不可恢复！')) return;
+            try {
+                ['qiqi','yiyi'].forEach(u => {
+                    if (!weeklyTargetSystem[u]) weeklyTargetSystem[u] = { history: [] };
+                    weeklyTargetSystem[u].currentEarned = 0;
+                    weeklyTargetSystem[u].dailyScores = [0,0,0,0,0,0,0];
+                    weeklyTargetSystem[u].history = [];
+                });
+                weeklyTargetSystem.globalHistory = [];
+                weeklyTargetSystem.lastSettledWeek = null;
+                // 注意：不重置 weeklyStats，以免影响总分统计
+                saveWeeklyTargetData();
+                if (typeof saveData === 'function') saveData();
+                // 强制刷新UI，确保两侧“已获得”与进度清零
+                try {
+                    ['qiqi','yiyi'].forEach(u => {
+                        updateUserWeeklyDisplay(u);
+                        const earnedEl = document.getElementById(`${u}-week-earned`);
+                        if (earnedEl) earnedEl.textContent = '0';
+                        const percEl = document.getElementById(`${u}-progress-percentage`);
+                        if (percEl) percEl.textContent = '0%';
+                        const barEl = document.getElementById(`${u}-progress-bar-fill`);
+                        if (barEl) barEl.style.width = '0%';
+                    });
+                } catch (e) { console.warn('局部刷新失败，改为全量刷新:', e); updateWeeklyTargetDisplay(); }
+                closeWeeklyCustomModal();
+                alert('🗑️ 已清零所有每周目标记录（不影响总分）');
+            } catch (e) {
+                console.error('清零失败:', e);
+                alert('清零失败，请重试');
+            }
+        }
+
+        // 初始化每周目标系统
+        // 周末结算（差一分扣两分）
+        function settleWeeklyTargets() {
+            try {
+                if (typeof weeklyTargetSystem === 'undefined' || !weeklyTargetSystem) {
+                    alert('系统正在初始化中，请稍后再试…');
+                    return;
+                }
+
+                const weekInfo = getCurrentWeekInfo();
+                const weekKey = weekInfo ? `${weekInfo.year}-${weekInfo.week}` : new Date().toISOString().slice(0, 10);
+
+                if (weeklyTargetSystem.lastSettledWeek === weekKey) {
+                    alert('本周已结算过，无需重复结算。');
+                    return;
+                }
+
+                const users = ['qiqi', 'yiyi'];
+                const results = users.map(user => {
+                    const d = weeklyTargetSystem[user] || { currentTarget: 0, currentEarned: 0 };
+                    const shortage = Math.max((d.currentTarget || 0) - (d.currentEarned || 0), 0);
+                    const penalty = shortage * (weeklyTargetSystem.penaltyRate || 2);
+                    return { user, target: d.currentTarget || 0, earned: d.currentEarned || 0, shortage, penalty };
+                });
+
+                const summary = results.map(r => `${r.user === 'qiqi' ? '七七' : '一一'}：${r.earned}/${r.target}，差${r.shortage}分，扣${r.penalty}分`).join('\n');
+                const ok = confirm(`周末结算（差一分扣两分）\n\n${summary}\n\n确认结算并扣分吗？`);
+                if (!ok) return;
+
+                results.forEach(r => {
+                    if (r.penalty > 0) {
+                        if (!bankData[r.user]) return;
+                        if (typeof bankData[r.user].penalty !== 'number') bankData[r.user].penalty = 0;
+                        bankData[r.user].penalty -= r.penalty; // 记入惩罚
+                        // 计入本周惩罚统计（沿用 dailyPenalty 字段做周罚累计）
+                        if (!weeklyStats[r.user] || typeof weeklyStats[r.user].dailyPenalty !== 'number') {
+                            if (!weeklyStats[r.user]) weeklyStats[r.user] = {};
+                            weeklyStats[r.user].dailyPenalty = 0;
+                        }
+                        // 作为负分计入周度统计
+                        updateWeeklyPointTracking(r.user, 'dailyPenalty', -r.penalty);
+                        addHistory(`📅 每周结算：${r.user === 'qiqi' ? '七七' : '一一'}未达标，差${r.shortage}分，扣${r.penalty}分`, 'system', {
+                            week: weekKey,
+                            user: r.user,
+                            target: r.target,
+                            earned: r.earned,
+                            shortage: r.shortage,
+                            penalty: r.penalty
+                        });
+                    } else {
+                        addHistory(`📅 每周结算：${r.user === 'qiqi' ? '七七' : '一一'}达标，无扣分`, 'system', {
+                            week: weekKey,
+                            user: r.user,
+                            target: r.target,
+                            earned: r.earned,
+                            shortage: r.shortage,
+                            penalty: 0
+                        });
+                    }
+
+                    // 写入个人历史
+                    if (!weeklyTargetSystem[r.user].history) weeklyTargetSystem[r.user].history = [];
+                    weeklyTargetSystem[r.user].history.unshift({
+                        week: weekKey,
+                        target: r.target,
+                        earned: r.earned,
+                        shortage: r.shortage,
+                        penalty: r.penalty,
+                        settledAt: new Date().toISOString()
+                    });
+                });
+
+                // 结算后清零：本周进度与显示
+                ['qiqi','yiyi'].forEach(u => {
+                    if (weeklyTargetSystem[u]) {
+                        weeklyTargetSystem[u].currentEarned = 0;
+                        weeklyTargetSystem[u].dailyScores = [0,0,0,0,0,0,0];
+                    }
+                    if (weeklyStats[u]) {
+                        weeklyStats[u].dailyIncome = 0;
+                    }
+                });
+
+                // 写入全局历史
+                if (!weeklyTargetSystem.globalHistory) weeklyTargetSystem.globalHistory = [];
+                weeklyTargetSystem.globalHistory.unshift({
+                    week: weekKey,
+                    settledAt: new Date().toISOString(),
+                    results
+                });
+
+                weeklyTargetSystem.lastSettledWeek = weekKey;
+
+                saveWeeklyTargetData();
+                saveData();
+                updateWeeklyTargetDisplay();
+                updateTaskStats();
+
+                alert('结算完成！记录已保存。');
+            } catch (e) {
+                console.error('结算失败:', e);
+                alert('结算失败，请打开控制台查看错误。');
+            }
+        }
+
+        function initWeeklyTargetSystem() {
+            loadWeeklyTargetData();
+            updateWeeklyTargetDisplay();
+            
+            // 每5分钟检查并更新一次显示
+            setInterval(updateWeeklyTargetDisplay, 5 * 60 * 1000);
+        }
+
+        // 已移除“查看详情”模态相关逻辑
+
+        // 页面加载时初始化每周目标系统已合并到主初始化函数中
     </script>
 </body>
 </html>
